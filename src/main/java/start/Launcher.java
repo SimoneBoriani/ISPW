@@ -1,10 +1,10 @@
 package start;
 
 import javafx.application.Application;
-import view.Main.PrincipalPageApp;
+import view.factory.GuiGraphicsFactory;
 
 public class Launcher {
     public static void main(String[] args) {
-        Application.launch(PrincipalPageApp.class, args);
+        Application.launch(GuiGraphicsFactory.class, args);
     }
 }
