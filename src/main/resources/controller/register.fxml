@@ -7,10 +7,8 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -29,7 +27,7 @@
                 </font>
             </Label>
         </HBox>
-      <StackPane prefHeight="96.0" prefWidth="300.0" styleClass="logoImageView" stylesheets="@style.css">
+      <StackPane prefHeight="144.0" prefWidth="300.0" styleClass="logoImageView" stylesheets="@style.css">
          <children>
       
                           <ImageView fitHeight="123.0" fitWidth="178.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" style="-fx-smooth: 6;" styleClass="logoImageView">
@@ -39,35 +37,34 @@
               </ImageView>
          </children>
       </StackPane>
+      <AnchorPane maxHeight="257.0" maxWidth="296.0" prefHeight="257.0" prefWidth="296.0">
+         <children>
+            <TextField layoutY="33.0" promptText="prova@aa.bb" AnchorPane.leftAnchor="0.0" />
+            <TextField layoutX="155.0" layoutY="33.0" promptText="prova@aa.bb" AnchorPane.rightAnchor="0.0" />
+            <Label layoutY="14.0" prefHeight="17.0" prefWidth="149.0" text="Email" textFill="#204080">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
+            <Label layoutY="89.0" prefHeight="17.0" prefWidth="149.0" text="Password" textFill="#204080">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
+            <Label layoutX="155.0" layoutY="89.0" prefHeight="17.0" prefWidth="149.0" text="Conferma Password" textFill="#204080">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <PasswordField layoutY="107.0" promptText="..." AnchorPane.leftAnchor="0.0" />
+            <Label layoutX="155.0" layoutY="14.0" prefHeight="17.0" prefWidth="149.0" text="Conferma Email" textFill="#204080">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <PasswordField layoutX="155.0" layoutY="107.0" promptText="..." AnchorPane.rightAnchor="0.3333333333333144" />
+         </children>
+      </AnchorPane>
 
-                          <GridPane alignment="CENTER" hgap="10.0" prefHeight="147.0" prefWidth="161.0" vgap="15.0">
-
-                              <Label alignment="CENTER" prefHeight="17.0" prefWidth="151.0" text="Email" textFill="#204080" GridPane.rowIndex="1">
-            <font>
-               <Font name="System Bold" size="12.0" />
-            </font>
-         </Label>
-            <TextField alignment="CENTER" promptText="nome@esempio.it" GridPane.rowIndex="2" />
-
-                              <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="151.0" text="Password" textFill="#204080" GridPane.rowIndex="3">
-            <font>
-               <Font name="System Bold" size="12.0" />
-            </font>
-         </Label>
-            <PasswordField alignment="CENTER" promptText="..." GridPane.rowIndex="4" />
-         <columnConstraints>
-            <ColumnConstraints />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
-            <RowConstraints maxHeight="18.0" minHeight="0.0" prefHeight="18.0" />
-            <RowConstraints maxHeight="42.66666666666666" minHeight="24.666676839192704" prefHeight="24.666676839192704" />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
-        </GridPane>
-
-        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Accedi " textFill="WHITE">
+        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Registrati" textFill="WHITE">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
@@ -75,11 +72,12 @@
                 <Insets top="10.0" />
             </VBox.margin>
         </Button>
-      <Label alignment="CENTER" contentDisplay="CENTER" onMousePressed="#SwitchRegister" prefHeight="49.0" prefWidth="300.0" styleClass="link-label" stylesheets="@style.css" text="Registrati" textFill="#204080">
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="129.0" prefWidth="300.0" text="Hai gia un account? ">
          <font>
             <Font size="13.0" />
          </font>
       </Label>
+      <Label onMousePressed="#SwitchloginLabel" prefHeight="25.0" prefWidth="35.0" styleClass="link-label" stylesheets="@style.css" text="Accedi" textFill="#204080" />
 
         <VBox.margin>
             <Insets top="10.0" />

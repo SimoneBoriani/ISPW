@@ -10,6 +10,7 @@
 
 .Button:hover{
         -fx-background-color: #3060c0;
+        -fx-cursor: hand;
         -fx-background-insets:0 ;
 }
 
@@ -46,7 +47,14 @@
 }
 .scroll-bar .increment-arrow,
 .scroll-bar .decrement-arrow {
-    -fx-shape: "";
+    -fx-shape: " ";
 }
 
+.link-label {
+    -fx-cursor: hand;
+    -fx-text-fill: #204080;
+}
 
+.link-label:hover {
+    -fx-underline: true;
+}
