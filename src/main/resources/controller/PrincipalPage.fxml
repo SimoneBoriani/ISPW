@@ -18,7 +18,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ImageView fitHeight="62.0" fitWidth="51.0" onMousePressed="#Clickable_Image" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
+            <ImageView fitHeight="62.0" fitWidth="51.0" onMousePressed="#Clickable_Image" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
                <image>
                   <Image url="@../images/logo1.png" />
                </image>
