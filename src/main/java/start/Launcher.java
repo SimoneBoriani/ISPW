@@ -1,10 +1,10 @@
 package start;
 
-import javafx.application.Application;
-import view.factory.GuiGraphicsFactory;
+import java.util.Arrays;
 
 public class Launcher {
     public static void main(String[] args) {
-        Application.launch(GuiGraphicsFactory.class, args);
+        Selection selection = new Selection();
+        selection.loader(Arrays.toString(args));
     }
 }

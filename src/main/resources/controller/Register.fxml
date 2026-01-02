@@ -21,7 +21,7 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
-            <Label onMouseClicked="#SwitchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
+            <Label onMouseClicked="#switchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
                 <font>
                     <Font size="13.0" />
                 </font>
@@ -39,9 +39,9 @@
       </StackPane>
       <AnchorPane maxHeight="257.0" maxWidth="296.0" prefHeight="257.0" prefWidth="296.0">
          <children>
-            <TextField layoutY="33.0" promptText="prova@aa.bb" AnchorPane.leftAnchor="0.0" />
-            <TextField layoutX="155.0" layoutY="33.0" promptText="prova@aa.bb" AnchorPane.rightAnchor="0.0" />
-            <Label layoutY="14.0" prefHeight="17.0" prefWidth="149.0" text="Email" textFill="#204080">
+            <TextField layoutY="33.0" promptText="username" AnchorPane.leftAnchor="0.0" />
+            <TextField layoutX="155.0" layoutY="33.0" promptText="username" AnchorPane.rightAnchor="0.0" />
+            <Label layoutY="14.0" prefHeight="17.0" prefWidth="149.0" text="Username" textFill="#204080">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Label>
@@ -55,7 +55,7 @@
                </font>
             </Label>
             <PasswordField layoutY="107.0" promptText="..." AnchorPane.leftAnchor="0.0" />
-            <Label layoutX="155.0" layoutY="14.0" prefHeight="17.0" prefWidth="149.0" text="Conferma Email" textFill="#204080">
+            <Label layoutX="155.0" layoutY="14.0" prefHeight="17.0" prefWidth="149.0" text="Conferma Username" textFill="#204080">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -77,7 +77,7 @@
             <Font size="13.0" />
          </font>
       </Label>
-      <Label onMousePressed="#SwitchloginLabel" prefHeight="25.0" prefWidth="35.0" styleClass="link-label" stylesheets="@style.css" text="Accedi" textFill="#204080" />
+      <Label onMousePressed="#switchloginLabel" prefHeight="17.0" prefWidth="38.0" styleClass="link-label" stylesheets="@style.css" text="Accedi" textFill="#204080" />
 
         <VBox.margin>
             <Insets top="10.0" />

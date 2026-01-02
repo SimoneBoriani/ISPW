@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,9 +17,10 @@ import java.util.Objects;
 
 
 public class PageController {
+
     @FXML
     private ContextMenu menu;
-    private MenuItem voce1,voce2,voce3,voce4,voce5;
+
     private Scene scene;
     private Stage stage;
 
@@ -29,11 +29,20 @@ public class PageController {
         stage.setResizable(false);
         stage.show();
     }
+    public Parent change(String str) throws IOException {
+        return FXMLLoader.load(Objects.requireNonNull(getClass().getResource(str)));
+    }
+
+
+
+
 
     @FXML
-    public void SwitchloginButton(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/controller/Login.fxml")));
-        scene = new Scene(root);
+    public void switchloginButton(ActionEvent event) throws IOException {
+
+        String str="/controller/Login.fxml";
+        scene = new Scene(change(str));
+
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.setTitle("Login");
@@ -41,9 +50,11 @@ public class PageController {
     }
 
     @FXML
-    public void SwitchloginLabel(MouseEvent event) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/controller/Login.fxml")));
-        scene = new Scene(root);
+    public void switchloginLabel(MouseEvent event) throws IOException {
+
+        String str="/controller/Login.fxml";
+        scene = new Scene(change(str));
+
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.setTitle("Login");
@@ -51,10 +62,11 @@ public class PageController {
     }
 
     @FXML
-    public void SwitchMain(MouseEvent event) throws IOException {
+    public void switchMain(MouseEvent event) throws IOException {
 
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/controller/PrincipalPage.fxml")));
-        scene = new Scene(root);
+        String str="/controller/PrincipalPage.fxml";
+        scene = new Scene(change(str));
+
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.setTitle("Main");
@@ -62,39 +74,40 @@ public class PageController {
     }
 
     @FXML
-    public void SwitchRegister(MouseEvent event) throws IOException {
+    public void switchRegister(MouseEvent event) throws IOException {
 
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/controller/register.fxml")));
-        scene = new Scene(root);
+        String str= "/controller/Register.fxml";
+        scene = new Scene(change(str));
+
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.setTitle("Register");
         show();
     }
 
-    public void Clickable_Image(MouseEvent event){
+    public void clickable_Image(MouseEvent event) {
+        MenuItem voce1 = null;
         if (menu == null) {
             menu = new ContextMenu();
 
-             voce1 = new MenuItem("Profilo");
-             voce2 = new MenuItem("Impostazioni");
-             voce3 = new MenuItem("Cerca la tua auto dei sogni");
-             voce4 = new MenuItem("Lista desideri");
-             voce5 = new MenuItem("Logout");
+            voce1 = new MenuItem("Profilo");
+            MenuItem voce2 = new MenuItem("Impostazioni");
+            MenuItem voce3 = new MenuItem("Cerca la tua auto dei sogni");
+            MenuItem voce4 = new MenuItem("Lista desideri");
 
-            menu.getItems().addAll(voce1, voce2, voce3, voce4, voce5);
+            menu.getItems().addAll(voce1, voce2, voce3, voce4);
         }
-            Node sorgente = (Node) event.getSource();
-            menu.show(sorgente, event.getScreenX(), event.getScreenY());
-            menu.setAutoHide(true);
+        Node sorgente = (Node) event.getSource();
+        menu.show(sorgente, event.getScreenX(), event.getScreenY());
+        menu.setAutoHide(true);
 
+        assert voce1 != null;
         voce1.setOnAction(e -> {
             try {
-                // Carica il nuovo FXML
-                Parent root = FXMLLoader.load(getClass().getResource("/controller/Profilo.fxml"));
-                // Ottieni la finestra attuale (Stage) partendo dal menu
-                Stage stage = (Stage) sorgente.getScene().getWindow();
-                stage.setScene(new Scene(root));
+                String str="/controller/Profilo.fxml";
+                stage = (Stage) sorgente.getScene().getWindow();
+                stage.setScene(new Scene(change(str)));
+                stage.setFullScreen(true);
                 stage.show();
             } catch (IOException ex) {
                 ex.printStackTrace();

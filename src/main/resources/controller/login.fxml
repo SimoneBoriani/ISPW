@@ -23,7 +23,7 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
-            <Label onMouseClicked="#SwitchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
+            <Label onMouseClicked="#switchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
                 <font>
                     <Font size="13.0" />
                 </font>
@@ -42,12 +42,12 @@
 
                           <GridPane alignment="CENTER" hgap="10.0" prefHeight="147.0" prefWidth="161.0" vgap="15.0">
 
-                              <Label alignment="CENTER" prefHeight="17.0" prefWidth="151.0" text="Email" textFill="#204080" GridPane.rowIndex="1">
+                              <Label alignment="CENTER" prefHeight="17.0" prefWidth="151.0" text="Username" textFill="#204080" GridPane.rowIndex="1">
             <font>
                <Font name="System Bold" size="12.0" />
             </font>
          </Label>
-            <TextField alignment="CENTER" promptText="nome@esempio.it" GridPane.rowIndex="2" />
+            <TextField alignment="CENTER" promptText="username" GridPane.rowIndex="2" />
 
                               <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="151.0" text="Password" textFill="#204080" GridPane.rowIndex="3">
             <font>
@@ -75,7 +75,7 @@
                 <Insets top="10.0" />
             </VBox.margin>
         </Button>
-      <Label alignment="CENTER" contentDisplay="CENTER" onMousePressed="#SwitchRegister" prefHeight="49.0" prefWidth="300.0" styleClass="link-label" stylesheets="@style.css" text="Registrati" textFill="#204080">
+      <Label alignment="CENTER" contentDisplay="CENTER" onMousePressed="#switchRegister" prefHeight="49.0" prefWidth="300.0" styleClass="link-label" stylesheets="@style.css" text="Registrati" textFill="#204080">
          <font>
             <Font size="13.0" />
          </font>

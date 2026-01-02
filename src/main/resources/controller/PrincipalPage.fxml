@@ -6,7 +6,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PageController">
@@ -18,23 +18,23 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ImageView fitHeight="62.0" fitWidth="51.0" onMousePressed="#Clickable_Image" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
+            <ImageView fitHeight="62.0" fitWidth="51.0" onMousePressed="#clickable_Image" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
                <image>
                   <Image url="@../images/logo1.png" />
                </image>
             </ImageView>
-            <Button alignment="CENTER_RIGHT" layoutX="534.0" layoutY="13.0" mnemonicParsing="false" onAction="#SwitchloginButton" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.bottomAnchor="13.000000000000007" AnchorPane.rightAnchor="14.666666666666629" AnchorPane.topAnchor="13.0" />
+            <Button alignment="CENTER_RIGHT" layoutX="534.0" layoutY="13.0" mnemonicParsing="false" onAction="#switchloginButton" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.bottomAnchor="13.000000000000007" AnchorPane.rightAnchor="14.666666666666629" AnchorPane.topAnchor="13.0" />
          </children>
       </AnchorPane>
       <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutY="45.0" prefHeight="355.0" prefWidth="600.0" stylesheets="@style.css" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="44.666666666666686">
          <content>
             <AnchorPane prefHeight="342.0" prefWidth="587.0">
                <children>
-                  <FlowPane layoutX="53.0" prefHeight="355.0" prefWidth="502.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="0.0">
+                  <VBox layoutX="41.0" prefHeight="355.0" prefWidth="299.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <AnchorPane prefHeight="57.0" prefWidth="521.0">
+                        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="57.0" prefWidth="521.0">
                            <children>
-                              <Label alignment="CENTER" layoutX="-2.0" layoutY="20.0" prefHeight="20.0" prefWidth="501.0" text="CATALOGO" textFill="#204080" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0">
+                              <Label alignment="CENTER" layoutX="-36.0" layoutY="20.0" prefHeight="20.0" prefWidth="600.0" text="CATALOGO" textFill="#204080" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -42,7 +42,7 @@
                            </children>
                         </AnchorPane>
                      </children>
-                  </FlowPane>
+                  </VBox>
                </children>
             </AnchorPane>
          </content>
