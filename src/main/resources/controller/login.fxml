@@ -23,7 +23,7 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
-            <Label onMouseClicked="#SwitchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
+            <Label onMouseClicked="#switchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
                 <font>
                     <Font size="13.0" />
                 </font>
@@ -75,7 +75,7 @@
                 <Insets top="10.0" />
             </VBox.margin>
         </Button>
-      <Label alignment="CENTER" contentDisplay="CENTER" onMousePressed="#SwitchRegister" prefHeight="49.0" prefWidth="300.0" styleClass="link-label" stylesheets="@style.css" text="Registrati" textFill="#204080">
+      <Label alignment="CENTER" contentDisplay="CENTER" onMousePressed="#switchRegister" prefHeight="49.0" prefWidth="300.0" styleClass="link-label" stylesheets="@style.css" text="Registrati" textFill="#204080">
          <font>
             <Font size="13.0" />
          </font>

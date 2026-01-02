@@ -1,42 +1,35 @@
 package start;
 
-<<<<<<< HEAD
 import javafx.application.Application;
-//import view.factory.CliGraphicsFactory;
 import view.factory.GuiGraphicsFactory;
-=======
-import java.util.Arrays;
->>>>>>> 7093256 (Fix codesmell,gui bug)
 
 import java.util.Scanner;
 
-public class Launcher {
-    public static void main(String[] args) {
-<<<<<<< HEAD
+public class Selection {
+    public void loader(String args) {
 
-        boolean bool;
+        boolean bool,condizione=true;
+        System.out.println("Selezionare: 1-GUI  2-CLI");
 
-        System.out.println("Selezionare 1-GUI , 2-CLI");
+        while(condizione){
+
         Scanner scanner = new Scanner(System.in);
-        int sc=scanner.nextInt();
+        int sc =1; //scanner.nextInt();
 
         if (sc == 1 || sc == 2) {
             bool = sc == 1;
 
             if (bool) {
+                condizione = false;
                 Application.launch(GuiGraphicsFactory.class, args);
             } else {
                 System.out.println("Questa è l'interfaccia a linea di comando (Da implementare)");
+                condizione = false;
                 //Application.launch(CliGraphicsFactory.class, args);
             }
+        } else {
+            System.out.println("Numero non valido, riprovare inserendo 1 o 2");
         }
-        else{
-            System.out.println("Numero non valido");
-
-        }
-=======
-        Selection selection = new Selection();
-        selection.loader(Arrays.toString(args));
->>>>>>> 7093256 (Fix codesmell,gui bug)
+    }
     }
 }

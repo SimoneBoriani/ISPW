@@ -17,8 +17,13 @@ import java.util.Objects;
 
 
 public class PageController {
+
     @FXML
     private ContextMenu menu;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7093256 (Fix codesmell,gui bug)
     private Scene scene;
     private Stage stage;
 
@@ -36,7 +41,11 @@ public class PageController {
 
 
     @FXML
+<<<<<<< HEAD
     public void SwitchloginButton(ActionEvent event) throws IOException {
+=======
+    public void switchloginButton(ActionEvent event) throws IOException {
+>>>>>>> 7093256 (Fix codesmell,gui bug)
 
         String str="/controller/Login.fxml";
         scene = new Scene(change(str));
@@ -48,7 +57,11 @@ public class PageController {
     }
 
     @FXML
+<<<<<<< HEAD
     public void SwitchloginLabel(MouseEvent event) throws IOException {
+=======
+    public void switchloginLabel(MouseEvent event) throws IOException {
+>>>>>>> 7093256 (Fix codesmell,gui bug)
 
         String str="/controller/Login.fxml";
         scene = new Scene(change(str));
@@ -60,11 +73,17 @@ public class PageController {
     }
 
     @FXML
-    public void SwitchMain(MouseEvent event) throws IOException {
+    public void switchMain(MouseEvent event) throws IOException {
 
         String str="/controller/PrincipalPage.fxml";
         scene = new Scene(change(str));
 
+<<<<<<< HEAD
+        String str="/controller/PrincipalPage.fxml";
+        scene = new Scene(change(str));
+
+=======
+>>>>>>> 7093256 (Fix codesmell,gui bug)
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.setTitle("Main");
@@ -72,18 +91,28 @@ public class PageController {
     }
 
     @FXML
-    public void SwitchRegister(MouseEvent event) throws IOException {
+    public void switchRegister(MouseEvent event) throws IOException {
 
         String str= "/controller/Register.fxml";
         scene = new Scene(change(str));
 
+<<<<<<< HEAD
+        String str= "/controller/Register.fxml";
+        scene = new Scene(change(str));
+
+=======
+>>>>>>> 7093256 (Fix codesmell,gui bug)
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.setTitle("Register");
         show();
     }
 
+<<<<<<< HEAD
     public void Clickable_Image(MouseEvent event) {
+=======
+    public void clickable_Image(MouseEvent event) {
+>>>>>>> 7093256 (Fix codesmell,gui bug)
         MenuItem voce1 = null;
         if (menu == null) {
             menu = new ContextMenu();
@@ -103,7 +132,11 @@ public class PageController {
         voce1.setOnAction(e -> {
             try {
                 String str="/controller/Profilo.fxml";
+<<<<<<< HEAD
                 Stage stage = (Stage) sorgente.getScene().getWindow();
+=======
+                stage = (Stage) sorgente.getScene().getWindow();
+>>>>>>> 7093256 (Fix codesmell,gui bug)
                 stage.setScene(new Scene(change(str)));
                 stage.setFullScreen(true);
                 stage.show();

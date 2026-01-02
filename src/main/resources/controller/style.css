@@ -16,7 +16,7 @@
 
 .scroll-bar {
     -fx-background-color: transparent;
-    -fx-padding: 0;
+    -fx-padding: 0 10px 0 0;
 }
 
 
