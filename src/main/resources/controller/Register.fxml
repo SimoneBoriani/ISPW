@@ -21,7 +21,7 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
-            <Label onMouseClicked="#SwitchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
+            <Label onMouseClicked="#switchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
                 <font>
                     <Font size="13.0" />
                 </font>
@@ -77,7 +77,11 @@
             <Font size="13.0" />
          </font>
       </Label>
+<<<<<<< HEAD
       <Label onMousePressed="#SwitchloginLabel" prefHeight="17.0" prefWidth="38.0" styleClass="link-label" stylesheets="@style.css" text="Accedi" textFill="#204080" />
+=======
+      <Label onMousePressed="#switchloginLabel" prefHeight="17.0" prefWidth="38.0" styleClass="link-label" stylesheets="@style.css" text="Accedi" textFill="#204080" />
+>>>>>>> 7093256 (Fix codesmell,gui bug)
 
         <VBox.margin>
             <Insets top="10.0" />
