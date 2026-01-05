@@ -21,7 +21,7 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
-            <Label onMouseClicked="#switchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
+            <Label onMouseClicked="#switchMainlabel" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
                 <font>
                     <Font size="13.0" />
                 </font>
@@ -37,34 +37,33 @@
               </ImageView>
          </children>
       </StackPane>
-      <AnchorPane maxHeight="257.0" maxWidth="296.0" prefHeight="257.0" prefWidth="296.0">
+      <AnchorPane maxHeight="292.0" maxWidth="296.0" prefHeight="292.0" prefWidth="296.0">
          <children>
-            <TextField layoutY="33.0" promptText="username" AnchorPane.leftAnchor="0.0" />
-            <TextField layoutX="155.0" layoutY="33.0" promptText="username" AnchorPane.rightAnchor="0.0" />
-            <Label layoutY="14.0" prefHeight="17.0" prefWidth="149.0" text="Username" textFill="#204080">
+            <TextField fx:id="Reg_username" layoutX="75.0" layoutY="17.0" promptText="username" AnchorPane.leftAnchor="75.0" />
+            <Label layoutX="75.0" prefHeight="17.0" prefWidth="81.0" text="Username" textFill="#204080">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Label>
-            <Label layoutY="89.0" prefHeight="17.0" prefWidth="149.0" text="Password" textFill="#204080">
+            <Label layoutX="74.0" layoutY="54.0" prefHeight="17.0" prefWidth="149.0" text="Password" textFill="#204080">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Label>
-            <Label layoutX="155.0" layoutY="89.0" prefHeight="17.0" prefWidth="149.0" text="Conferma Password" textFill="#204080">
+            <Label layoutX="74.0" layoutY="110.0" prefHeight="17.0" prefWidth="149.0" text="Conferma Password" textFill="#204080">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <PasswordField layoutY="107.0" promptText="..." AnchorPane.leftAnchor="0.0" />
-            <Label layoutX="155.0" layoutY="14.0" prefHeight="17.0" prefWidth="149.0" text="Conferma Username" textFill="#204080">
+            <PasswordField fx:id="Reg_password" layoutX="74.0" layoutY="72.0" promptText="..." AnchorPane.leftAnchor="74.0" />
+            <PasswordField fx:id="Conf_Reg_password" layoutX="74.0" layoutY="127.0" promptText="..." AnchorPane.rightAnchor="73.0" />
+            <Label fx:id="Error_text" alignment="CENTER" layoutX="5.0" layoutY="159.0" prefHeight="17.0" prefWidth="306.0" textFill="#ff1100" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="-5.0">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <PasswordField layoutX="155.0" layoutY="107.0" promptText="..." AnchorPane.rightAnchor="0.3333333333333144" />
          </children>
       </AnchorPane>
 
-        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Registrati" textFill="WHITE">
+        <Button mnemonicParsing="false" onAction="#GetInfo" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Registrati" textFill="WHITE">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>

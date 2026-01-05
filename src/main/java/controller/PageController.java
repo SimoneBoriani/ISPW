@@ -7,7 +7,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -21,6 +23,21 @@ public class PageController {
     @FXML
     private ContextMenu menu;
 
+    @FXML
+    private TextField Reg_username;
+
+    @FXML
+    private TextField Reg_password;
+
+    @FXML
+    private TextField Conf_Reg_password;
+
+    @FXML
+    private Label Error_text;
+
+
+
+
     private Scene scene;
     private Stage stage;
 
@@ -33,7 +50,16 @@ public class PageController {
         return FXMLLoader.load(Objects.requireNonNull(getClass().getResource(str)));
     }
 
+    @FXML
+    public void switchcatalog(MouseEvent event) throws IOException {
+        String str="/controller/catalogo.fxml";
+        scene = new Scene(change(str));
 
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Catalogo");
+        show();
+    }
 
 
 
@@ -62,7 +88,19 @@ public class PageController {
     }
 
     @FXML
-    public void switchMain(MouseEvent event) throws IOException {
+    public void switchMainlabel(MouseEvent event) throws IOException {
+
+        String str="/controller/PrincipalPage.fxml";
+        scene = new Scene(change(str));
+
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Main");
+        show();
+    }
+
+    @FXML
+    public void switchMainbutton(ActionEvent event) throws IOException {
 
         String str="/controller/PrincipalPage.fxml";
         scene = new Scene(change(str));
@@ -113,6 +151,23 @@ public class PageController {
                 ex.printStackTrace();
             }
         });
+    }
+
+    @FXML
+    public void GetInfo(ActionEvent event) throws IOException {
+        String user = Reg_username.getText();
+        String pass = Reg_password.getText();
+        String confPass = Conf_Reg_password.getText();
+
+        if (user.isEmpty() || pass.isEmpty()) {
+            Error_text.setText("Errore: Campi vuoti!");
+        } else if (!pass.equals(confPass)) {
+            Error_text.setText("Le password non coincidono!");
+            Reg_password.clear();
+            Conf_Reg_password.clear();
+        } else {
+            switchMainbutton(event);
+        }
     }
 }
 

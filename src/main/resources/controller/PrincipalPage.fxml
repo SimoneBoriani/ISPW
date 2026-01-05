@@ -18,12 +18,12 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ImageView fitHeight="62.0" fitWidth="51.0" onMousePressed="#clickable_Image" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
+            <ImageView fitHeight="62.0" fitWidth="51.0" layoutX="7.0" layoutY="7.0" onMousePressed="#clickable_Image" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="7.0">
                <image>
                   <Image url="@../images/logo1.png" />
                </image>
             </ImageView>
-            <Button alignment="CENTER_RIGHT" layoutX="534.0" layoutY="13.0" mnemonicParsing="false" onAction="#switchloginButton" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.bottomAnchor="13.000000000000007" AnchorPane.rightAnchor="14.666666666666629" AnchorPane.topAnchor="13.0" />
+            <Button alignment="CENTER_RIGHT" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchloginButton" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
          </children>
       </AnchorPane>
       <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutY="45.0" prefHeight="355.0" prefWidth="600.0" stylesheets="@style.css" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="44.666666666666686">
@@ -34,7 +34,7 @@
                      <children>
                         <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="57.0" prefWidth="521.0">
                            <children>
-                              <Label alignment="CENTER" layoutX="-36.0" layoutY="20.0" prefHeight="20.0" prefWidth="600.0" text="CATALOGO" textFill="#204080" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                              <Label alignment="CENTER" layoutX="-36.0" layoutY="20.0" onMouseClicked="#switchcatalog" prefHeight="20.0" prefWidth="600.0" styleClass="link-label" stylesheets="@style.css" text="CATALOGO" textFill="#204080" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <font>
                                     <Font size="14.0" />
                                  </font>

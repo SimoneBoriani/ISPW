@@ -58,3 +58,30 @@
 .link-label:hover {
     -fx-underline: true;
 }
+
+
+.table-view {
+    .table-container {
+        border-radius: 10px 10px 0 0;
+        overflow: hidden;
+        border: 1px solid #0056b3;
+    }
+
+
+    .table-header {
+        background-color: #204080;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 10px 10px 10px 10px;
+    }
+
+
+    .table-content {
+        padding: 20px;
+        text-align: center;
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+}

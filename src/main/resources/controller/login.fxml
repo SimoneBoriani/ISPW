@@ -23,7 +23,7 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
-            <Label onMouseClicked="#switchMain" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
+            <Label onMouseClicked="#switchMainlabel" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
                 <font>
                     <Font size="13.0" />
                 </font>
