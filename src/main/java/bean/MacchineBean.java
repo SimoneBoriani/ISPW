@@ -1,5 +1,5 @@
 package bean;
-import model.Macchina;
+import model.macchina.Macchina;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class MacchineBean {
         List<Macchina> cars = new ArrayList<>();
         String sql="select * from macchine"; //da mettere nel dao
 
-        try(Connection session= DriverManager.getConnection(url,user,password);
+        /*try(Connection session= DriverManager.getConnection(url,user,password);
         Statement statement=session.createStatement();
         ResultSet rs=statement.executeQuery(sql)) {
 
@@ -32,7 +32,7 @@ public class MacchineBean {
                 int sconto = rs.getInt("sconto");
                 String modello = rs.getString("modello");
                 String casa = rs.getString("casa");
-                int prezzo = rs.getInt("prezzo");
+                int prezzo = rs.getInt("prezzo");*/
 
             Macchina macchina=new Macchina(id_auto,anno,km,posti,sconto,proprietari,modello,casa,alimentazione,prezzo);
             if(macchina!=null){cars.add(macchina);}

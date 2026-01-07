@@ -2,10 +2,12 @@ package bean;
 
 
 public class LoginBean {
+
     String username;
     String password;
 
     public LoginBean(String username, String password) {
+
         this.username = username;
         this.password = password;
     }

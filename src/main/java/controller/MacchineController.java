@@ -6,9 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import model.Macchina;
-
-import java.awt.event.ActionEvent;
+import model.macchina.Macchina;
 
 
 public class MacchineController {

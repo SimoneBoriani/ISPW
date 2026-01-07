@@ -11,8 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.Objects;
 
@@ -35,7 +35,8 @@ public class PageController {
     @FXML
     private Label Error_text;
 
-
+    @FXML
+    private VBox catalogo;
 
 
     private Scene scene;
@@ -49,19 +50,6 @@ public class PageController {
     public Parent change(String str) throws IOException {
         return FXMLLoader.load(Objects.requireNonNull(getClass().getResource(str)));
     }
-
-    @FXML
-    public void switchcatalog(MouseEvent event) throws IOException {
-        String str="/controller/catalogo.fxml";
-        scene = new Scene(change(str));
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Catalogo");
-        show();
-    }
-
-
 
     @FXML
     public void switchloginButton(ActionEvent event) throws IOException {
@@ -167,6 +155,29 @@ public class PageController {
             Conf_Reg_password.clear();
         } else {
             switchMainbutton(event);
+        }
+    }
+
+    private void loaderCatalog(){
+
+        try {
+            String str = "/controller/catalogo.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(str));
+            Parent catalogoRoot = loader.load();
+            catalogo.getChildren().clear();
+            catalogo.getChildren().add(catalogoRoot);
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+    }
+    @FXML
+    public void initialize(){
+        try {
+            loaderCatalog();
+        } catch (Exception e) {
+            Error_text.setText("Nessun catalogo");
+            System.err.println("Catalogo non caricato: " + e.getMessage());
         }
     }
 }
