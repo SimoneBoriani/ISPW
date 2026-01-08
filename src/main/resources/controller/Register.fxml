@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="400.0" spacing="20.0" style="-fx-background-color: #0E1A33; -fx-padding: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PageController">
+
+    <VBox alignment="CENTER" maxWidth="500.0" prefHeight="550.0" prefWidth="317.0" spacing="15.0" style="-fx-background-color: white; -fx-border-radius: 20; -fx-background-radius: 20;">
+        <padding>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+        </padding>
+
+        <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
+            <Label onMouseClicked="#switchMainlabel" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
+                <font>
+                    <Font size="13.0" />
+                </font>
+            </Label>
+        </HBox>
+      <StackPane prefHeight="144.0" prefWidth="300.0" styleClass="logoImageView" stylesheets="@style.css">
+         <children>
+      
+                          <ImageView fitHeight="123.0" fitWidth="178.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" style="-fx-smooth: 6;" styleClass="logoImageView">
+                  <image>
+                      <Image url="@../images/logo.png" />
+                  </image>
+              </ImageView>
+         </children>
+      </StackPane>
+      <AnchorPane maxHeight="292.0" maxWidth="296.0" prefHeight="292.0" prefWidth="296.0">
+         <children>
+            <TextField fx:id="Reg_username" layoutX="75.0" layoutY="17.0" promptText="username" AnchorPane.leftAnchor="75.0" />
+            <Label layoutX="75.0" prefHeight="17.0" prefWidth="81.0" text="Username" textFill="#204080">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
+            <Label layoutX="74.0" layoutY="54.0" prefHeight="17.0" prefWidth="149.0" text="Password" textFill="#204080">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
+            <Label layoutX="74.0" layoutY="110.0" prefHeight="17.0" prefWidth="149.0" text="Conferma Password" textFill="#204080">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <PasswordField fx:id="Reg_password" layoutX="74.0" layoutY="72.0" promptText="..." AnchorPane.leftAnchor="74.0" />
+            <PasswordField fx:id="Conf_Reg_password" layoutX="74.0" layoutY="127.0" promptText="..." AnchorPane.rightAnchor="73.0" />
+            <Label fx:id="Error_text" alignment="CENTER" layoutX="5.0" layoutY="159.0" prefHeight="17.0" prefWidth="306.0" textFill="#ff1100" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="-5.0">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+
+        <Button mnemonicParsing="false" onAction="#GetInfo" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Registrati" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </Button>
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="129.0" prefWidth="300.0" text="Hai gia un account? ">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <Label onMousePressed="#switchloginLabel" prefHeight="17.0" prefWidth="38.0" styleClass="link-label" stylesheets="@style.css" text="Accedi" textFill="#204080" />
+
+        <VBox.margin>
+            <Insets top="10.0" />
+        </VBox.margin>
+    </VBox>
+</VBox>
