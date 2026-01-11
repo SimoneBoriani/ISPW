@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="915.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MacchineController">
+<AnchorPane prefHeight="400.0" prefWidth="915.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CatalogoController">
    <children>
       <TableView fx:id="tableView" layoutX="-4.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="915.0" stylesheets="@style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columns>
@@ -16,7 +16,6 @@
             <TableColumn fx:id="proprietari" prefWidth="77.0" text="Proprietari" />
             <TableColumn fx:id="anno" maxWidth="1.7976931348623157E308" prefWidth="62.0" text="Anno" />
             <TableColumn fx:id="prezzo" prefWidth="77.0" text="Prezzo" />
-            <TableColumn fx:id="sconto" maxWidth="1.7976931348623157E308" prefWidth="62.0" text="Sconto" />
          </columns>
       </TableView>
    </children>

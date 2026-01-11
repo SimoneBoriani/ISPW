@@ -24,6 +24,7 @@
                </image>
             </ImageView>
             <Button alignment="CENTER_RIGHT" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchloginButton" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
+            <Button layoutX="400.0" layoutY="9.0" mnemonicParsing="false" onAction="#AggiungiAuto" text="Aggiungi AUto" />
          </children>
       </AnchorPane>
       <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutY="45.0" prefHeight="355.0" prefWidth="600.0" stylesheets="@style.css" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="44.666666666666686">
@@ -43,11 +44,16 @@
                         </AnchorPane>
                         <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="296.0" prefWidth="486.0">
                            <children>
-                              <Label fx:id="Error_text" alignment="CENTER" layoutX="215.0" layoutY="140.0" prefHeight="17.0" prefWidth="51.0" text="Label" textFill="#dad4d4" AnchorPane.leftAnchor="215.0" AnchorPane.rightAnchor="214.0" />
+                              <Label fx:id="Error_Catalog_text" alignment="CENTER" layoutX="215.0" layoutY="140.0" prefHeight="17.0" prefWidth="265.0" text="Label" textFill="#dad4d4" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                         </AnchorPane>
                      </children>
                   </VBox>
+                  <ImageView fitHeight="51.0" fitWidth="51.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/lente_ricerca.png" />
+                     </image>
+                  </ImageView>
                </children>
             </AnchorPane>
          </content>
