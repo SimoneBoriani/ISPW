@@ -36,6 +36,9 @@ public class PageController {
     private Label Error_text;
 
     @FXML
+    private Label Error_Catalog_text;
+
+    @FXML
     private VBox catalogo;
 
 
@@ -111,6 +114,30 @@ public class PageController {
         show();
     }
 
+    @FXML
+    public void AggiungiAuto(ActionEvent event) throws IOException {
+        // 1. Carica il file FXML
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/AggiungiAuto.fxml"));
+        Parent root = loader.load();
+
+        // 2. Crea la nuova scena
+        Scene newScene = new Scene(root);
+
+        // 3. Crea il NUOVO Stage
+        Stage newStage = new Stage();
+
+        // 4. Recupera lo Stage attuale (principale) per impostarlo come 'proprietario'
+        Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        newStage.initOwner(primaryStage);
+
+        // 5. Configura e mostra la nuova finestra
+        newStage.setScene(newScene);
+        newStage.setTitle("Aggiungi Auto");
+        newStage.setResizable(false);
+        // Mostra la finestra e torna subito al controllo della principale
+        newStage.show();
+    }
+
     public void clickable_Image(MouseEvent event) {
         MenuItem voce1 = null;
         if (menu == null) {
@@ -172,12 +199,16 @@ public class PageController {
 
     }
     @FXML
-    public void initialize(){
+    public void initialize() {
         try {
             loaderCatalog();
         } catch (Exception e) {
-            Error_text.setText("Nessun catalogo");
-            System.err.println("Catalogo non caricato: " + e.getMessage());
+            e.printStackTrace();
+            if (Error_Catalog_text != null) {
+                Error_Catalog_text.setText("Nessun catalogo trovato");
+            } else {
+                System.out.println("Errore: Il catalogo non è stato caricato e la label Error_text è null!");
+            }
         }
     }
 }

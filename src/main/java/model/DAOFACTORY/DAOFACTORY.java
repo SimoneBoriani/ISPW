@@ -1,7 +1,13 @@
 package model.DAOFACTORY;
 
+import java.util.List;
+
 public class DAOFACTORY {
-    protected String url="jdbc:postgresql://localhost:5432/postgres";
-    protected String user="admin";
-    protected String password="password";
+    protected static String url="jdbc:postgresql://localhost:5432/postgres";
+    protected static String user="admin";
+    protected static String password="password";
+
+    //protected abstract void getInfo();
+
+
 }

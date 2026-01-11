@@ -1,36 +1,38 @@
 package controller;
 
-import bean.MacchineBean;
+import bean.CatalogoBean;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.macchina.Macchina;
+import model.macchina.dao.DaoMacchine;
+
+import java.io.IOException;
 
 
-public class MacchineController {
+public class CatalogoController {
 
     @FXML
     private TableView<Macchina> tableView;
     @FXML
-    private TableColumn<MacchineBean, String> nome;
+    private TableColumn<CatalogoBean, String> nome;
     @FXML
-    private TableColumn<MacchineBean, String> casa;
+    private TableColumn<CatalogoBean, String> casa;
     @FXML
-    private TableColumn<MacchineBean, Integer> km;
+    private TableColumn<CatalogoBean, Integer> km;
     @FXML
-    private TableColumn<MacchineBean, Integer> posti;
+    private TableColumn<CatalogoBean, Integer> posti;
     @FXML
-    private TableColumn<MacchineBean, Integer> proprietari;
+    private TableColumn<CatalogoBean, Integer> proprietari;
     @FXML
-    private TableColumn<MacchineBean, Integer> anno;
+    private TableColumn<CatalogoBean, Integer> anno;
     @FXML
-    private TableColumn<MacchineBean, String> alimentazione;
+    private TableColumn<CatalogoBean, String> alimentazione;
     @FXML
-    private TableColumn<MacchineBean, Integer> prezzo;
-    @FXML
-    private TableColumn<MacchineBean, Integer> sconto;
+    private TableColumn<CatalogoBean, Integer> prezzo;
 
     @FXML
     public void initialize() {
@@ -43,12 +45,8 @@ public class MacchineController {
         anno.setCellValueFactory(new PropertyValueFactory<>("Anno"));
         alimentazione.setCellValueFactory(new PropertyValueFactory<>("Alimentazione"));
         prezzo.setCellValueFactory(new PropertyValueFactory<>("Prezzo"));
-        sconto.setCellValueFactory(new PropertyValueFactory<>("Sconto"));
 
-        loadata();
-    }
-
-    private void loadata() {
-        tableView.setItems(FXCollections.observableArrayList(MacchineBean.getCars()));
+        ObservableList<Macchina> data = FXCollections.observableArrayList(CatalogoBean.getCars());
+        tableView.setItems(data);
     }
 }
