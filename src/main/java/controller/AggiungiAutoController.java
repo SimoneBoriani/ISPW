@@ -9,63 +9,66 @@ import java.io.IOException;
 public class AggiungiAutoController {
 
     @FXML
-    private TextField car_year;
+    private TextField carYear;
     @FXML
-    private TextField car_name;
+    private TextField carName;
     @FXML
-    private TextField car_price;
+    private TextField carPrice;
     @FXML
-    private TextField car_type;
+    private TextField carType;
     @FXML
-    private TextField car_alimentation;
+    private TextField carAlimentation;
     @FXML
-    private TextField car_brand;
+    private TextField carBrand;
     @FXML
-    private TextField car_seat;
+    private TextField carSeat;
     @FXML
-    private TextField car_owners;
+    private TextField carOwners;
     @FXML
-    private TextField car_km;
+    private TextField carKm;
 
     @FXML
-    private void insert(ActionEvent event)throws IOException {
+    private void insert(ActionEvent event) throws IOException {
 
-        String car_year_str = car_year.getText();
-        String car_name_str = car_name.getText();
-        String car_price_str = car_price.getText();
-        String car_alimentation_str = car_alimentation.getText();
-        String car_brand_str = car_brand.getText();
-        String car_seat_str = car_seat.getText();
-        String car_owners_str = car_owners.getText();
-        String car_km_str = car_km.getText();
+        String carYearStr = carYear.getText();
+        String carNameStr = carName.getText();
+        String carPriceStr = carPrice.getText();
+        String carAlimentationStr = carAlimentation.getText();
+        String carBrandStr = carBrand.getText();
+        String carSeatStr = carSeat.getText();
+        String carOwnersStr = carOwners.getText();
+        String carKmStr = carKm.getText();
+        String carTypeStr = carType.getText();
 
-        AggiungiAutoBean  aggiungiAutoBean = new AggiungiAutoBean();
+        AggiungiAutoBean aggiungiAutoBean = new AggiungiAutoBean();
 
-        aggiungiAutoBean.setCar_alimentation(car_alimentation_str);
-        aggiungiAutoBean.setCar_brand(car_brand_str);
-        aggiungiAutoBean.setCar_name(car_name_str);
-        aggiungiAutoBean.setCar_seat((Integer.parseInt(car_seat_str)));
-        aggiungiAutoBean.setCar_km((Integer.parseInt(car_km_str)));
-        aggiungiAutoBean.setCar_price((Integer.parseInt(car_price_str)));
-        //aggiungiAutoBean.setCar_type();
-        aggiungiAutoBean.setCar_year((Integer.parseInt(car_year_str)));
-        aggiungiAutoBean.setCar_owners((Integer.parseInt(car_owners_str)));
+        aggiungiAutoBean.setCarAlimentation(carAlimentationStr);
+        aggiungiAutoBean.setCarBrand(carBrandStr);
+        aggiungiAutoBean.setCarName(carNameStr);
+        aggiungiAutoBean.setCarType(carTypeStr);
+        aggiungiAutoBean.setCarSeat(Integer.parseInt(carSeatStr));
+        aggiungiAutoBean.setCarKm(Integer.parseInt(carKmStr));
+        aggiungiAutoBean.setCarPrice(Integer.parseInt(carPriceStr));
+        aggiungiAutoBean.setCarYear(Integer.parseInt(carYearStr));
+        aggiungiAutoBean.setCarOwners(Integer.parseInt(carOwnersStr));
 
-        try{
-            aggiungiAutoBean.sendinfo();
-        }catch(Exception e){
+        try {
+            aggiungiAutoBean.sendInfo();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        car_brand.clear();
-        car_seat.clear();
-        car_owners.clear();
-        car_km.clear();
-        car_price.clear();
-        car_alimentation.clear();
-        car_year.clear();
-        car_name.clear();
-
+        clearFields();
     }
 
+    private void clearFields() {
+        carBrand.clear();
+        carSeat.clear();
+        carOwners.clear();
+        carKm.clear();
+        carPrice.clear();
+        carAlimentation.clear();
+        carYear.clear();
+        carName.clear();
+        carType.clear();
+    }
 }

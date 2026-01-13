@@ -48,6 +48,8 @@ public class PageController {
     public void show() {
         stage.setFullScreen(true);
         stage.setResizable(false);
+        stage.setMinHeight(700);
+        stage.setMinWidth(700);
         stage.show();
     }
     public Parent change(String str) throws IOException {
@@ -116,25 +118,22 @@ public class PageController {
 
     @FXML
     public void AggiungiAuto(ActionEvent event) throws IOException {
-        // 1. Carica il file FXML
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/AggiungiAuto.fxml"));
         Parent root = loader.load();
 
-        // 2. Crea la nuova scena
+
         Scene newScene = new Scene(root);
 
-        // 3. Crea il NUOVO Stage
+
         Stage newStage = new Stage();
 
-        // 4. Recupera lo Stage attuale (principale) per impostarlo come 'proprietario'
         Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         newStage.initOwner(primaryStage);
 
-        // 5. Configura e mostra la nuova finestra
         newStage.setScene(newScene);
         newStage.setTitle("Aggiungi Auto");
         newStage.setResizable(false);
-        // Mostra la finestra e torna subito al controllo della principale
         newStage.show();
     }
 
