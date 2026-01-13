@@ -1,7 +1,7 @@
 package model.macchina.dao;
 import bean.AggiungiAutoBean;
 import bean.CatalogoBean;
-import model.DAOFACTORY.DAOFACTORY;
+import model.daoFactory.DAOFACTORY;
 import model.macchina.Macchina;
 
 import java.sql.*;
@@ -21,7 +21,7 @@ public class DaoMacchine extends DAOFACTORY {
 
             while (rs.next()) {
 
-                int id_auto = rs.getInt("auto_id");
+                int idAuto = rs.getInt("auto_id");
                 int anno = rs.getInt("anno");
                 int km = rs.getInt("km");
                 String alimentazione = rs.getString("alimentazione");
@@ -32,7 +32,7 @@ public class DaoMacchine extends DAOFACTORY {
                 int prezzo = rs.getInt("prezzo");
                 String tipologia = rs.getString("tipologia");
 
-                Macchina macchina = new Macchina(id_auto, anno, km, posti, proprietari, modello, casa, alimentazione, prezzo,tipologia);
+                Macchina macchina = new Macchina(idAuto, anno, km, posti, proprietari, modello, casa, alimentazione, prezzo,tipologia);
                 cars.add(macchina);
             }
         } catch (SQLException e) {

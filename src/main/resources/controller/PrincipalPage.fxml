@@ -18,12 +18,12 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ImageView fitHeight="62.0" fitWidth="51.0" layoutX="7.0" layoutY="7.0" onMousePressed="#clickable_Image" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="7.0">
+            <ImageView fitHeight="62.0" fitWidth="51.0" layoutX="7.0" layoutY="7.0" onMousePressed="#clickableImage" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="7.0">
                <image>
                   <Image url="@../images/logo1.png" />
                </image>
             </ImageView>
-            <Button alignment="CENTER_RIGHT" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchloginButton" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
+            <Button alignment="CENTER_RIGHT" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchLoginButton" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
             <Button layoutX="400.0" layoutY="9.0" mnemonicParsing="false" onAction="#AggiungiAuto" text="Aggiungi AUto" />
          </children>
       </AnchorPane>
@@ -49,11 +49,6 @@
                         </AnchorPane>
                      </children>
                   </VBox>
-                  <ImageView fitHeight="51.0" fitWidth="51.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/lente_ricerca.png" />
-                     </image>
-                  </ImageView>
                </children>
             </AnchorPane>
          </content>

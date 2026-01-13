@@ -28,7 +28,7 @@ public class AggiungiAutoController {
     private TextField carKm;
 
     @FXML
-    private void insert(ActionEvent event) throws IOException {
+    private void insert(ActionEvent event){
 
         String carYearStr = carYear.getText();
         String carNameStr = carName.getText();

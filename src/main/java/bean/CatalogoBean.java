@@ -36,13 +36,12 @@ public class CatalogoBean {
     public List<Macchina> sendInfo() {
         try {
 
-            List<Macchina> Macchina = DaoMacchine.research(this);
-            return Macchina;
+            return DaoMacchine.research(this);
 
         } catch (java.sql.SQLException e) {
-            System.err.println("Errore durante la ricerca nel database: " + e.getMessage());
             e.printStackTrace();
             return new ArrayList<>();
+
         }
     }
 

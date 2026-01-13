@@ -82,10 +82,8 @@ public class AggiungiAutoBean {
         try {
 
             Macchina nuovaAuto = model.macchina.dao.DaoMacchine.insert(this);
-            System.out.println("Salvataggio completato con successo nel database!");
             return nuovaAuto;
         } catch (SQLException e) {
-            System.err.println("Errore durante il salvataggio dell'auto: " + e.getMessage());
             e.printStackTrace();
             return null;
         }

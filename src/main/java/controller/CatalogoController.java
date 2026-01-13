@@ -42,7 +42,7 @@ public class CatalogoController {
     private ImageView searchIcon;
 
     @FXML
-    void MenuRicerca(MouseEvent event) {
+    void menuRicerca(MouseEvent event) {
 
         ContextMenu popup = new ContextMenu();
 
@@ -127,7 +127,7 @@ public class CatalogoController {
     }
 
     @FXML
-    public void refreshTable(MouseEvent event) throws IOException {
+    public void refreshTable(MouseEvent event){
 
         ObservableList<Macchina> data = FXCollections.observableArrayList(DaoMacchine.getCars());
         tableView.setItems(data);
@@ -145,7 +145,6 @@ public class CatalogoController {
         try {
            researchedCars=DaoMacchine.research(catalogoBean);
         } catch (SQLException e) {
-            System.err.println("Errore nel recupero delle auto: " + e.getMessage());
             e.printStackTrace();
         }
         return researchedCars;
