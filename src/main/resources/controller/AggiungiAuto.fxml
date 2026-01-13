@@ -6,14 +6,15 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="212.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AggiungiAutoController">
    <children>
-      <TextField fx:id="car_name" layoutX="35.0" layoutY="21.0" promptText="Modello" />
-      <TextField fx:id="car_brand" layoutX="35.0" layoutY="58.0" promptText="Casa produttrice" />
-      <TextField fx:id="car_year" layoutX="35.0" layoutY="94.0" promptText="Anno" />
-      <TextField fx:id="car_km" layoutX="35.0" layoutY="168.0" promptText="Km" />
-      <TextField fx:id="car_owners" layoutX="35.0" layoutY="208.0" promptText="Proprietari" />
-      <TextField fx:id="car_price" layoutX="35.0" layoutY="241.0" promptText="Prezzo" />
-      <Button layoutX="84.0" layoutY="314.0" mnemonicParsing="false" onAction="#insert" text="Aggiungi" />
-      <TextField fx:id="car_alimentation" layoutX="35.0" layoutY="273.0" promptText="Alimentazione" />
-      <TextField fx:id="car_seat" layoutX="31.0" layoutY="134.0" promptText="Posti" />
+      <TextField fx:id="carName" layoutX="35.0" layoutY="21.0" promptText="Modello" />
+      <TextField fx:id="carBrand" layoutX="35.0" layoutY="58.0" promptText="Casa produttrice" />
+      <TextField fx:id="carYear" layoutX="35.0" layoutY="94.0" promptText="Anno" />
+      <TextField fx:id="carKm" layoutX="35.0" layoutY="168.0" promptText="Km" />
+      <TextField fx:id="carOwners" layoutX="35.0" layoutY="208.0" promptText="Proprietari" />
+      <TextField fx:id="carPrice" layoutX="35.0" layoutY="241.0" promptText="Prezzo" />
+      <Button layoutX="83.0" layoutY="341.0" mnemonicParsing="false" onAction="#insert" text="Aggiungi" />
+      <TextField fx:id="carAlimentation" layoutX="35.0" layoutY="273.0" promptText="Alimentazione" />
+      <TextField fx:id="carSeat" layoutX="35.0" layoutY="130.0" promptText="Posti" />
+      <TextField fx:id="carType" layoutX="35.0" layoutY="307.0" promptText="Tipologia" />
    </children>
 </AnchorPane>
