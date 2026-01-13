@@ -1,6 +1,4 @@
-package model.DAOFACTORY;
-
-import java.util.List;
+package model.daoFactory;
 
 public class DAOFACTORY {
     protected static String url="jdbc:postgresql://localhost:5432/postgres";

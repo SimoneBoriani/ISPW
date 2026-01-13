@@ -24,19 +24,19 @@ public class PageController {
     private ContextMenu menu;
 
     @FXML
-    private TextField Reg_username;
+    private TextField regUsername;
 
     @FXML
-    private TextField Reg_password;
+    private TextField regPassword;
 
     @FXML
-    private TextField Conf_Reg_password;
+    private TextField confRegPassword;
 
     @FXML
-    private Label Error_text;
+    private Label errorText;
 
     @FXML
-    private Label Error_Catalog_text;
+    private Label errorCatalogText;
 
     @FXML
     private VBox catalogo;
@@ -57,7 +57,7 @@ public class PageController {
     }
 
     @FXML
-    public void switchloginButton(ActionEvent event) throws IOException {
+    public void switchLoginButton(ActionEvent event) throws IOException {
 
         String str="/controller/Login.fxml";
         scene = new Scene(change(str));
@@ -69,7 +69,7 @@ public class PageController {
     }
 
     @FXML
-    public void switchloginLabel(MouseEvent event) throws IOException {
+    public void switchLoginLabel(MouseEvent event) throws IOException {
 
         String str="/controller/Login.fxml";
         scene = new Scene(change(str));
@@ -81,7 +81,7 @@ public class PageController {
     }
 
     @FXML
-    public void switchMainlabel(MouseEvent event) throws IOException {
+    public void switchMainLabel(MouseEvent event) throws IOException {
 
         String str="/controller/PrincipalPage.fxml";
         scene = new Scene(change(str));
@@ -93,7 +93,7 @@ public class PageController {
     }
 
     @FXML
-    public void switchMainbutton(ActionEvent event) throws IOException {
+    public void switchMainButton(ActionEvent event) throws IOException {
 
         String str="/controller/PrincipalPage.fxml";
         scene = new Scene(change(str));
@@ -137,7 +137,7 @@ public class PageController {
         newStage.show();
     }
 
-    public void clickable_Image(MouseEvent event) {
+    public void clickableImage(MouseEvent event) {
         MenuItem voce1 = null;
         if (menu == null) {
             menu = new ContextMenu();
@@ -169,18 +169,18 @@ public class PageController {
 
     @FXML
     public void GetInfo(ActionEvent event) throws IOException {
-        String user = Reg_username.getText();
-        String pass = Reg_password.getText();
-        String confPass = Conf_Reg_password.getText();
+        String user = regUsername.getText();
+        String pass = regPassword.getText();
+        String confPass = confRegPassword.getText();
 
         if (user.isEmpty() || pass.isEmpty()) {
-            Error_text.setText("Errore: Campi vuoti!");
+            errorText.setText("Errore: Campi vuoti!");
         } else if (!pass.equals(confPass)) {
-            Error_text.setText("Le password non coincidono!");
-            Reg_password.clear();
-            Conf_Reg_password.clear();
+            errorText.setText("Le password non coincidono!");
+            regPassword.clear();
+            confRegPassword.clear();
         } else {
-            switchMainbutton(event);
+            switchMainButton(event);
         }
     }
 
@@ -203,10 +203,8 @@ public class PageController {
             loaderCatalog();
         } catch (Exception e) {
             e.printStackTrace();
-            if (Error_Catalog_text != null) {
-                Error_Catalog_text.setText("Nessun catalogo trovato");
-            } else {
-                System.out.println("Errore: Il catalogo non è stato caricato e la label Error_text è null!");
+            if (errorCatalogText != null) {
+                errorCatalogText.setText("Nessun catalogo trovato");
             }
         }
     }

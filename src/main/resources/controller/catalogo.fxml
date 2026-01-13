@@ -11,7 +11,7 @@
    <children>
       <AnchorPane prefHeight="22.0" prefWidth="915.0">
          <children>
-            <ImageView fx:id="searchIcon" fitHeight="27.0" fitWidth="24.0" layoutX="889.0" layoutY="1.0" onMouseClicked="#MenuRicerca" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.rightAnchor="2.5162792205810547">
+            <ImageView fx:id="searchIcon" fitHeight="27.0" fitWidth="24.0" layoutX="889.0" layoutY="1.0" onMouseClicked="#menuRicerca" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.rightAnchor="2.5162792205810547">
                <image>
                   <Image url="@../images/lente_ricerca.png" />
                </image>

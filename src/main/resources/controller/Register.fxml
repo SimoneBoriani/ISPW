@@ -21,7 +21,7 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
-            <Label onMouseClicked="#switchMainlabel" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
+            <Label onMouseClicked="#switchMainLabel" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">
                 <font>
                     <Font size="13.0" />
                 </font>
@@ -76,7 +76,7 @@
             <Font size="13.0" />
          </font>
       </Label>
-      <Label onMousePressed="#switchloginLabel" prefHeight="17.0" prefWidth="38.0" styleClass="link-label" stylesheets="@style.css" text="Accedi" textFill="#204080" />
+      <Label onMousePressed="#switchLoginLabel" prefHeight="17.0" prefWidth="38.0" styleClass="link-label" stylesheets="@style.css" text="Accedi" textFill="#204080" />
 
         <VBox.margin>
             <Insets top="10.0" />

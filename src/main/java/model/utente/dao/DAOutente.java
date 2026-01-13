@@ -1,7 +1,7 @@
 package model.utente.dao;
 
 
-import model.DAOFACTORY.DAOFACTORY;
+import model.daoFactory.DAOFACTORY;
 
 public class DAOutente extends DAOFACTORY {
 

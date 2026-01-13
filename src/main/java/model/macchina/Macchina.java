@@ -2,7 +2,7 @@ package model.macchina;
 
 public class Macchina {
 
-    private int id_auto;
+    private int idAuto;
     private int anno;
     private int km;
     private int posti;
@@ -13,8 +13,8 @@ public class Macchina {
     private int prezzo;
     private String tipologia;
 
-    public Macchina(int id_auto,int anno,int km,int posti,int prorpietari,String nome,String casa,String alimentazione,int prezzo,String tipologia){
-        this.id_auto=id_auto;
+    public Macchina(int idAauto,int anno,int km,int posti,int prorpietari,String nome,String casa,String alimentazione,int prezzo,String tipologia){
+        this.idAuto=idAuto;
         this.anno=anno;
         this.km=km;
         this.posti=posti;
@@ -25,8 +25,8 @@ public class Macchina {
         this.prezzo=prezzo;
         this.tipologia=tipologia;
     }
-    public int getId_auto() { return id_auto; }
-    public void setId_auto(int id_auto) { this.id_auto = id_auto; }
+    public int getIdAuto() { return idAuto; }
+    public void setIdAuto(int idAuto) { this.idAuto = idAuto; }
 
     public int getAnno() { return anno; }
     public void setAnno(int anno) { this.anno = anno; }
