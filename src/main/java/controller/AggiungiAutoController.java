@@ -4,7 +4,8 @@ import bean.AggiungiAutoBean;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import java.io.IOException;
+
+import java.util.logging.Logger;
 
 public class AggiungiAutoController {
 
@@ -26,6 +27,8 @@ public class AggiungiAutoController {
     private TextField carOwners;
     @FXML
     private TextField carKm;
+
+    Logger logger = Logger.getLogger(getClass().getName());
 
     @FXML
     private void insert(ActionEvent event){
@@ -55,7 +58,7 @@ public class AggiungiAutoController {
         try {
             aggiungiAutoBean.sendInfo();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
         }
         clearFields();
     }

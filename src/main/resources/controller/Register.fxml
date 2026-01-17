@@ -39,7 +39,7 @@
       </StackPane>
       <AnchorPane maxHeight="292.0" maxWidth="296.0" prefHeight="292.0" prefWidth="296.0">
          <children>
-            <TextField fx:id="Reg_username" layoutX="75.0" layoutY="17.0" promptText="username" AnchorPane.leftAnchor="75.0" />
+            <TextField fx:id="regUsername" layoutX="75.0" layoutY="17.0" promptText="username" AnchorPane.leftAnchor="75.0" />
             <Label layoutX="75.0" prefHeight="17.0" prefWidth="81.0" text="Username" textFill="#204080">
                <font>
                   <Font name="System Bold" size="12.0" />
@@ -53,9 +53,9 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <PasswordField fx:id="Reg_password" layoutX="74.0" layoutY="72.0" promptText="..." AnchorPane.leftAnchor="74.0" />
-            <PasswordField fx:id="Conf_Reg_password" layoutX="74.0" layoutY="127.0" promptText="..." AnchorPane.rightAnchor="73.0" />
-            <Label fx:id="Error_text" alignment="CENTER" layoutX="5.0" layoutY="159.0" prefHeight="17.0" prefWidth="306.0" textFill="#ff1100" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="-5.0">
+            <PasswordField fx:id="regPassword" layoutX="74.0" layoutY="72.0" promptText="password" AnchorPane.leftAnchor="74.0" />
+            <PasswordField fx:id="confRegPassword" layoutX="74.0" layoutY="127.0" promptText="conferma password" AnchorPane.rightAnchor="73.0" />
+            <Label fx:id="errorText" alignment="CENTER" layoutX="5.0" layoutY="159.0" prefHeight="17.0" prefWidth="306.0" textFill="#ff1100" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="-5.0">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -63,7 +63,7 @@
          </children>
       </AnchorPane>
 
-        <Button mnemonicParsing="false" onAction="#GetInfo" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Registrati" textFill="WHITE">
+        <Button mnemonicParsing="false" onAction="#regUser" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Registrati" textFill="WHITE">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>

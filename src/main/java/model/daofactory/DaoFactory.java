@@ -1,6 +1,6 @@
-package model.daoFactory;
+package model.daofactory;
 
-public class DAOFACTORY {
+public class DaoFactory {
     protected static String url="jdbc:postgresql://localhost:5432/postgres";
     protected static String user="admin";
     protected static String password="password";

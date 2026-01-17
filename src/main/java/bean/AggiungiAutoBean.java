@@ -2,6 +2,7 @@ package bean;
 
 import model.macchina.Macchina;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class AggiungiAutoBean {
 
@@ -14,6 +15,7 @@ public class AggiungiAutoBean {
     private int carSeat;
     private int carOwners;
     private int carKm;
+    Logger logger = Logger.getLogger(getClass().getName());
 
     public void setCarName(String carName) {
         this.carName = carName;
@@ -80,11 +82,9 @@ public class AggiungiAutoBean {
 
     public Macchina sendInfo() {
         try {
-
-            Macchina nuovaAuto = model.macchina.dao.DaoMacchine.insert(this);
-            return nuovaAuto;
+            return model.macchina.dao.DaoMacchine.insert(this);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
             return null;
         }
     }

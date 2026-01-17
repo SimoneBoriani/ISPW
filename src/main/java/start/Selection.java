@@ -8,8 +8,8 @@ import java.util.Scanner;
 public class Selection {
     public void loader(String args) {
 
-        boolean bool,
-                condizione=true;
+        boolean bool;
+        boolean condizione=true;
         System.out.println("Selezionare: 1-GUI  2-CLI");
 
         while(condizione){

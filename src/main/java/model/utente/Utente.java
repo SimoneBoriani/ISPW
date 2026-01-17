@@ -2,37 +2,51 @@ package model.utente;
 
 public class Utente {
 
-    private int idUser; //not null
-    private String username;//not null
-    private String userPassword;//not null
+    private int idUser;
+    private String username;
+    private String userPassword;
     private String nome;
     private String cognome;
-    private String email;
-    boolean titolare;//not null
+    private int autoPossedute;
+    private double saldo;
+    private String ruolo;
 
-    public Utente(int idUser, String username, String userPassword, String nome, String cognome, String email) {
+    public Utente(int idUser, String username, String userPassword, String nome,String cognome) {
 
         this.idUser = idUser;
         this.username = username;
         this.userPassword = userPassword;
         this.nome = nome;
         this.cognome = cognome;
-        this.email = email;
-        this.titolare = false;
     }
-    public Utente(int user_id, String username, String userPassword,boolean titolare) {
-        this.idUser = user_id;
+    public Utente(int idUser, String username, String userPassword, String nome,String cognome,int autoPossedute,double saldo,String ruolo) {
+
+        this.idUser = idUser;
         this.username = username;
         this.userPassword = userPassword;
-        this.titolare = titolare;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.ruolo = ruolo;
+        this.autoPossedute = autoPossedute;
+        this.saldo = saldo;
+
     }
 
-    public int getIdUser() {return idUser;}
     public String getUsername() {return username;}
+    public void setUsername(String username) {this.username = username;}
+
     public String getUserPassword() {return userPassword;}
+    public void setUserPassword(String userPassword) {this.userPassword = userPassword;}
+
     public String getNome() {return nome;}
+    public void setNome(String nome) {this.nome = nome;}
+
     public String getCognome() {return cognome;}
-    public String getEmail() {return email;}
-    public boolean isTitolare() {return titolare;}
-    public void setTitolare(boolean titolare) {this.titolare = titolare;}
+    public void setCognome(String cognome) {this.cognome = cognome;}
+
+    public int getAutoPossedute() {return autoPossedute;}
+    public void setAutoPossedute(int autoPossedute) {this.autoPossedute = autoPossedute;}
+
+    public double getSaldo(){return saldo;}
+    public void setSaldo(double saldo){this.saldo = saldo;}
 }
