@@ -1,14 +1,14 @@
 package model.macchina.dao;
 import bean.AggiungiAutoBean;
 import bean.CatalogoBean;
-import model.daoFactory.DAOFACTORY;
+import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DaoMacchine extends DAOFACTORY {
+public class DaoMacchine extends DaoFactory {
 
     public static List<Macchina> getCars() {
 
@@ -32,7 +32,7 @@ public class DaoMacchine extends DAOFACTORY {
                 int prezzo = rs.getInt("prezzo");
                 String tipologia = rs.getString("tipologia");
 
-                Macchina macchina = new Macchina(idAuto, anno, km, posti, proprietari, modello, casa, alimentazione, prezzo,tipologia);
+                Macchina macchina = new Macchina(idAuto, anno, km, posti, proprietari, modello, casa, alimentazione, prezzo, tipologia);
                 cars.add(macchina);
             }
         } catch (SQLException e) {
@@ -84,28 +84,45 @@ public class DaoMacchine extends DAOFACTORY {
         DaoMacchine.getCars().add(macchina);
         return macchina;
     }
-    public static List<Macchina> research(CatalogoBean catalogobean) throws SQLException {
-        List<Macchina> results = new ArrayList<>();
 
-        String sql = "SELECT * FROM macchine WHERE modello ILIKE ? " +
-                "AND casa ILIKE ? " +
-                "AND alimentazione ILIKE ? " +
-                "AND prezzo <= ? " +
-                "AND km <= ?";
+    public static List<Macchina> research(CatalogoBean catalogobean) throws SQLException {
+
+        List<Macchina> results = new ArrayList<>();
+        List<Object> parameters = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM macchine WHERE 1=1");
+
+        if (catalogobean.getModello() != null && !catalogobean.getModello().trim().isEmpty()) {
+            sql.append(" AND modello ILIKE ?");
+            parameters.add("%" + catalogobean.getModello() + "%");
+        }
+
+        if (catalogobean.getMarca() != null && !catalogobean.getMarca().trim().isEmpty()) {
+            sql.append(" AND casa ILIKE ?");
+            parameters.add("%" + catalogobean.getMarca() + "%");
+        }
+
+        if (catalogobean.getAlimentazione() != null && !catalogobean.getAlimentazione().trim().isEmpty()) {
+            sql.append(" AND alimentazione ILIKE ?");
+            parameters.add("%" + catalogobean.getAlimentazione() + "%");
+        }
+
+        if (catalogobean.getPrezzo() > 0) {
+            sql.append(" AND prezzo <= ?");
+            parameters.add(catalogobean.getPrezzo());
+        }
+
+        if (catalogobean.getKm() > 0) {
+            sql.append(" AND km <= ?");
+            parameters.add(catalogobean.getKm());
+        }
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
-            System.out.println("andyfrocio:modello:"+catalogobean.getModello()+"pix:"+catalogobean.getMarca());
-            ps.setString(1, "%" + (catalogobean.getModello() == null ? "" : catalogobean.getModello()) + "%");
-            ps.setString(2, "%" + (catalogobean.getMarca() == null ? "" : catalogobean.getMarca()) + "%");
-            ps.setString(3, "%" + (catalogobean.getAlimentazione() == null ? "" : catalogobean.getAlimentazione()) + "%");
-
-            int p = catalogobean.getPrezzo();
-            ps.setInt(4, p <= 0 ? Integer.MAX_VALUE : p);
-
-            int k = catalogobean.getKm();
-            ps.setInt(5, k <= 0 ? Integer.MAX_VALUE : k);
+            for (int i = 0; i < parameters.size(); i++) {
+                ps.setObject(i + 1, parameters.get(i));
+            }
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -119,4 +136,5 @@ public class DaoMacchine extends DAOFACTORY {
             }
         }
         return results;
-    }}
+    }
+}

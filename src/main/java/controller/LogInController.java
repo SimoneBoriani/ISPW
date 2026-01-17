@@ -1,18 +1,20 @@
-/*package controller;
+package controller;
 
 import bean.LoginBean;
-import exeption.IncorrectCredentialEX;
 import model.utente.Utente;
+import model.utente.dao.DaoUtente;
+
+import java.util.logging.Logger;
 
 public class LogInController {
-    public void authenticate(LoginBean loginBean) throws IncorrectCredentialExeption {
 
-        int user_id = Integer.parseInt(loginBean.getUsername());
-        String username = loginBean.getUsername();
-        String password = loginBean.getPassword();
-       // boolean titolare=loginBean.isTitolare();
+    Logger logger = Logger.getLogger(getClass().getName());
 
-        Utente utente = new Utente(user_id,username,password,titolare);
-
+    public Utente researchUser(LoginBean loginBean) {
+        return DaoUtente.
     }
-}*/
+
+    public void insert(LoginBean loginBean){
+        loginBean.sendInfoInsert();
+    }
+}

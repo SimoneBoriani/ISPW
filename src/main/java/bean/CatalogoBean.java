@@ -2,12 +2,13 @@ package bean;
 
 import model.macchina.Macchina;
 import model.macchina.dao.DaoMacchine;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CatalogoBean {
 
+    Logger logger = Logger.getLogger(getClass().getName());
     private String modello="";
     private String marca="";
     private int prezzo=0;
@@ -34,14 +35,12 @@ public class CatalogoBean {
     public void setAlimentazione(String alimentazione) { this.alimentazione = alimentazione; }
 
     public List<Macchina> sendInfo() {
+
         try {
-
             return DaoMacchine.research(this);
-
         } catch (java.sql.SQLException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
             return new ArrayList<>();
-
         }
     }
 

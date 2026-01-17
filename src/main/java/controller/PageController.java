@@ -1,22 +1,19 @@
 package controller;
 
+import bean.LoginBean;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
-
-
+import java.util.logging.Logger;
 
 public class PageController {
 
@@ -41,7 +38,13 @@ public class PageController {
     @FXML
     private VBox catalogo;
 
+    @FXML
+    private TextField username;
 
+    @FXML
+    private TextField password;
+
+    Logger logger = Logger.getLogger(getClass().getName());
     private Scene scene;
     private Stage stage;
 
@@ -117,7 +120,7 @@ public class PageController {
     }
 
     @FXML
-    public void AggiungiAuto(ActionEvent event) throws IOException {
+    public void aggiungiAuto(ActionEvent event) throws IOException {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/AggiungiAuto.fxml"));
         Parent root = loader.load();
@@ -162,27 +165,33 @@ public class PageController {
                 stage.setFullScreen(true);
                 stage.show();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                logger.info(ex.getMessage());
             }
         });
     }
 
     @FXML
-    public void GetInfo(ActionEvent event) throws IOException {
+    public void regUser(ActionEvent event) throws IOException {
+
         String user = regUsername.getText();
         String pass = regPassword.getText();
         String confPass = confRegPassword.getText();
 
-        if (user.isEmpty() || pass.isEmpty()) {
+        if (user.isEmpty() || pass.isEmpty() || confPass.isEmpty()) {
             errorText.setText("Errore: Campi vuoti!");
         } else if (!pass.equals(confPass)) {
             errorText.setText("Le password non coincidono!");
             regPassword.clear();
             confRegPassword.clear();
         } else {
+
+            LoginBean loginBean= new LoginBean(user,pass);
+            LogInController logInController= new LogInController();
+            logInController.insert(loginBean);
             switchMainButton(event);
         }
     }
+
 
     private void loaderCatalog(){
 
@@ -193,7 +202,7 @@ public class PageController {
             catalogo.getChildren().clear();
             catalogo.getChildren().add(catalogoRoot);
         }catch (IOException e){
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException();
         }
 
     }
@@ -202,7 +211,7 @@ public class PageController {
         try {
             loaderCatalog();
         } catch (Exception e) {
-            e.printStackTrace();
+           logger.info(e.getMessage());
             if (errorCatalogText != null) {
                 errorCatalogText.setText("Nessun catalogo trovato");
             }

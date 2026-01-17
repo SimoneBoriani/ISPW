@@ -47,14 +47,14 @@
                <Font name="System Bold" size="12.0" />
             </font>
          </Label>
-            <TextField alignment="CENTER" promptText="username" GridPane.rowIndex="2" />
+            <TextField fx:id="username" alignment="CENTER" promptText="username" GridPane.rowIndex="2" />
 
                               <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="151.0" text="Password" textFill="#204080" GridPane.rowIndex="3">
             <font>
                <Font name="System Bold" size="12.0" />
             </font>
          </Label>
-            <PasswordField alignment="CENTER" promptText="..." GridPane.rowIndex="4" />
+            <PasswordField fx:id="password" alignment="CENTER" promptText="password" GridPane.rowIndex="4" />
          <columnConstraints>
             <ColumnConstraints />
          </columnConstraints>
