@@ -54,7 +54,7 @@ public class CatalogoController {
         txtbrand.setPromptText("Marca");
 
         TextField txtprice = new TextField();
-        txtprice.setPromptText("Prezzo Max"); // Meglio specificare che è un tetto massimo
+        txtprice.setPromptText("Prezzo Max");
 
         TextField txtkm = new TextField();
         txtkm.setPromptText("Km Max");
@@ -62,7 +62,6 @@ public class CatalogoController {
         TextField txtalimentation = new TextField();
         txtalimentation.setPromptText("Alimentazione");
 
-        // Impediamo che il menu si chiuda quando clicchi sulle caselle di testo
         CustomMenuItem itemModel = new CustomMenuItem(txtmodel);
         itemModel.setHideOnClick(false);
 

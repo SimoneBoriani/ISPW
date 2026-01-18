@@ -1,6 +1,5 @@
 package bean;
 
-
 import model.utente.Utente;
 import model.utente.dao.DaoUtente;
 
@@ -30,6 +29,18 @@ public class LoginBean {
             logger.severe(e.getMessage());
             return null;
         }
+    }
+
+    public boolean sendInfoAuth(){
+        boolean status = false;
+        try {
+            if(DaoUtente.authenticateUser(this)){
+                status = true;
+            }else{status = false;}
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return status;
     }
 
     public String getUsername() {return username;}
