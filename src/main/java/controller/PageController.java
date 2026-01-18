@@ -1,5 +1,6 @@
 package controller;
 
+import app.SessionSingleton;
 import bean.LoginBean;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,9 +9,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.utente.Utente;
+
 import java.io.IOException;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -44,7 +48,35 @@ public class PageController {
     @FXML
     private TextField password;
 
+    @FXML
+    private Button logInButton;
+
+    @FXML
+    private Button logOutButton;
+
+    @FXML
+    private Label userNameLabel;
+
+    @FXML
+    private Label roleLabel;
+
+    @FXML
+    private Label nameLabel;
+
+    @FXML
+    private Label surnameLabel;
+
+    @FXML
+    private Label balanceLabel;
+
+    @FXML
+    private Label ownedCarsLabel;
+
+    @FXML
+    private Button addCarButton;
+
     Logger logger = Logger.getLogger(getClass().getName());
+
     private Scene scene;
     private Stage stage;
 
@@ -55,6 +87,7 @@ public class PageController {
         stage.setMinWidth(700);
         stage.show();
     }
+
     public Parent change(String str) throws IOException {
         return FXMLLoader.load(Objects.requireNonNull(getClass().getResource(str)));
     }
@@ -62,7 +95,7 @@ public class PageController {
     @FXML
     public void switchLoginButton(ActionEvent event) throws IOException {
 
-        String str="/controller/Login.fxml";
+        String str = "/controller/Login.fxml";
         scene = new Scene(change(str));
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -74,7 +107,7 @@ public class PageController {
     @FXML
     public void switchLoginLabel(MouseEvent event) throws IOException {
 
-        String str="/controller/Login.fxml";
+        String str = "/controller/Login.fxml";
         scene = new Scene(change(str));
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -86,7 +119,7 @@ public class PageController {
     @FXML
     public void switchMainLabel(MouseEvent event) throws IOException {
 
-        String str="/controller/PrincipalPage.fxml";
+        String str = "/controller/PrincipalPage.fxml";
         scene = new Scene(change(str));
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -98,7 +131,7 @@ public class PageController {
     @FXML
     public void switchMainButton(ActionEvent event) throws IOException {
 
-        String str="/controller/PrincipalPage.fxml";
+        String str = "/controller/PrincipalPage.fxml";
         scene = new Scene(change(str));
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -110,7 +143,7 @@ public class PageController {
     @FXML
     public void switchRegister(MouseEvent event) throws IOException {
 
-        String str= "/controller/Register.fxml";
+        String str = "/controller/Register.fxml";
         scene = new Scene(change(str));
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -159,7 +192,7 @@ public class PageController {
         assert voce1 != null;
         voce1.setOnAction(e -> {
             try {
-                String str="/controller/Profilo.fxml";
+                String str = "/controller/Profilo.fxml";
                 stage = (Stage) sorgente.getScene().getWindow();
                 stage.setScene(new Scene(change(str)));
                 stage.setFullScreen(true);
@@ -173,27 +206,79 @@ public class PageController {
     @FXML
     public void regUser(ActionEvent event) throws IOException {
 
-        String user = regUsername.getText();
-        String pass = regPassword.getText();
-        String confPass = confRegPassword.getText();
+        String user = regUsername.getText().trim();
+        String pass = regPassword.getText().trim();
+        String confPass = confRegPassword.getText().trim();
+
 
         if (user.isEmpty() || pass.isEmpty() || confPass.isEmpty()) {
             errorText.setText("Errore: Campi vuoti!");
-        } else if (!pass.equals(confPass)) {
+            return;
+        }
+
+        if (!pass.equals(confPass)) {
             errorText.setText("Le password non coincidono!");
             regPassword.clear();
             confRegPassword.clear();
+            return;
+        }
+
+        LoginBean loginBean = new LoginBean(user, pass);
+        LogInController logInController = new LogInController();
+
+        Utente utenteEsistente = logInController.researchUser(loginBean);
+
+        if (utenteEsistente != null) {
+
+            regUsername.clear();
+            regPassword.clear();
+            confRegPassword.clear();
+            errorText.setText("Errore: Username già registrato!");
+
         } else {
 
-            LoginBean loginBean= new LoginBean(user,pass);
-            LogInController logInController= new LogInController();
             logInController.insert(loginBean);
             switchMainButton(event);
         }
     }
 
+    @FXML
+    public void logIn(ActionEvent event) throws IOException {
 
-    private void loaderCatalog(){
+        String user = username.getText().trim();
+        String pass = password.getText().trim();
+
+        LoginBean loginBean = new LoginBean(user, pass);
+        LogInController logInController = new LogInController();
+        Utente utente = logInController.researchUser(loginBean);
+
+
+        if (user.isEmpty() || pass.isEmpty()) {
+
+            errorText.setText("Errore: Campi vuoti!");
+
+        } else if (null != utente) {
+
+            if (user.equals(utente.getUsername()) && pass.equals(utente.getUserPassword())) {
+
+                SessionSingleton.getInstance().setUtenteCorrente(utente);
+                switchMainButton(event);
+            }
+        } else {
+
+            username.clear();
+            password.clear();
+            errorText.setText("Username e/o Password non coincidono!");
+        }
+    }
+
+    @FXML
+    public void logOut(ActionEvent event) throws IOException {
+        SessionSingleton.getInstance().logout();
+        switchMainButton(event);
+    }
+
+    private void loaderCatalog() {
 
         try {
             String str = "/controller/catalogo.fxml";
@@ -201,21 +286,65 @@ public class PageController {
             Parent catalogoRoot = loader.load();
             catalogo.getChildren().clear();
             catalogo.getChildren().add(catalogoRoot);
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new IllegalArgumentException();
         }
 
     }
+
     @FXML
     public void initialize() {
+
         try {
             loaderCatalog();
         } catch (Exception e) {
-           logger.info(e.getMessage());
+            logger.info(e.getMessage());
             if (errorCatalogText != null) {
                 errorCatalogText.setText("Nessun catalogo trovato");
             }
         }
+        if (logInButton != null && logOutButton != null) {
+
+            Utente utenteLoggato = SessionSingleton.getInstance().getUtenteCorrente();
+
+            if (utenteLoggato != null) {
+
+                logInButton.setVisible(false);
+                logInButton.setManaged(false);
+
+                logOutButton.setVisible(true);
+                logInButton.setManaged(true);
+            } else {
+
+                logInButton.setVisible(true);
+                logInButton.setManaged(true);
+
+                logOutButton.setVisible(false);
+                logOutButton.setManaged(false);
+            }
+        }
+        if (userNameLabel != null && nameLabel != null && surnameLabel != null && ownedCarsLabel != null && balanceLabel != null && roleLabel != null) {
+            if (SessionSingleton.getInstance().isUserLoggedIn()) {
+                Utente utenteLoggato = SessionSingleton.getInstance().getUtenteCorrente();
+                userNameLabel.setText(utenteLoggato.getUsername());
+                nameLabel.setText(utenteLoggato.getNome());
+                surnameLabel.setText(utenteLoggato.getCognome());
+                ownedCarsLabel.setText(String.valueOf(utenteLoggato.getAutoPossedute()));
+                balanceLabel.setText(String.valueOf(utenteLoggato.getSaldo()));
+                roleLabel.setText(utenteLoggato.getRuolo());
+            }
+        }
+        if (null != addCarButton) {
+            Utente utenteLoggato = SessionSingleton.getInstance().getUtenteCorrente();
+            if (utenteLoggato != null) {
+                if (utenteLoggato.getRuolo().equals("ADMIN")) {
+                    addCarButton.setVisible(true);
+                    addCarButton.setManaged(true);
+                } else {
+                    addCarButton.setVisible(false);
+                    addCarButton.setManaged(false);
+                }
+            }
+        }
     }
 }
-

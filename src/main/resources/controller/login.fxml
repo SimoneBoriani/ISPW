@@ -66,8 +66,9 @@
             <RowConstraints />
          </rowConstraints>
         </GridPane>
+      <Label fx:id="errorText" alignment="CENTER" prefHeight="17.0" prefWidth="572.0" textFill="RED" />
 
-        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Accedi " textFill="WHITE">
+        <Button mnemonicParsing="false" onAction="#logIn" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Accedi " textFill="WHITE">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>

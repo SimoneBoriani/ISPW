@@ -49,19 +49,17 @@ public class DaoUtente extends DaoFactory {
             );
             return utente;
         }
+    }
 
+    public static Utente researchUser(LoginBean loginBean) throws SQLException {
 
-            }
-    public Utente researchUser(LoginBean loginBean) throws SQLException {
-
-        String sql = "SELECT * FROM utenti WHERE username = ? AND password = ?";
+        String sql = "SELECT * FROM utenti WHERE username = ?";
 
         try (Connection session = DriverManager.getConnection(url, user, password);
 
              PreparedStatement statement = session.prepareStatement(sql)) {
 
             statement.setString(1, loginBean.getUsername());
-            statement.setString(2, loginBean.getPassword());
 
             try (ResultSet rs = statement.executeQuery()) {
 
@@ -86,12 +84,28 @@ public class DaoUtente extends DaoFactory {
                             saldo,
                             ruolo
                     );
-
                     return utente;
                 }
             }
         }
         return null;
+    }
+    public static boolean authenticateUser(LoginBean loginBean) throws SQLException {
+
+        String sql="SELECT username, password FROM utente WHERE username = ? and password = ?";
+
+        try(Connection session = DriverManager.getConnection(url, user, password);
+            PreparedStatement statement = session.prepareStatement(sql)){
+
+            statement.setString(1, loginBean.getUsername());
+            statement.setString(2, loginBean.getPassword());
+
+            try (ResultSet rs = statement.executeQuery()){
+                if (rs.next()) {
+                    return true;
+                }else{return false;}
+            }
+        }
     }
 }
 

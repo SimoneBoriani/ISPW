@@ -23,8 +23,9 @@
                   <Image url="@../images/logo1.png" />
                </image>
             </ImageView>
-            <Button alignment="CENTER_RIGHT" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchLoginButton" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
-            <Button layoutX="400.0" layoutY="9.0" mnemonicParsing="false" onAction="#aggiungiAuto" text="Aggiungi AUto" />
+            <Button fx:id="logInButton" alignment="CENTER_RIGHT" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchLoginButton" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
+            <Button fx:id="addCarButton" layoutX="433.0" layoutY="10.0" mnemonicParsing="false" onAction="#aggiungiAuto" styleClass="Button" stylesheets="@style.css" text="Aggiungi Auto" visible="false" AnchorPane.rightAnchor="73.0" />
+            <Button fx:id="logOutButton" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" onAction="#logOut" prefHeight="25.0" prefWidth="58.0" styleClass="Button" stylesheets="@style.css" text="Esci" AnchorPane.rightAnchor="8.0" />
          </children>
       </AnchorPane>
       <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutY="45.0" prefHeight="355.0" prefWidth="600.0" stylesheets="@style.css" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="44.666666666666686">
@@ -44,7 +45,7 @@
                         </AnchorPane>
                         <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="296.0" prefWidth="486.0">
                            <children>
-                              <Label fx:id="Error_Catalog_text" alignment="CENTER" layoutX="215.0" layoutY="140.0" prefHeight="17.0" prefWidth="265.0" text="Label" textFill="#dad4d4" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                              <Label fx:id="errorCatalogText" alignment="CENTER" layoutX="215.0" layoutY="140.0" prefHeight="17.0" prefWidth="265.0" text="Label" textFill="#dad4d4" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                         </AnchorPane>
                      </children>
