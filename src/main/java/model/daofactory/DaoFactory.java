@@ -1,11 +1,56 @@
 package model.daofactory;
 
-public class DaoFactory {
-    protected static String url="jdbc:postgresql://localhost:5432/postgres";
-    protected static String user="admin";
-    protected static String password="password";
+import exceptions.GenericSystemException;
 
-    //protected abstract void getInfo();
+import model.macchina.dao.DaoMacchina;
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
+
+public abstract class DaoFactory {
+
+   //crea tutti gli altri dao dell app qui
+   public abstract DaoMacchina createMacchinaDao();
+
+   private static DaoFactory instance = null;
+
+   protected DaoFactory(){
+
+   }
+
+   public static DaoFactory getDaoSingletonFactory() throws GenericSystemException {
+        Properties prop = new Properties();
+
+        try(FileInputStream config = new FileInputStream("src/main/resources/config.properties")){
+            prop.load(config);
+            String persistence = prop.getProperty("persistence");
+
+
+
+            if(instance == null){
+       /*         if(persistence.equals("DEMO")){
+                    instance = new DemoDaoFactory();
+                }*/
+
+                if(persistence.equals("JDBC")){
+                    instance = new DbmsDaoFactory();
+                }
+
+        /*        if(persistence.equals("FILE")){
+                    instance = new FileDaoFactory();
+                }*/
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new GenericSystemException(e.getMessage());
+        } catch (IOException e) {
+            throw new GenericSystemException(e.getMessage());
+        }
+        return instance;
+    }
 }
+

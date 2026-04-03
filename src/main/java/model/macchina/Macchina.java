@@ -25,6 +25,18 @@ public class Macchina {
         this.prezzo=prezzo;
         this.tipologia=tipologia;
     }
+    public Macchina(int anno,int km,int posti,int prorpietari,String nome,String casa,String alimentazione,int prezzo,String tipologia){
+        this.anno=anno;
+        this.km=km;
+        this.posti=posti;
+        this.proprietari=prorpietari;
+        this.modello=nome;
+        this.casa=casa;
+        this.alimentazione=alimentazione;
+        this.prezzo=prezzo;
+        this.tipologia=tipologia;
+    }
+
     public int getIdAuto() { return idAuto; }
     public void setIdAuto(int idAuto) { this.idAuto = idAuto; }
 

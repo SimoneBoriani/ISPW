@@ -1,77 +1,25 @@
 package controller;
 
 import bean.AggiungiAutoBean;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-
-import java.util.logging.Logger;
+import model.daofactory.DaoFactory;
+import model.macchina.Macchina;
 
 public class AggiungiAutoController {
 
-    @FXML
-    private TextField carYear;
-    @FXML
-    private TextField carName;
-    @FXML
-    private TextField carPrice;
-    @FXML
-    private TextField carType;
-    @FXML
-    private TextField carAlimentation;
-    @FXML
-    private TextField carBrand;
-    @FXML
-    private TextField carSeat;
-    @FXML
-    private TextField carOwners;
-    @FXML
-    private TextField carKm;
+    public void addCar(AggiungiAutoBean aggiungiAutoBean){
 
-    Logger logger = Logger.getLogger(getClass().getName());
+        int carYear = aggiungiAutoBean.getCarYear();
+        String carModel =aggiungiAutoBean.getCarName();
+        int carPrice =aggiungiAutoBean.getCarPrice();
+        String carAlimentation =aggiungiAutoBean.getCarAlimentation();
+        String carBrand =aggiungiAutoBean.getCarBrand();
+        int carSeat =aggiungiAutoBean.getCarSeat();
+        int carOwners =aggiungiAutoBean.getCarOwners();
+        int carKm =aggiungiAutoBean.getCarKm();
+        String carType =aggiungiAutoBean.getCarType();
 
-    @FXML
-    private void insert(ActionEvent event){
+        Macchina toAddCar = new Macchina(carYear, carKm, carSeat, carOwners, carModel, carBrand, carAlimentation, carPrice, carType);
 
-        String carYearStr = carYear.getText();
-        String carNameStr = carName.getText();
-        String carPriceStr = carPrice.getText();
-        String carAlimentationStr = carAlimentation.getText();
-        String carBrandStr = carBrand.getText();
-        String carSeatStr = carSeat.getText();
-        String carOwnersStr = carOwners.getText();
-        String carKmStr = carKm.getText();
-        String carTypeStr = carType.getText();
-
-        AggiungiAutoBean aggiungiAutoBean = new AggiungiAutoBean();
-
-        aggiungiAutoBean.setCarAlimentation(carAlimentationStr);
-        aggiungiAutoBean.setCarBrand(carBrandStr);
-        aggiungiAutoBean.setCarName(carNameStr);
-        aggiungiAutoBean.setCarType(carTypeStr);
-        aggiungiAutoBean.setCarSeat(Integer.parseInt(carSeatStr));
-        aggiungiAutoBean.setCarKm(Integer.parseInt(carKmStr));
-        aggiungiAutoBean.setCarPrice(Integer.parseInt(carPriceStr));
-        aggiungiAutoBean.setCarYear(Integer.parseInt(carYearStr));
-        aggiungiAutoBean.setCarOwners(Integer.parseInt(carOwnersStr));
-
-        try {
-            aggiungiAutoBean.sendInfo();
-        } catch (Exception e) {
-            logger.info(e.getMessage());
-        }
-        clearFields();
-    }
-
-    private void clearFields() {
-        carBrand.clear();
-        carSeat.clear();
-        carOwners.clear();
-        carKm.clear();
-        carPrice.clear();
-        carAlimentation.clear();
-        carYear.clear();
-        carName.clear();
-        carType.clear();
+        DaoFactory.getDaoSingletonFactory().createMacchinaDao().insert(toAddCar);
     }
 }

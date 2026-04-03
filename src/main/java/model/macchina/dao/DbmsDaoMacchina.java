@@ -1,26 +1,28 @@
 package model.macchina.dao;
+
 import bean.AggiungiAutoBean;
 import bean.CatalogoBean;
-import model.daofactory.DaoFactory;
+import exceptions.GenericSystemException;
 import model.macchina.Macchina;
+import utils.ConnectionHandler; // <-- Import del ConnectionHandler
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DaoMacchine extends DaoFactory {
+public class DbmsDaoMacchina extends DaoMacchina {
 
     public static List<Macchina> getCars() {
 
         List<Macchina> cars = new ArrayList<>();
-        String sql = "select * from macchine";
+        String sql = "SELECT * FROM macchine";
 
-        try (Connection session = DriverManager.getConnection(url, user, password);
-             Statement statement = session.createStatement();
+        Connection session = ConnectionHandler.getInstance().getConnection();
+
+        try (Statement statement = session.createStatement();
              ResultSet rs = statement.executeQuery(sql)) {
 
             while (rs.next()) {
-
                 int idAuto = rs.getInt("auto_id");
                 int anno = rs.getInt("anno");
                 int km = rs.getInt("km");
@@ -40,51 +42,27 @@ public class DaoMacchine extends DaoFactory {
         }
         return cars;
     }
+    @Override
+    public void insert(Macchina macchina) throws GenericSystemException {
+        String query = "INSERT INTO macchine (anno, km, alimentazione, posti, proprietari, casa, modello, prezzo, tipologia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        Connection connection = ConnectionHandler.getInstance().getConnection();
 
-    public static Macchina insert(AggiungiAutoBean aggiungiautoBean) throws SQLException {
-
-        String sql = "INSERT INTO macchine (anno, km, alimentazione, posti, proprietari, casa, modello, prezzo, tipologia) VALUES (?,?,?,?,?,?,?,?,?)";
-        int generatedId = -1;
-
-        try (Connection session = DriverManager.getConnection(url, user, password);
-             PreparedStatement statement = session.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            statement.setInt(1, aggiungiautoBean.getCarYear());
-            statement.setInt(2, aggiungiautoBean.getCarKm());
-            statement.setString(3, aggiungiautoBean.getCarAlimentation());
-            statement.setInt(4, aggiungiautoBean.getCarSeat());
-            statement.setInt(5, aggiungiautoBean.getCarOwners());
-            statement.setString(6, aggiungiautoBean.getCarBrand());
-            statement.setString(7, aggiungiautoBean.getCarName());
-            statement.setInt(8, aggiungiautoBean.getCarPrice());
-            statement.setString(9, aggiungiautoBean.getCarType());
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, macchina.getAnno());
+            statement.setInt(2, macchina.getKm());
+            statement.setString(3, macchina.getAlimentazione());
+            statement.setInt(4, macchina.getPosti());
+            statement.setInt(5, macchina.getProprietari());
+            statement.setString(6, macchina.getCasa());
+            statement.setString(7, macchina.getModello());
+            statement.setInt(8, macchina.getPrezzo());
+            statement.setString(9, macchina.getTipologia());
 
             statement.executeUpdate();
-
-            try (ResultSet rs = statement.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generatedId = rs.getInt(1);
-                }
-            }
+        } catch (SQLException e) {
+            throw new GenericSystemException(e.getMessage());
         }
-
-
-        Macchina macchina = new Macchina(
-                generatedId,
-                aggiungiautoBean.getCarYear(),
-                aggiungiautoBean.getCarKm(),
-                aggiungiautoBean.getCarSeat(),
-                aggiungiautoBean.getCarOwners(),
-                aggiungiautoBean.getCarName(),
-                aggiungiautoBean.getCarBrand(),
-                aggiungiautoBean.getCarAlimentation(),
-                aggiungiautoBean.getCarPrice(),
-                aggiungiautoBean.getCarType()
-        );
-        DaoMacchine.getCars().add(macchina);
-        return macchina;
     }
-
     public static List<Macchina> research(CatalogoBean catalogobean) throws SQLException {
 
         List<Macchina> results = new ArrayList<>();
@@ -117,8 +95,9 @@ public class DaoMacchine extends DaoFactory {
             parameters.add(catalogobean.getKm());
         }
 
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+        Connection conn = ConnectionHandler.getInstance().getConnection();
+
+        try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < parameters.size(); i++) {
                 ps.setObject(i + 1, parameters.get(i));

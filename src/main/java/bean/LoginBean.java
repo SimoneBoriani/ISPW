@@ -1,7 +1,7 @@
 package bean;
 
 import model.utente.Utente;
-import model.utente.dao.DaoUtente;
+import model.utente.dao.DbmsDaoUtente;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -24,7 +24,7 @@ public class LoginBean {
 
     public Utente sendInfoInsert(){
         try{
-            return DaoUtente.insertUtente(this);
+            return DbmsDaoUtente.insertUtente(this);
         }catch(SQLException e){
             logger.severe(e.getMessage());
             return null;
@@ -34,7 +34,7 @@ public class LoginBean {
     public boolean sendInfoAuth(){
         boolean status = false;
         try {
-            if(DaoUtente.authenticateUser(this)){
+            if(DbmsDaoUtente.authenticateUser(this)){
                 status = true;
             }else{status = false;}
         } catch (SQLException e) {

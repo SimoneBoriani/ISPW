@@ -1,7 +1,9 @@
-package controller;
+package view.windowmanager;
 
 import app.SessionSingleton;
 import bean.LoginBean;
+import controller.AggiungiSaldoController;
+import controller.LogInController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,17 +11,15 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.utente.Utente;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.logging.Logger;
 
-public class PageController {
+public class GuiPageManager {
 
     @FXML
     private ContextMenu menu;
@@ -75,6 +75,9 @@ public class PageController {
     @FXML
     private Button addCarButton;
 
+    @FXML
+    private TextField txtsaldo;
+
     Logger logger = Logger.getLogger(getClass().getName());
 
     private Scene scene;
@@ -83,81 +86,61 @@ public class PageController {
     public void show() {
         stage.setFullScreen(true);
         stage.setResizable(false);
-        stage.setMinHeight(700);
-        stage.setMinWidth(700);
+        stage.setMinHeight(1000);
+        stage.setMinWidth(1000);
         stage.show();
     }
 
-    public Parent change(String str) throws IOException {
-        return FXMLLoader.load(Objects.requireNonNull(getClass().getResource(str)));
+    private void switchPage(Node sourceNode, String fxmlPath) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Parent root = loader.load();
+
+        Scene currentScene = sourceNode.getScene();
+
+        currentScene.setRoot(root);
     }
 
     @FXML
     public void switchLoginButton(ActionEvent event) throws IOException {
 
         String str = "/controller/Login.fxml";
-        scene = new Scene(change(str));
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Login");
-        show();
+        switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchLoginLabel(MouseEvent event) throws IOException {
 
         String str = "/controller/Login.fxml";
-        scene = new Scene(change(str));
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Login");
-        show();
+        switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchMainLabel(MouseEvent event) throws IOException {
 
         String str = "/controller/PrincipalPage.fxml";
-        scene = new Scene(change(str));
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Main");
-        show();
+        switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchMainButton(ActionEvent event) throws IOException {
 
         String str = "/controller/PrincipalPage.fxml";
-        scene = new Scene(change(str));
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Main");
-        show();
+        switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchRegister(MouseEvent event) throws IOException {
 
         String str = "/controller/Register.fxml";
-        scene = new Scene(change(str));
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Register");
-        show();
+        switchPage((Node) event.getSource(), str);
     }
 
     @FXML
-    public void aggiungiAuto(ActionEvent event) throws IOException {
+    public void aggiungiAuto(ActionEvent event) throws IOException { //fare classe apparte
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/AggiungiAuto.fxml"));
         Parent root = loader.load();
-
 
         Scene newScene = new Scene(root);
 
@@ -193,10 +176,7 @@ public class PageController {
         voce1.setOnAction(e -> {
             try {
                 String str = "/controller/Profilo.fxml";
-                stage = (Stage) sorgente.getScene().getWindow();
-                stage.setScene(new Scene(change(str)));
-                stage.setFullScreen(true);
-                stage.show();
+                switchPage((Node) event.getSource(), str);
             } catch (IOException ex) {
                 logger.info(ex.getMessage());
             }
@@ -204,7 +184,7 @@ public class PageController {
     }
 
     @FXML
-    public void regUser(ActionEvent event) throws IOException {
+    public void regUser(ActionEvent event) throws IOException { //classe apparte
 
         String user = regUsername.getText().trim();
         String pass = regPassword.getText().trim();
@@ -243,7 +223,7 @@ public class PageController {
     }
 
     @FXML
-    public void logIn(ActionEvent event) throws IOException {
+    public void logIn(ActionEvent event) throws IOException { //classe apparte
 
         String user = username.getText().trim();
         String pass = password.getText().trim();
@@ -273,12 +253,12 @@ public class PageController {
     }
 
     @FXML
-    public void logOut(ActionEvent event) throws IOException {
+    public void logOut(ActionEvent event) throws IOException { //Classe apparte
         SessionSingleton.getInstance().logout();
         switchMainButton(event);
     }
 
-    private void loaderCatalog() {
+    private void loaderCatalog() {//Classe apparte
 
         try {
             String str = "/controller/catalogo.fxml";
@@ -291,9 +271,17 @@ public class PageController {
         }
 
     }
-
     @FXML
-    public void initialize() {
+    public void aggiungiSaldo(ActionEvent event) throws IOException {//Classe apparte
+        String str="/controller/Profilo.fxml";
+        AggiungiSaldoController palle = new AggiungiSaldoController();
+        double saldo=(Integer.parseInt(txtsaldo.getText()));
+        palle.AggiungiSaldo(saldo);
+        switchPage((Node) event.getSource(), str);
+
+    }
+    @FXML
+    public void initialize() { //Aggiungi eccezioni
 
         try {
             loaderCatalog();

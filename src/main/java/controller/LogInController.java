@@ -3,7 +3,7 @@ package controller;
 import app.SessionSingleton;
 import bean.LoginBean;
 import model.utente.Utente;
-import model.utente.dao.DaoUtente;
+import model.utente.dao.DbmsDaoUtente;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -22,7 +22,7 @@ public class LogInController {
 
     public Utente researchUser(LoginBean loginBean) {
         try {
-            return DaoUtente.researchUser(loginBean);
+            return DbmsDaoUtente.researchUser(loginBean);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
