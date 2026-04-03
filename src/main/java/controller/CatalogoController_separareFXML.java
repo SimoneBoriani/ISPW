@@ -9,14 +9,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import model.macchina.Macchina;
-import model.macchina.dao.DaoMacchine;
+import model.macchina.dao.DbmsDaoMacchina;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 
-public class CatalogoController {
+public class CatalogoController_separareFXML {
 
     @FXML
     private TableView<Macchina> tableView;
@@ -141,7 +141,7 @@ public class CatalogoController {
     @FXML
     public void refreshTable(MouseEvent event){
 
-        ObservableList<Macchina> data = FXCollections.observableArrayList(DaoMacchine.getCars());
+        ObservableList<Macchina> data = FXCollections.observableArrayList(DbmsDaoMacchina.getCars());
         tableView.setItems(data);
         tableView.refresh();
     }
@@ -155,7 +155,7 @@ public class CatalogoController {
 
         List<Macchina> researchedCars = new ArrayList<>();
         try {
-           researchedCars=DaoMacchine.research(catalogoBean);
+           researchedCars= DbmsDaoMacchina.research(catalogoBean);
         } catch (SQLException e) {
             logger.info(e.getMessage());
         }

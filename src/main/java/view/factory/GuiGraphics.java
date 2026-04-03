@@ -27,4 +27,5 @@ public  class GuiGraphics extends Application {
         stage.show();
     }
 
+
 }

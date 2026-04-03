@@ -1,6 +1,9 @@
 package bean;
 
 import model.macchina.Macchina;
+import model.macchina.dao.DaoMacchina;
+import model.macchina.dao.DbmsDaoMacchina;
+
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -80,12 +83,29 @@ public class AggiungiAutoBean {
         return carSeat;
     }
 
-    public Macchina sendInfo() {
+    public void sendInfo() {
         try {
-            return model.macchina.dao.DaoMacchine.insert(this);
-        } catch (SQLException e) {
-            logger.info(e.getMessage());
-            return null;
+            // 1. Creiamo l'oggetto Macchina usando i dati memorizzati in questo Bean
+            // Utilizziamo il costruttore senza ID, poiché ci pensa il DB a generarlo
+            Macchina nuovaMacchina = new Macchina(
+                    this.carYear,
+                    this.carKm,
+                    this.carSeat,
+                    this.carOwners,
+                    this.carName,
+                    this.carBrand,
+                    this.carAlimentation,
+                    this.carPrice,
+                    this.carType
+            );
+
+            // 2. Usiamo la tua Factory per ottenere il DAO corretto e inseriamo l'auto
+            model.daofactory.DaoFactory.getDaoSingletonFactory().createMacchinaDao().insert(nuovaMacchina);
+
+        } catch (exceptions.GenericSystemException e) {
+            logger.info("Errore di sistema: " + e.getMessage());
+        } catch (Exception e) {
+            logger.info("Errore generico: " + e.getMessage());
         }
     }
 }

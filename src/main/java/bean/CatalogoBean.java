@@ -1,7 +1,7 @@
 package bean;
 
 import model.macchina.Macchina;
-import model.macchina.dao.DaoMacchine;
+import model.macchina.dao.DbmsDaoMacchina;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,7 +16,7 @@ public class CatalogoBean {
     private String alimentazione="";
 
     public static List<Macchina> getCars() {
-        return DaoMacchine.getCars();
+        return DbmsDaoMacchina.getCars();
     }
 
     public String getModello() { return modello; }
@@ -37,7 +37,7 @@ public class CatalogoBean {
     public List<Macchina> sendInfo() {
 
         try {
-            return DaoMacchine.research(this);
+            return DbmsDaoMacchina.research(this);
         } catch (java.sql.SQLException e) {
             logger.info(e.getMessage());
             return new ArrayList<>();
