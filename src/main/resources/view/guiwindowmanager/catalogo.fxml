@@ -7,23 +7,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CatalogoController_separareFXML">
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guiwindowmanager.GuiCatalogoController">
    <children>
-      <AnchorPane prefHeight="22.0" prefWidth="915.0">
+      <AnchorPane prefHeight="0.0" prefWidth="1200.0">
          <children>
-            <ImageView fx:id="searchIcon" fitHeight="27.0" fitWidth="24.0" layoutX="889.0" layoutY="1.0" onMouseClicked="#menuRicerca" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.rightAnchor="2.5162792205810547">
+            <ImageView fitHeight="41.0" fitWidth="42.0" layoutX="1086.0" layoutY="12.0" onMouseEntered="#menuRicerca" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="2.3333333333333357" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="4.0">
                <image>
-                  <Image url="@../images/lente_ricerca.png" />
+                  <Image url="@../../images/lente_ricerca.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="27.0" fitWidth="24.0" layoutX="852.0" layoutY="1.0" onMousePressed="#refreshTable" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.rightAnchor="39.0">
+            <ImageView fitHeight="41.0" fitWidth="42.0" layoutX="1148.0" layoutY="6.0" onMousePressed="#refreshImage" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="14.988327026367188" AnchorPane.topAnchor="2.0">
                <image>
-                  <Image url="@../images/refresh_logo.png" />
+                  <Image url="@../../images/refresh_logo.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
-      <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="915.0" stylesheets="@style.css">
+      <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="887.0" prefWidth="1200.0" stylesheets="@style.css">
          <columns>
             <TableColumn fx:id="nome" maxWidth="1.7976931348623157E308" prefWidth="62.0" text="Nome" />
             <TableColumn fx:id="casa" prefWidth="68.0" text="Casa" />
@@ -32,7 +32,7 @@
             <TableColumn fx:id="posti" maxWidth="1.7976931348623157E308" prefWidth="51.0" text="Posti" />
             <TableColumn fx:id="proprietari" prefWidth="77.0" text="Proprietari" />
             <TableColumn fx:id="anno" maxWidth="1.7976931348623157E308" prefWidth="62.0" text="Anno" />
-            <TableColumn fx:id="prezzo" prefWidth="77.0" text="Prezzo" />
+            <TableColumn fx:id="prezzo" prefWidth="77.33328247070312" text="Prezzo" />
             <TableColumn fx:id="tipologia" prefWidth="75.0" text="Tipologia" />
          </columns>
       </TableView>

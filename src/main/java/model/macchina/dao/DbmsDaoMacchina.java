@@ -1,18 +1,18 @@
 package model.macchina.dao;
 
-import bean.AggiungiAutoBean;
 import bean.CatalogoBean;
+import exceptions.CarNotFoundException;
 import exceptions.GenericSystemException;
 import model.macchina.Macchina;
-import utils.ConnectionHandler; // <-- Import del ConnectionHandler
+import utils.ConnectionHandler;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DbmsDaoMacchina extends DaoMacchina {
-
-    public static List<Macchina> getCars() {
+    @Override
+    public List<Macchina> getCars() {
 
         List<Macchina> cars = new ArrayList<>();
         String sql = "SELECT * FROM macchine";
@@ -63,56 +63,59 @@ public class DbmsDaoMacchina extends DaoMacchina {
             throw new GenericSystemException(e.getMessage());
         }
     }
-    public static List<Macchina> research(CatalogoBean catalogobean) throws SQLException {
+    @Override
+    public List<Macchina> research(String brand,String model, String alimentation, int kmMax) throws CarNotFoundException {
 
         List<Macchina> results = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder("SELECT * FROM macchine WHERE 1=1");
 
-        if (catalogobean.getModello() != null && !catalogobean.getModello().trim().isEmpty()) {
+        if (model != null && !model.trim().isEmpty()) {
             sql.append(" AND modello ILIKE ?");
-            parameters.add("%" + catalogobean.getModello() + "%");
+            parameters.add("%" + model + "%");
         }
 
-        if (catalogobean.getMarca() != null && !catalogobean.getMarca().trim().isEmpty()) {
+        if (brand != null && !brand.trim().isEmpty()) {
             sql.append(" AND casa ILIKE ?");
-            parameters.add("%" + catalogobean.getMarca() + "%");
+            parameters.add("%" + brand + "%");
         }
 
-        if (catalogobean.getAlimentazione() != null && !catalogobean.getAlimentazione().trim().isEmpty()) {
+        if (alimentation != null && !alimentation.trim().isEmpty()) {
             sql.append(" AND alimentazione ILIKE ?");
-            parameters.add("%" + catalogobean.getAlimentazione() + "%");
+            parameters.add("%" + alimentation + "%");
         }
 
-        if (catalogobean.getPrezzo() > 0) {
-            sql.append(" AND prezzo <= ?");
-            parameters.add(catalogobean.getPrezzo());
-        }
-
-        if (catalogobean.getKm() > 0) {
+        if (kmMax > 0) {
             sql.append(" AND km <= ?");
-            parameters.add(catalogobean.getKm());
+            parameters.add(kmMax);
         }
+        try {
+            Connection connection = ConnectionHandler.getInstance().getConnection();
 
-        Connection conn = ConnectionHandler.getInstance().getConnection();
+            try (PreparedStatement statement = connection.prepareStatement(sql.toString())) {
 
-        try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+                for (int i = 0; i < parameters.size(); i++) {
+                    statement.setObject(i + 1, parameters.get(i));
+                }
 
-            for (int i = 0; i < parameters.size(); i++) {
-                ps.setObject(i + 1, parameters.get(i));
-            }
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    results.add(new Macchina(
-                            rs.getInt("auto_id"), rs.getInt("anno"), rs.getInt("km"),
-                            rs.getInt("posti"), rs.getInt("proprietari"), rs.getString("modello"),
-                            rs.getString("casa"), rs.getString("alimentazione"),
-                            rs.getInt("prezzo"), rs.getString("tipologia")
-                    ));
+                try (ResultSet rs = statement.executeQuery()) {
+                    while (rs.next()) {
+                        results.add(new Macchina(
+                                rs.getInt("auto_id"), rs.getInt("anno"), rs.getInt("km"),
+                                rs.getInt("posti"), rs.getInt("proprietari"), rs.getString("modello"),
+                                rs.getString("casa"), rs.getString("alimentazione"),
+                                rs.getInt("prezzo"), rs.getString("tipologia")
+                        ));
+                    }
                 }
             }
+        } catch (SQLException e) {
+            throw new GenericSystemException("Errore DB durante la ricerca: " + e.getMessage());
+        }
+
+        if (results.isEmpty()) {
+            throw new CarNotFoundException("Nessuna auto trovata con i filtri inseriti.");
         }
         return results;
     }

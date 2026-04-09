@@ -13,7 +13,7 @@ public  class GuiGraphics extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/PrincipalPage.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/guiwindowmanager/PrincipalPage.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setTitle("Main");
         stage.setFullScreen(true);
