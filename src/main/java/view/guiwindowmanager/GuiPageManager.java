@@ -1,4 +1,4 @@
-package view.windowmanager;
+package view.guiwindowmanager;
 
 import app.SessionSingleton;
 import bean.LoginBean;
@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.utente.Utente;
@@ -40,7 +41,7 @@ public class GuiPageManager {
     private Label errorCatalogText;
 
     @FXML
-    private VBox catalogo;
+    private AnchorPane catalogo;
 
     @FXML
     private TextField username;
@@ -104,42 +105,42 @@ public class GuiPageManager {
     @FXML
     public void switchLoginButton(ActionEvent event) throws IOException {
 
-        String str = "/controller/Login.fxml";
+        String str = "/view/guiwindowmanager/Login.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchLoginLabel(MouseEvent event) throws IOException {
 
-        String str = "/controller/Login.fxml";
+        String str = "/view/guiwindowmanager/Login.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchMainLabel(MouseEvent event) throws IOException {
 
-        String str = "/controller/PrincipalPage.fxml";
+        String str = "/view/guiwindowmanager/PrincipalPage.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchMainButton(ActionEvent event) throws IOException {
 
-        String str = "/controller/PrincipalPage.fxml";
+        String str = "/view/guiwindowmanager/PrincipalPage.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchRegister(MouseEvent event) throws IOException {
 
-        String str = "/controller/Register.fxml";
+        String str = "/view/guiwindowmanager/Register.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void aggiungiAuto(ActionEvent event) throws IOException { //fare classe apparte
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/controller/AggiungiAuto.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/guiwindowmanager/AggiungiAuto.fxml"));
         Parent root = loader.load();
 
         Scene newScene = new Scene(root);
@@ -175,7 +176,7 @@ public class GuiPageManager {
         assert voce1 != null;
         voce1.setOnAction(e -> {
             try {
-                String str = "/controller/Profilo.fxml";
+                String str = "/Profilo.fxml";
                 switchPage((Node) event.getSource(), str);
             } catch (IOException ex) {
                 logger.info(ex.getMessage());
@@ -261,7 +262,7 @@ public class GuiPageManager {
     private void loaderCatalog() {//Classe apparte
 
         try {
-            String str = "/controller/catalogo.fxml";
+            String str = "/view/guiwindowmanager/catalogo.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(str));
             Parent catalogoRoot = loader.load();
             catalogo.getChildren().clear();
@@ -273,7 +274,7 @@ public class GuiPageManager {
     }
     @FXML
     public void aggiungiSaldo(ActionEvent event) throws IOException {//Classe apparte
-        String str="/controller/Profilo.fxml";
+        String str= "/Profilo.fxml";
         AggiungiSaldoController palle = new AggiungiSaldoController();
         double saldo=(Integer.parseInt(txtsaldo.getText()));
         palle.AggiungiSaldo(saldo);

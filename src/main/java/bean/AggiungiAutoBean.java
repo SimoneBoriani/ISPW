@@ -85,8 +85,6 @@ public class AggiungiAutoBean {
 
     public void sendInfo() {
         try {
-            // 1. Creiamo l'oggetto Macchina usando i dati memorizzati in questo Bean
-            // Utilizziamo il costruttore senza ID, poiché ci pensa il DB a generarlo
             Macchina nuovaMacchina = new Macchina(
                     this.carYear,
                     this.carKm,
@@ -99,7 +97,6 @@ public class AggiungiAutoBean {
                     this.carType
             );
 
-            // 2. Usiamo la tua Factory per ottenere il DAO corretto e inseriamo l'auto
             model.daofactory.DaoFactory.getDaoSingletonFactory().createMacchinaDao().insert(nuovaMacchina);
 
         } catch (exceptions.GenericSystemException e) {
