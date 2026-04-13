@@ -1,9 +1,10 @@
-package view.guiwindowmanager;
+package view.sbcontroller;
 
 import app.SessionSingleton;
 import bean.LoginBean;
 import controller.AggiungiSaldoController;
 import controller.LogInController;
+import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,16 +12,17 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.utente.Utente;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Logger;
 
-public class GuiPageManager {
+public class GuiPageManager extends Application {
 
     @FXML
     private ContextMenu menu;
@@ -92,6 +94,23 @@ public class GuiPageManager {
         stage.show();
     }
 
+    @Override
+    public void start(Stage stage) throws Exception {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/sbcontroller/PrincipalPage.fxml"));
+        Scene scene = new Scene(loader.load());
+        stage.setTitle("Main");
+        stage.setFullScreen(true);
+        stage.setResizable(false);
+
+
+        Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logo1.png")));
+        stage.getIcons().add(logo);
+
+        stage.setScene(scene);
+        stage.show();
+    }
+
     private void switchPage(Node sourceNode, String fxmlPath) throws IOException {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -105,42 +124,42 @@ public class GuiPageManager {
     @FXML
     public void switchLoginButton(ActionEvent event) throws IOException {
 
-        String str = "/view/guiwindowmanager/Login.fxml";
+        String str = "/view/sbcontroller/Login.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchLoginLabel(MouseEvent event) throws IOException {
 
-        String str = "/view/guiwindowmanager/Login.fxml";
+        String str = "/view/sbcontroller/Login.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchMainLabel(MouseEvent event) throws IOException {
 
-        String str = "/view/guiwindowmanager/PrincipalPage.fxml";
+        String str = "/view/sbcontroller/PrincipalPage.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchMainButton(ActionEvent event) throws IOException {
 
-        String str = "/view/guiwindowmanager/PrincipalPage.fxml";
+        String str = "/view/sbcontroller/PrincipalPage.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void switchRegister(MouseEvent event) throws IOException {
 
-        String str = "/view/guiwindowmanager/Register.fxml";
+        String str = "/view/sbcontroller/Register.fxml";
         switchPage((Node) event.getSource(), str);
     }
 
     @FXML
     public void aggiungiAuto(ActionEvent event) throws IOException { //fare classe apparte
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/guiwindowmanager/AggiungiAuto.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/sbcontroller/AggiungiAuto.fxml"));
         Parent root = loader.load();
 
         Scene newScene = new Scene(root);
@@ -262,7 +281,7 @@ public class GuiPageManager {
     private void loaderCatalog() {//Classe apparte
 
         try {
-            String str = "/view/guiwindowmanager/catalogo.fxml";
+            String str = "/view/sbcontroller/catalogo.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(str));
             Parent catalogoRoot = loader.load();
             catalogo.getChildren().clear();

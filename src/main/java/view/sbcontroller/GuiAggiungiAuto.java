@@ -1,12 +1,15 @@
-package view.guiwindowmanager;
+package view.sbcontroller;
 
 import bean.AggiungiAutoBean;
 import controller.AggiungiAutoController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import view.factory.ControllerFactory;
 
 public class GuiAggiungiAuto extends GuiPageManager {
+
+    private AggiungiAutoController controller= ControllerFactory.getInstance().CreateAggiungiAutoController();
 
     @FXML
     private TextField carYear;
@@ -52,7 +55,6 @@ public class GuiAggiungiAuto extends GuiPageManager {
         aggiungiAutoBean.setCarYear(Integer.parseInt(carYearStr));
         aggiungiAutoBean.setCarOwners(Integer.parseInt(carOwnersStr));
 
-        AggiungiAutoController controller = new AggiungiAutoController();
         controller.addCar(aggiungiAutoBean);
 
         carYear.clear();

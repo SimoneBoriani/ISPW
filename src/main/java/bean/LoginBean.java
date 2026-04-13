@@ -17,6 +17,10 @@ public class LoginBean {
     String cognome;
 
 
+    public LoginBean(){
+
+    }
+
     public LoginBean(String username, String password) {
         this.username = username;
         this.password = password;

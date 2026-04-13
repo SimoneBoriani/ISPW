@@ -18,7 +18,9 @@ public class AggiungiAutoBean {
     private int carSeat;
     private int carOwners;
     private int carKm;
-    Logger logger = Logger.getLogger(getClass().getName());
+
+    public AggiungiAutoBean() {
+    }
 
     public void setCarName(String carName) {
         this.carName = carName;
@@ -83,26 +85,4 @@ public class AggiungiAutoBean {
         return carSeat;
     }
 
-    public void sendInfo() {
-        try {
-            Macchina nuovaMacchina = new Macchina(
-                    this.carYear,
-                    this.carKm,
-                    this.carSeat,
-                    this.carOwners,
-                    this.carName,
-                    this.carBrand,
-                    this.carAlimentation,
-                    this.carPrice,
-                    this.carType
-            );
-
-            model.daofactory.DaoFactory.getDaoSingletonFactory().createMacchinaDao().insert(nuovaMacchina);
-
-        } catch (exceptions.GenericSystemException e) {
-            logger.info("Errore di sistema: " + e.getMessage());
-        } catch (Exception e) {
-            logger.info("Errore generico: " + e.getMessage());
-        }
-    }
 }

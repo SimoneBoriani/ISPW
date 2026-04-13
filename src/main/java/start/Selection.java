@@ -1,7 +1,8 @@
 package start;
 
 import javafx.application.Application;
-import view.factory.GuiGraphics;
+import view.factory.GuiGraphicsFactory;
+import view.sbcontroller.GuiPageManager;
 
 import java.util.Scanner;
 
@@ -22,7 +23,7 @@ public class Selection {
 
             if (bool) {
                 condizione = false;
-                Application.launch(GuiGraphics.class, args);
+                Application.launch(GuiPageManager.class, args);
             } else {
                 System.out.println("Questa è l'interfaccia a linea di comando (Da implementare)");
                 condizione = false;
