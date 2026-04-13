@@ -8,6 +8,10 @@ public class CatalogoBean {
     private int km=0;
     private String alimentazione="";
 
+    public CatalogoBean(){
+
+    }
+
     public String getModello() { return modello; }
     public void setModello(String modello) { this.modello = modello; }
 

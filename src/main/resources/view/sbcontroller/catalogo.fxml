@@ -2,27 +2,10 @@
 
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guiwindowmanager.GuiCatalogoController">
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.sbcontroller.GuiCatalogoController">
    <children>
-      <AnchorPane prefHeight="0.0" prefWidth="1200.0">
-         <children>
-            <ImageView fitHeight="41.0" fitWidth="42.0" layoutX="1086.0" layoutY="12.0" onMouseEntered="#menuRicerca" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="2.3333333333333357" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="4.0">
-               <image>
-                  <Image url="@../../images/lente_ricerca.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="41.0" fitWidth="42.0" layoutX="1148.0" layoutY="6.0" onMousePressed="#refreshImage" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="14.988327026367188" AnchorPane.topAnchor="2.0">
-               <image>
-                  <Image url="@../../images/refresh_logo.png" />
-               </image>
-            </ImageView>
-         </children>
-      </AnchorPane>
       <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="887.0" prefWidth="1200.0" stylesheets="@style.css">
          <columns>
             <TableColumn fx:id="nome" maxWidth="1.7976931348623157E308" prefWidth="62.0" text="Nome" />

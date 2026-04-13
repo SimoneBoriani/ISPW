@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="212.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guiwindowmanager.GuiAggiungiAuto">
+<AnchorPane prefHeight="400.0" prefWidth="212.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.sbcontroller.GuiAggiungiAuto">
    <children>
       <TextField fx:id="carName" layoutX="35.0" layoutY="21.0" promptText="Modello" />
       <TextField fx:id="carBrand" layoutX="35.0" layoutY="58.0" promptText="Casa produttrice" />

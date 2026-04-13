@@ -3,6 +3,9 @@ package bean;
 import model.utente.Utente;
  
 public class AggiungiScontoBean {
+    public AggiungiScontoBean(){
+
+    }
 
     private int sconto;
 
