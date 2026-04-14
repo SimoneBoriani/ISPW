@@ -1,9 +1,8 @@
 package model.utente.dao;
 
 import app.SessionSingleton;
-import bean.LoginBean;
 import model.utente.Utente;
-import utils.ConnectionHandler; // <-- Importa il tuo nuovo ConnectionHandler
+import utils.ConnectionHandler;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,28 +10,27 @@ import java.util.List;
 
 public class DbmsDaoUtente extends DaoUtente {
 
-    public static Utente insertUtente(LoginBean loginBean) throws SQLException {
+    @Override
+    public void insertUtente(Utente utente){
 
         String sql = "INSERT INTO utenti (username,password,nome,cognome) VALUES (?,?,?,?)";
         int generatedId = -1;
 
-        // 1. Recuperiamo la connessione dal Singleton (fuori dal try-with-resources)
         Connection session = ConnectionHandler.getInstance().getConnection();
 
-        // 2. Il try chiuderà automaticamente solo lo statement
         try (PreparedStatement statement = session.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            statement.setString(1, loginBean.getUsername());
-            statement.setString(2, loginBean.getPassword());
+            statement.setString(1, utente.getUsername());
+            statement.setString(2, utente.getUserPassword());
 
-            if (loginBean.getNome() != null) {
-                statement.setString(3, loginBean.getNome());
+            if (utente.getNome() != null) {
+                statement.setString(3, utente.getNome());
             } else {
                 statement.setNull(3, Types.VARCHAR);
             }
 
-            if (loginBean.getCognome() != null) {
-                statement.setString(4, loginBean.getCognome());
+            if (utente.getCognome() != null) {
+                statement.setString(4, utente.getCognome());
             } else {
                 statement.setNull(4, Types.VARCHAR);
             }
@@ -45,17 +43,20 @@ public class DbmsDaoUtente extends DaoUtente {
                 }
             }
 
-            return new Utente(
+            /*return new Utente(
                     generatedId,
-                    loginBean.getUsername(),
-                    loginBean.getPassword(),
-                    loginBean.getNome(),
-                    loginBean.getCognome()
-            );
+                    utente.getUsername(),
+                    utente.getUserPassword(),
+                    utente.getNome(),
+                    utente.getCognome()
+            );*/
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static Utente researchUser(LoginBean loginBean) throws SQLException {
+    @Override
+    public Utente researchUser(Utente utente) throws SQLException {
 
         String sql = "SELECT * FROM utenti WHERE username = ?";
 
@@ -63,7 +64,7 @@ public class DbmsDaoUtente extends DaoUtente {
 
         try (PreparedStatement statement = session.prepareStatement(sql)) {
 
-            statement.setString(1, loginBean.getUsername());
+            statement.setString(1, utente.getUsername());
 
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
@@ -92,7 +93,8 @@ public class DbmsDaoUtente extends DaoUtente {
         return null;
     }
 
-    public static boolean authenticateUser(LoginBean loginBean) throws SQLException {
+    @Override
+    public boolean authenticateUser(Utente utente) {
 
         String sql = "SELECT username, password FROM utenti WHERE username = ? and password = ?";
 
@@ -100,55 +102,58 @@ public class DbmsDaoUtente extends DaoUtente {
 
         try (PreparedStatement statement = session.prepareStatement(sql)) {
 
-            statement.setString(1, loginBean.getUsername());
-            statement.setString(2, loginBean.getPassword());
+            statement.setString(1, utente.getUsername());
+            statement.setString(2, utente.getUserPassword());
 
             try (ResultSet rs = statement.executeQuery()) {
                 return rs.next(); // Se c'è un risultato, rs.next() è true (utente trovato)
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static void update(LoginBean loginBean) throws SQLException {
+    @Override
+    public void update(Utente utente) {
 
         StringBuilder sql = new StringBuilder("UPDATE utenti SET ");
         List<Object> parametri = new ArrayList<>();
         Utente utenteSessione = SessionSingleton.getInstance().getUtenteCorrente();
         boolean first = true;
 
-        if (loginBean.getPassword() != null && !loginBean.getPassword().trim().isEmpty()) {
+        if (utente.getUserPassword() != null && !utente.getUserPassword().trim().isEmpty()) {
             sql.append("password = ?");
-            parametri.add(loginBean.getPassword());
+            parametri.add(utente.getUserPassword());
             first = false;
         }
 
-        if (loginBean.getNome() != null && !loginBean.getNome().trim().isEmpty()) {
+        if (utente.getNome() != null && !utente.getNome().trim().isEmpty()) {
             if (!first) sql.append(", ");
             sql.append("nome = ?");
-            utenteSessione.setNome(loginBean.getNome());
-            parametri.add(loginBean.getNome());
+            utenteSessione.setNome(utente.getNome());
+            parametri.add(utente.getNome());
             first = false;
         }
 
-        if (loginBean.getCognome() != null && !loginBean.getCognome().trim().isEmpty()) {
+        if (utente.getCognome() != null && !utente.getCognome().trim().isEmpty()) {
             if (!first) sql.append(", ");
             sql.append("cognome = ?");
-            parametri.add(loginBean.getCognome());
+            parametri.add(utente.getCognome());
             first = false;
         }
 
-        if (loginBean.getAutoPossedute() > 0) {
+        if (utente.getAutoPossedute() > 0) {
             if (!first) sql.append(", ");
             sql.append("autopossedute = ?");
-            parametri.add(loginBean.getAutoPossedute());
+            parametri.add(utente.getAutoPossedute());
             first = false;
         }
 
-        if (loginBean.getSaldo() >= 0.00) {
+        if (utente.getSaldo() >= 0.00) {
             if (!first) sql.append(", ");
-            utenteSessione.setSaldo(loginBean.getSaldo());
+            utenteSessione.setSaldo(utente.getSaldo());
             sql.append("saldo = ?");
-            parametri.add(loginBean.getSaldo());
+            parametri.add(utente.getSaldo());
             first = false;
         }
 
@@ -158,7 +163,7 @@ public class DbmsDaoUtente extends DaoUtente {
         }
 
         sql.append(" WHERE username = ?");
-        parametri.add(loginBean.getUsername());
+        parametri.add(utente.getUsername());
 
         System.out.println("Query generata: " + sql);
 
@@ -172,6 +177,8 @@ public class DbmsDaoUtente extends DaoUtente {
 
             int rows = ps.executeUpdate();
             System.out.println("Righe aggiornate: " + rows);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

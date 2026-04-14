@@ -2,33 +2,64 @@ package controller;
 
 import app.SessionSingleton;
 import bean.LoginBean;
+import exceptions.GenericSystemException;
+import exceptions.IncorrectCredentialExeption;
+import model.daofactory.DaoFactory;
 import model.utente.Utente;
-import model.utente.dao.DbmsDaoUtente;
 
 import java.sql.SQLException;
-import java.util.logging.Logger;
+
 
 public class LogInController {
 
-    Logger logger = Logger.getLogger(getClass().getName());
+    public void authenticate(LoginBean loginBean){
 
-    public void authenticate(LoginBean loginBean) {
+        Utente utenteDati = new Utente(-1, loginBean.getUsername(), loginBean.getPassword(), null, null);
 
-        if(loginBean.sendInfoAuth()){
-            SessionSingleton ss = SessionSingleton.getInstance();
-            ss.setUtenteCorrente(researchUser(loginBean));
+        boolean isAuthenticated = DaoFactory.getDaoSingletonFactory().createUtenteDao().authenticateUser(utenteDati);
+
+        if (isAuthenticated) {
+
+            Utente utenteCompleto = null;
+
+            try {
+
+                utenteCompleto = DaoFactory.getDaoSingletonFactory().createUtenteDao().researchUser(utenteDati);
+
+            } catch (SQLException e) {
+
+                throw new GenericSystemException(e);
+
+            }
+
+            SessionSingleton.getInstance().setUtenteCorrente(utenteCompleto);
+
+        } else {
+            throw new IncorrectCredentialExeption("Username o Password errati.");
         }
     }
 
-    public Utente researchUser(LoginBean loginBean) {
+    public boolean researchUser(LoginBean loginBean) {
+
+        Utente ricercato = new Utente(-1, loginBean.getUsername(), "", "", "");
+
         try {
-            return DbmsDaoUtente.researchUser(loginBean);
+
+            Utente utenteEsistente=DaoFactory.getDaoSingletonFactory().createUtenteDao().researchUser(ricercato);
+
+            return utenteEsistente != null;
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+
+            throw new GenericSystemException(e);
+
         }
     }
 
     public void insert(LoginBean loginBean){
-        loginBean.sendInfoInsert();
+
+        Utente nuovo=new Utente(-1, loginBean.getUsername(), loginBean.getPassword(), null, null);
+        DaoFactory.getDaoSingletonFactory().createUtenteDao().insertUtente(nuovo);
+
     }
 }

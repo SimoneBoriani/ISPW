@@ -1,5 +1,7 @@
 package exceptions;
 
+import java.sql.SQLException;
+
 public class GenericSystemException extends RuntimeException {
 
     public GenericSystemException(String message) {
@@ -10,7 +12,7 @@ public class GenericSystemException extends RuntimeException {
         super(message, cause);
     }
 
-    public GenericSystemException() {
+    public GenericSystemException(SQLException e) {
         super("Si è verificato un errore generico");
     }
 

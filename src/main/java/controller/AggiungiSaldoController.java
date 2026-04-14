@@ -14,7 +14,7 @@ public class AggiungiSaldoController {
         LoginBean utenteLoggato = new LoginBean(utenteCorrente.getUsername(), utenteCorrente.getUserPassword());
         utenteLoggato.setSaldo(utenteCorrente.getSaldo()+saldo);
         AggiungiSaldoBean aggiungiSaldoBean = new AggiungiSaldoBean();
-        aggiungiSaldoBean.sendInfo(utenteLoggato);
+
 
     }
 }

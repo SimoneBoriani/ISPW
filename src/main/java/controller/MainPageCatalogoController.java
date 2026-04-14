@@ -6,7 +6,7 @@ import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 import java.util.List;
 
-public class CatalogoController {
+public class MainPageCatalogoController {
 
     public List<Macchina> getCars() {
         return DaoFactory.getDaoSingletonFactory().createMacchinaDao().getCars();
