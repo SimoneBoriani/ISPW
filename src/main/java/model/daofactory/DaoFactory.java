@@ -3,6 +3,7 @@ package model.daofactory;
 import exceptions.GenericSystemException;
 
 import model.macchina.dao.DaoMacchina;
+import model.utente.dao.DaoUtente;
 
 
 import java.io.FileInputStream;
@@ -13,8 +14,9 @@ import java.util.Properties;
 
 public abstract class DaoFactory {
 
-   //crea tutti gli altri dao dell app qui
+
    public abstract DaoMacchina createMacchinaDao();
+   public abstract DaoUtente createUtenteDao();
 
    private static DaoFactory instance = null;
 

@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="400.0" spacing="20.0" style="-fx-background-color: #0E1A33; -fx-padding: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.user.log.GuiLogin">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="400.0" spacing="20.0" style="-fx-background-color: #0E1A33; -fx-padding: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.user.log.GuiLoginController">
 
     <VBox alignment="CENTER" maxWidth="500.0" prefHeight="550.0" prefWidth="317.0" spacing="15.0" style="-fx-background-color: white; -fx-border-radius: 20; -fx-background-radius: 20;">
         <padding>
@@ -23,21 +23,16 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
-            <Label styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff" onMouseClicked="#switchMainLabel">>
+            <Label onMouseClicked="#labelCatalogo" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">>
                 <font>
                     <Font size="13.0" />
                 </font>
             </Label>
         </HBox>
       <StackPane prefHeight="96.0" prefWidth="300.0" styleClass="logoImageView" stylesheets="@style.css">
-         <children>
-      
                           <ImageView fitHeight="123.0" fitWidth="178.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" style="-fx-smooth: 6;" styleClass="logoImageView">
-                  <image>
-                      <Image url="@../../images/logo.png" />
-                  </image>
+                      <Image url="@../images/logo.png" />
               </ImageView>
-         </children>
       </StackPane>
 
                           <GridPane alignment="CENTER" hgap="10.0" prefHeight="147.0" prefWidth="161.0" vgap="15.0">
@@ -47,14 +42,14 @@
                <Font name="System Bold" size="12.0" />
             </font>
          </Label>
-            <TextField alignment="CENTER" promptText="username" GridPane.rowIndex="2" />
+            <TextField fx:id="txtUsername" alignment="CENTER" promptText="username" GridPane.rowIndex="2" />
 
                               <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="151.0" text="Password" textFill="#204080" GridPane.rowIndex="3">
             <font>
                <Font name="System Bold" size="12.0" />
             </font>
          </Label>
-            <PasswordField alignment="CENTER" promptText="password" GridPane.rowIndex="4" />
+            <PasswordField fx:id="txtPassword" alignment="CENTER" promptText="password" GridPane.rowIndex="4" />
          <columnConstraints>
             <ColumnConstraints />
          </columnConstraints>
@@ -66,9 +61,9 @@
             <RowConstraints />
          </rowConstraints>
         </GridPane>
-      <Label fx:id="errorText" alignment="CENTER" prefHeight="17.0" prefWidth="572.0" textFill="RED" />
+      <Label fx:id="errorLabel" alignment="CENTER" prefHeight="17.0" prefWidth="572.0" textFill="RED" />
 
-        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Accedi " textFill="WHITE">
+        <Button fx:id="btnAccedi" mnemonicParsing="false" onAction="#auth" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Accedi " textFill="WHITE">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
@@ -76,7 +71,7 @@
                 <Insets top="10.0" />
             </VBox.margin>
         </Button>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="49.0" prefWidth="300.0" styleClass="link-label" stylesheets="@style.css" text="Registrati" textFill="#204080">
+      <Label alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#goToReg" prefHeight="49.0" prefWidth="300.0" styleClass="link-label" stylesheets="@style.css" text="Registrati" textFill="#204080">
          <font>
             <Font size="13.0" />
          </font>

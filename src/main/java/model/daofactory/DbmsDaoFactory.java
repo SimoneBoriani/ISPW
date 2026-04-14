@@ -2,6 +2,8 @@ package model.daofactory;
 
 import model.macchina.dao.DaoMacchina;
 import model.macchina.dao.DbmsDaoMacchina;
+import model.utente.dao.DaoUtente;
+import model.utente.dao.DbmsDaoUtente;
 
 public class DbmsDaoFactory extends DaoFactory {
 
@@ -9,5 +11,7 @@ public class DbmsDaoFactory extends DaoFactory {
     public DaoMacchina createMacchinaDao() {
         return new DbmsDaoMacchina();
     }
-    //Implementa gli altri metodi
+
+    @Override
+    public DaoUtente createUtenteDao() {return new DbmsDaoUtente();}
 }

@@ -1,14 +1,14 @@
 package view.factory;
 
 import controller.AggiungiAutoController;
-import controller.CatalogoController;
+import controller.MainPageCatalogoController;
 import controller.LogInController;
 
 public class CliGraphicsFactory extends GraphicsFactory{
 
     @Override
-    public CatalogoController createCatalogoController() {
-        return new CatalogoController();
+    public MainPageCatalogoController createCatalogoController() {
+        return new MainPageCatalogoController();
     }
 
     @Override

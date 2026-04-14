@@ -1,37 +1,54 @@
 package start;
 
-import javafx.application.Application;
-import view.factory.GuiGraphicsFactory;
-import view.sbcontroller.GuiPageManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.Scanner;
+import java.io.*;
+import java.util.Properties;
 
 public class Selection {
-    public void loader(String args) {
 
-        boolean bool;
-        boolean condizione=true;
-        System.out.println("Selezionare: 1-GUI  2-CLI");
+    private static final Logger logger = LogManager.getLogger(Selection.class.getName());
+    public Selection(){}
 
-        while(condizione){
+    public void init(){
 
-        Scanner scanner = new Scanner(System.in);
-        int sc =1; //scanner.nextInt();
+        String configFilePath = "src/main/resources/config.properties";
+        int choice;
+        Properties prop = new Properties();
 
-        if (sc == 1 || sc == 2) {
-            bool = sc == 1;
+        logger.info("SCEGLI LA MODALITA' GRAFICA:");
+        logger.info("1. GUI");
+        logger.info("2. CLI");
 
-            if (bool) {
-                condizione = false;
-                Application.launch(GuiPageManager.class, args);
-            } else {
-                System.out.println("Questa è l'interfaccia a linea di comando (Da implementare)");
-                condizione = false;
-                //Application.launch(CliGraphicsFactory.class, args);
+        //BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        try (FileInputStream configFile = new FileInputStream(configFilePath)) {
+            prop.load(configFile);
+            String choiceProperty = "user_choice";
+            choice =1; //Integer.parseInt(reader.readLine());
+
+            switch(choice){
+
+                case 1:
+                    prop.setProperty(choiceProperty, "GUI");
+                    prop.store(new FileOutputStream(configFilePath), "case gui");
+                    Launcher.starter();
+                    break;
+
+                case 2:
+                    prop.setProperty(choiceProperty, "CLI");
+                    prop.store(new FileOutputStream(configFilePath), "case cli");
+                    break;
+
+                default:
+                    prop.setProperty(choiceProperty, "GUI");
+                    prop.store(new FileOutputStream(configFilePath), "default(gui)");
+                    Launcher.starter();
+                    break;
             }
-        } else {
-            System.out.println("Numero non valido, riprovare inserendo 1 o 2");
+        } catch (IOException e) {
+            throw new ExceptionInInitializerError(e);
         }
-    }
     }
 }

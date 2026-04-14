@@ -1,12 +1,5 @@
 package bean;
 
-import model.macchina.Macchina;
-import model.macchina.dao.DaoMacchina;
-import model.macchina.dao.DbmsDaoMacchina;
-
-import java.sql.SQLException;
-import java.util.logging.Logger;
-
 public class AggiungiAutoBean {
 
     private int carYear;
@@ -18,9 +11,6 @@ public class AggiungiAutoBean {
     private int carSeat;
     private int carOwners;
     private int carKm;
-
-    public AggiungiAutoBean() {
-    }
 
     public void setCarName(String carName) {
         this.carName = carName;

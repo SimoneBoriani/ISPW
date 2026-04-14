@@ -1,14 +1,7 @@
 package bean;
 
-import model.utente.Utente;
-import model.utente.dao.DbmsDaoUtente;
-
-import java.sql.SQLException;
-import java.util.logging.Logger;
-
 public class LoginBean {
 
-    Logger logger = Logger.getLogger(getClass().getName());
     String username;
     String password;
     int autoPossedute;
@@ -16,35 +9,11 @@ public class LoginBean {
     String nome;
     String cognome;
 
-
-    public LoginBean(){
-
-    }
+    public LoginBean() {}
 
     public LoginBean(String username, String password) {
         this.username = username;
         this.password = password;
-    }
-
-    public Utente sendInfoInsert(){
-        try{
-            return DbmsDaoUtente.insertUtente(this);
-        }catch(SQLException e){
-            logger.severe(e.getMessage());
-            return null;
-        }
-    }
-
-    public boolean sendInfoAuth(){
-        boolean status = false;
-        try {
-            if(DbmsDaoUtente.authenticateUser(this)){
-                status = true;
-            }else{status = false;}
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return status;
     }
 
     public String getUsername() {return username;}
@@ -64,4 +33,5 @@ public class LoginBean {
 
     public double getSaldo(){return saldo;}
     public void setSaldo(double saldo){this.saldo = saldo;}
+
 }

@@ -1,7 +1,7 @@
 package view.factory;
 
 import controller.AggiungiAutoController;
-import controller.CatalogoController;
+import controller.MainPageCatalogoController;
 import controller.LogInController;
 import exceptions.GenericSystemException;
 
@@ -13,7 +13,7 @@ public abstract class GraphicsFactory {
 
     private static GraphicsFactory instance = null;
 
-    public abstract CatalogoController createCatalogoController();
+    public abstract MainPageCatalogoController createCatalogoController();
     public abstract AggiungiAutoController createAggiungiAutoController();
     public abstract LogInController createLoginController();
 
