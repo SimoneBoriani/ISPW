@@ -1,6 +1,6 @@
 package controller;
 
-import app.SessionSingleton;
+import utils.SessionSingleton;
 import bean.AggiungiSaldoBean;
 import bean.LoginBean;
 import model.utente.Utente;

@@ -23,6 +23,6 @@ public class Launcher extends Application {
 
         StageHandler.getSingletonInstance().setStage(stage);
 
-        StageHandler.getSingletonInstance().loadPage("/view/PrincipalPage-Catalogo.fxml");
+        StageHandler.getSingletonInstance().loadPage("/view/palle.fxml");
     }
 }

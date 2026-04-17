@@ -1,6 +1,6 @@
 package model.utente.dao;
 
-import app.SessionSingleton;
+import utils.SessionSingleton;
 import model.utente.Utente;
 import utils.ConnectionHandler;
 

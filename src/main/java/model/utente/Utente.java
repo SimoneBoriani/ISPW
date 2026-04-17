@@ -50,5 +50,6 @@ public class Utente {
     public double getSaldo(){return saldo;}
     public void setSaldo(double saldo){this.saldo = saldo;}
 
+    public void setRuolo(String ruolo){this.ruolo = ruolo;}
     public String getRuolo() {return ruolo;}
 }

@@ -1,6 +1,6 @@
-package view.user.log;
+package view.guigraphicscontroller;
 
-import app.SessionSingleton;
+import utils.SessionSingleton;
 import bean.LoginBean;
 import controller.LogInController;
 import exceptions.IncorrectCredentialExeption;
@@ -84,11 +84,13 @@ public class GuiLoginController extends LogInController{
         String confPass = txtConfPass.getText().trim();
 
         if (user.isEmpty() || pass.isEmpty()) {
+            errorLabel.setStyle(STYLE);
             errorLabel.setText("Attenzione: Inserisci username e/o password!");
             return;
         }
 
         if(!pass.equals(confPass)){
+            errorLabel.setStyle(STYLE);
             errorLabel.setText("Attenzione Le password non coincidono!");
             return;
         }
@@ -108,9 +110,14 @@ public class GuiLoginController extends LogInController{
         else{
 
             insert(credenziali);
-            StageHandler.getSingletonInstance().loadPage("view/PrincipalPage-Catalogo.fxml");
+            errorLabel.setStyle("-fx-text-fill: green;");
+            errorLabel.setText("Registrazione effettuata con successo!");
 
-            }
+            txtUsername.clear();
+            txtPassword.clear();
+            txtConfPass.clear();
+
+        }
         }
 
     @FXML

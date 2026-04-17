@@ -1,9 +1,6 @@
 package controller;
 
-import app.SessionSingleton;
-import bean.AggiungiScontoBean;
 import bean.LoginBean;
-import model.utente.Utente;
 
 import java.util.logging.Logger;
 
