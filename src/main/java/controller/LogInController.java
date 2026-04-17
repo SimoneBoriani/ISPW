@@ -1,6 +1,6 @@
 package controller;
 
-import app.SessionSingleton;
+import utils.SessionSingleton;
 import bean.LoginBean;
 import exceptions.GenericSystemException;
 import exceptions.IncorrectCredentialExeption;

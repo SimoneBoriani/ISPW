@@ -18,12 +18,12 @@
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <ImageView fitHeight="41.0" fitWidth="51.0" layoutX="7.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="7.0">
+                <ImageView fitHeight="29.0" fitWidth="64.0" layoutX="7.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="7.0">
                         <Image url="@../images/logo1.png" />
                 </ImageView>
                 <Button fx:id="btnAccedi" alignment="CENTER_RIGHT" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnAccediOnAction" prefHeight="25.0" prefWidth="52.0" styleClass="Button" stylesheets="@style.css" text="Accedi" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
       <Button fx:id="btnLogout" layoutX="512.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnLogoutOnAction" styleClass="Button" stylesheets="@style.css" text="Logout" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="10.0" />
-      <Button fx:id="btnAddCar" layoutX="450.0" layoutY="10.0" mnemonicParsing="false" styleClass="Button" stylesheets="@style.css" text="Aggiungi Auto" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="76.0" AnchorPane.topAnchor="10.0" />
+      <Button fx:id="btnAddCar" layoutX="450.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnAddCarOnAction" styleClass="Button" stylesheets="@style.css" text="Aggiungi Auto" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="76.0" AnchorPane.topAnchor="10.0" />
         </AnchorPane>
         <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.bottomAnchor="271.6666666666667" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="54.0">
                 <Image url="@../images/lente_ricerca.png" />
@@ -55,4 +55,14 @@
                         </VBox>
                 </AnchorPane>
         </ScrollPane>
+   <ImageView fitHeight="35.0" fitWidth="38.0" layoutX="1.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="143.0">
+      <image>
+         <Image url="@../images/garage.png" />
+      </image>
+   </ImageView>
+   <ImageView fitHeight="35.0" fitWidth="38.0" layoutX="1.0" layoutY="186.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+      <image>
+         <Image url="@../images/autoselector.png" />
+      </image>
+   </ImageView>
 </AnchorPane>

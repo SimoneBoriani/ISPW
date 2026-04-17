@@ -34,9 +34,9 @@ public abstract class DaoFactory {
 
 
             if(instance == null){
-       /*         if(persistence.equals("DEMO")){
+               if(persistence.equals("DEMO")){
                     instance = new DemoDaoFactory();
-                }*/
+                }
 
                 if(persistence.equals("JDBC")){
                     instance = new DbmsDaoFactory();

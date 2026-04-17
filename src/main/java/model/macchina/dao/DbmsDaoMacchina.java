@@ -1,6 +1,5 @@
 package model.macchina.dao;
 
-import bean.CatalogoBean;
 import exceptions.CarNotFoundException;
 import exceptions.GenericSystemException;
 import model.macchina.Macchina;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DbmsDaoMacchina extends DaoMacchina {
+
     @Override
     public List<Macchina> getCars() {
 
