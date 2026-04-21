@@ -57,7 +57,8 @@ public class GuiLoginController extends LogInController{
 
             if(SessionSingleton.getInstance().getUtenteCorrente()!=null){
 
-                StageHandler.getSingletonInstance().loadPage("/view/PrincipalPage-Catalogo.fxml");
+                String str= "/view/CatalogoView.fxml";
+                StageHandler.getSingletonInstance().loadPage(str);
             }
 
 
@@ -77,7 +78,7 @@ public class GuiLoginController extends LogInController{
     }
 
     @FXML
-    public void register(ActionEvent event) throws IOException {
+    public void register(ActionEvent event){
 
         String user = txtUsername.getText().trim();
         String pass = txtPassword.getText().trim();
@@ -139,7 +140,7 @@ public class GuiLoginController extends LogInController{
     @FXML
     public void labelCatalogo(MouseEvent event) throws IOException {
 
-        String str="/view/PrincipalPage-Catalogo.fxml";
+        String str= "/view/CatalogoView.fxml";
         StageHandler.getSingletonInstance().loadPage(str);
 
     }

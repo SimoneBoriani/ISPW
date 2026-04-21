@@ -12,6 +12,10 @@ public class AggiungiAutoBean {
     private int carOwners;
     private int carKm;
 
+    public AggiungiAutoBean() {
+        //Costruttore
+    }
+
     public void setCarName(String carName) {
         this.carName = carName;
     }

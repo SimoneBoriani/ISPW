@@ -1,5 +1,6 @@
 package view.guigraphicscontroller;
 
+import exceptions.GenericSystemException;
 import utils.SessionSingleton;
 import controller.MainPageCatalogoController;
 import javafx.collections.FXCollections;
@@ -7,7 +8,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import model.macchina.Macchina;
 import utils.StageHandler;
 
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class GuiMainPageCatalogoController extends MainPageCatalogoController{
+public class GuiMainPageCatalogoController extends MainPageCatalogoController {
 
     @FXML
     private Button btnAddCar;
@@ -26,56 +26,49 @@ public class GuiMainPageCatalogoController extends MainPageCatalogoController{
     @FXML
     private Button btnLogout;
 
-    @FXML private ListView<Macchina> carListView;
-
     @FXML
-    private TableView<Macchina> tableView;
-
-    @FXML private TableColumn<Macchina, String> nome;
-    @FXML private TableColumn<Macchina, String> casa;
-    @FXML private TableColumn<Macchina, Integer> km;
-    @FXML private TableColumn<Macchina, Integer> prezzo;
-    @FXML private TableColumn<Macchina, String> tipologia;
-
+    private ListView<Macchina> carListView;
 
     @FXML
     public void initialize() {
 
-       /* nome.setCellValueFactory(new PropertyValueFactory<>("modello"));
-        casa.setCellValueFactory(new PropertyValueFactory<>("casa"));
-        km.setCellValueFactory(new PropertyValueFactory<>("km"));
-        prezzo.setCellValueFactory(new PropertyValueFactory<>("prezzo"));
-        tipologia.setCellValueFactory(new PropertyValueFactory<>("tipologia"));
-
-        List<Macchina> listaAuto = getCars();
-
-        if (listaAuto != null) {
-            ObservableList<Macchina> data = FXCollections.observableArrayList(listaAuto);
-            tableView.setItems(data);
-        }*/
-        List<Macchina> listaAuto = getCars();
-
-        if (listaAuto != null) {
-            ObservableList<Macchina> data = FXCollections.observableArrayList(listaAuto);
-            carListView.setItems(data);
-
-            // 2. Opzionale: Definisci come apparirà ogni riga (CellFactory)
-            // Se non metti questo, vedrai il risultato del metodo .toString() di Macchina
-            carListView.setCellFactory(param -> new ListCell<Macchina>() {
-                @Override
-                protected void updateItem(Macchina item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        // Personalizza qui cosa vuoi leggere nella riga
-                        setText(item.getCasa() + " " + item.getModello() + " - €" + item.getPrezzo());
-                    }
-                }
-            });
-        }
-
+        configuraCatalogo();
         configuraBottoni();
+
+    }
+
+    private void apriDettaglio(Macchina auto) {
+        try {
+
+            SessionSingleton.getInstance().setAutoSelezionata(auto);
+            StageHandler.getSingletonInstance().loadPage("/view/CarDetailsView.fxml");
+
+        } catch (IOException e) {
+            throw new GenericSystemException("Errore nel caricamento della pagina DettaglioAuto: ",e);
+        }
+    }
+
+    private void configuraCatalogo() {
+        try {
+            if (carListView != null) {
+                List<Macchina> listaAuto = getCars();
+
+                if (listaAuto != null && !listaAuto.isEmpty()) {
+                    ObservableList<Macchina> data = FXCollections.observableArrayList(listaAuto);
+                    carListView.setItems(data);
+                    carListView.setCellFactory(param -> new CarCell());
+                }
+
+                carListView.setOnMouseClicked(event -> {
+                    Macchina selezionata = carListView.getSelectionModel().getSelectedItem();
+                    if (selezionata != null) {
+                        apriDettaglio(selezionata);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            throw new GenericSystemException("Errore Caricamento", e);
+        }
     }
 
     private void configuraBottoni() {
@@ -122,7 +115,11 @@ public class GuiMainPageCatalogoController extends MainPageCatalogoController{
     public void btnLogoutOnAction(ActionEvent event) throws IOException {
 
         SessionSingleton.getInstance().logout();
-        StageHandler.getSingletonInstance().loadPage("/view/PrincipalPage-Catalogo.fxml");
+        StageHandler.getSingletonInstance().loadPage("/view/CatalogoView.fxml");
 
+    }
+    @FXML
+    public void goToTest(ActionEvent event) throws IOException {
+        StageHandler.getSingletonInstance().loadPage("/view/provafunzioni.fxml");
     }
 }

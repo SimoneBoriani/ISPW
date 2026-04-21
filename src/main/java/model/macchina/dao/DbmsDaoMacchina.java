@@ -15,7 +15,7 @@ public class DbmsDaoMacchina extends DaoMacchina {
     public List<Macchina> getCars() {
 
         List<Macchina> cars = new ArrayList<>();
-        String sql = "SELECT * FROM macchine";
+        String sql = "SELECT *"+ "FROM macchine";
 
         Connection session = ConnectionHandler.getInstance().getConnection();
 
@@ -23,7 +23,8 @@ public class DbmsDaoMacchina extends DaoMacchina {
              ResultSet rs = statement.executeQuery(sql)) {
 
             while (rs.next()) {
-                int idAuto = rs.getInt("auto_id");
+
+                int id = rs.getInt("auto_id");
                 int anno = rs.getInt("anno");
                 int km = rs.getInt("km");
                 String alimentazione = rs.getString("alimentazione");
@@ -33,15 +34,35 @@ public class DbmsDaoMacchina extends DaoMacchina {
                 String casa = rs.getString("casa");
                 int prezzo = rs.getInt("prezzo");
                 String tipologia = rs.getString("tipologia");
+                String foto=rs.getString("immagine_url");
 
-                Macchina macchina = new Macchina(idAuto, anno, km, posti, proprietari, modello, casa, alimentazione, prezzo, tipologia);
+                Macchina macchina = new Macchina(id, anno, km, posti, proprietari, modello, casa, alimentazione, prezzo, tipologia,foto);
                 cars.add(macchina);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new GenericSystemException(e);
         }
         return cars;
     }
+
+    @Override
+    public void remove(int idAuto) throws  GenericSystemException {
+
+        String query = "DELETE FROM macchine WHERE auto_id = ?";
+        Connection connection = ConnectionHandler.getInstance().getConnection();
+
+        try(PreparedStatement statement = connection.prepareStatement(query)){
+
+            statement.setInt(1, idAuto);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+
+            throw new GenericSystemException(e.getMessage());
+        }
+    }
+
     @Override
     public void insert(Macchina macchina) throws GenericSystemException {
         String query = "INSERT INTO macchine (anno, km, alimentazione, posti, proprietari, casa, modello, prezzo, tipologia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -64,10 +85,15 @@ public class DbmsDaoMacchina extends DaoMacchina {
         }
     }
     @Override
-    public List<Macchina> research(String brand,String model, String alimentation, int kmMax) throws CarNotFoundException {
+    public List<Macchina> research(Macchina filtriAuto) throws CarNotFoundException {
 
         List<Macchina> results = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
+
+        String brand = filtriAuto.getCasa();
+        String model = filtriAuto.getModello();
+        String alimentation = filtriAuto.getAlimentazione();
+        int kmMax = filtriAuto.getKm();
 
         StringBuilder sql = new StringBuilder("SELECT * FROM macchine WHERE 1=1");
 
@@ -90,6 +116,7 @@ public class DbmsDaoMacchina extends DaoMacchina {
             sql.append(" AND km <= ?");
             parameters.add(kmMax);
         }
+
         try {
             Connection connection = ConnectionHandler.getInstance().getConnection();
 
@@ -101,12 +128,20 @@ public class DbmsDaoMacchina extends DaoMacchina {
 
                 try (ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {
-                        results.add(new Macchina(
-                                rs.getInt("auto_id"), rs.getInt("anno"), rs.getInt("km"),
-                                rs.getInt("posti"), rs.getInt("proprietari"), rs.getString("modello"),
-                                rs.getString("casa"), rs.getString("alimentazione"),
-                                rs.getInt("prezzo"), rs.getString("tipologia")
-                        ));
+
+                        Macchina m = new Macchina(
+                                rs.getInt("anno"),
+                                rs.getInt("km"),
+                                rs.getInt("posti"),
+                                rs.getInt("proprietari"),
+                                rs.getString("modello"),
+                                rs.getString("casa"),
+                                rs.getString("alimentazione"),
+                                rs.getInt("prezzo"),
+                                rs.getString("tipologia")
+                        );
+
+                        results.add(m);
                     }
                 }
             }
@@ -117,6 +152,51 @@ public class DbmsDaoMacchina extends DaoMacchina {
         if (results.isEmpty()) {
             throw new CarNotFoundException("Nessuna auto trovata con i filtri inseriti.");
         }
+
         return results;
+    }
+
+    @Override
+    public void discount(int idAuto, int sconto, int prezzo) throws GenericSystemException {
+
+        String query="UPDATE macchine SET prezzo = ? WHERE auto_id = ?";
+        Connection connection = ConnectionHandler.getInstance().getConnection();
+        int prezzoScontato=prezzo - (prezzo * sconto / 100);
+
+        try(PreparedStatement statement= connection.prepareStatement(query)) {
+
+            statement.setInt(1, prezzoScontato);
+            statement.setInt(2, idAuto);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new GenericSystemException(e);
+        }
+    }
+    @Override
+    public void update(Macchina macchina) {
+        String query = "UPDATE macchine SET anno=?, km=?, posti=?, proprietari=?, modello=?, " +
+                "casa=?, alimentazione=?, prezzo=?, tipologia=?, immagine_url=? WHERE auto_id=?";
+
+        try (Connection conn = ConnectionHandler.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, macchina.getAnno());
+            ps.setInt(2, macchina.getKm());
+            ps.setInt(3, macchina.getPosti());
+            ps.setInt(4, macchina.getProprietari());
+            ps.setString(5, macchina.getModello());
+            ps.setString(6, macchina.getCasa());
+            ps.setString(7, macchina.getAlimentazione());
+            ps.setInt(8, macchina.getPrezzo());
+            ps.setString(9, macchina.getTipologia());
+            ps.setString(10, macchina.getImageUrl());
+
+            ps.setInt(11, macchina.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new GenericSystemException(e);
+        }
     }
 }
