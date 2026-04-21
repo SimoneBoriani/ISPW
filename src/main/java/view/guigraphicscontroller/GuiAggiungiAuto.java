@@ -4,10 +4,7 @@ import bean.AggiungiAutoBean;
 import controller.AggiungiAutoController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import utils.StageHandler;
 
 import java.io.IOException;
@@ -73,7 +70,7 @@ public class GuiAggiungiAuto extends AggiungiAutoController  {
     }
     @FXML
     public void btnHome(ActionEvent event) throws IOException {
-        String str="/view/PrincipalPage-Catalogo.fxml";
+        String str= "/view/CatalogoView.fxml";
         StageHandler.getSingletonInstance().loadPage(str);
     }
 }

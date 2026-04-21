@@ -9,7 +9,9 @@ import java.util.Properties;
 public class Selection {
 
     private static final Logger logger = LogManager.getLogger(Selection.class.getName());
-    public Selection(){}
+    public Selection(){
+        //Costruttore
+    }
 
     public void init(){
 

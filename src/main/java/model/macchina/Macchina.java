@@ -2,7 +2,7 @@ package model.macchina;
 
 public class Macchina {
 
-    private int idAuto;
+    private int id;
     private int anno;
     private int km;
     private int posti;
@@ -12,9 +12,14 @@ public class Macchina {
     private String alimentazione;
     private int prezzo;
     private String tipologia;
+    private String foto;
 
-    public Macchina(int idAauto,int anno,int km,int posti,int prorpietari,String nome,String casa,String alimentazione,int prezzo,String tipologia){
-        this.idAuto=idAuto;
+    public Macchina() {
+        //Costruttore
+    }
+    public Macchina(int id,int anno,int km,int posti,int prorpietari,String nome,String casa,String alimentazione,int prezzo,String tipologia,String foto) {
+
+        this.id=id;
         this.anno=anno;
         this.km=km;
         this.posti=posti;
@@ -24,6 +29,7 @@ public class Macchina {
         this.alimentazione=alimentazione;
         this.prezzo=prezzo;
         this.tipologia=tipologia;
+        this.foto=foto;
     }
     public Macchina(int anno,int km,int posti,int prorpietari,String nome,String casa,String alimentazione,int prezzo,String tipologia){
         this.anno=anno;
@@ -35,10 +41,11 @@ public class Macchina {
         this.alimentazione=alimentazione;
         this.prezzo=prezzo;
         this.tipologia=tipologia;
+        this.foto="no_image.png";
     }
 
-    public int getIdAuto() { return idAuto; }
-    public void setIdAuto(int idAuto) { this.idAuto = idAuto; }
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
 
     public int getAnno() { return anno; }
     public void setAnno(int anno) { this.anno = anno; }
@@ -66,4 +73,7 @@ public class Macchina {
 
     public String getTipologia() { return tipologia; }
     public void setTipologia(String tipologia) { this.tipologia = tipologia; }
+
+    public String getImageUrl() { return foto; }
+    public void setImageUrl(String foto) { this.foto = foto; }
 }

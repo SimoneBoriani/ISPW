@@ -9,7 +9,9 @@ public class LoginBean {
     String nome;
     String cognome;
 
-    public LoginBean() {}
+    public LoginBean() {
+        //Costruttore
+    }
 
     public LoginBean(String username, String password) {
         this.username = username;

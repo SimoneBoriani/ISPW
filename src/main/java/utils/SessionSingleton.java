@@ -1,12 +1,14 @@
 package utils;
 
 import model.utente.Utente;
+import model.macchina.Macchina;
 
 public class SessionSingleton {
 
     private static SessionSingleton instance;
 
     private Utente utenteCorrente;
+    private Macchina autoSelezionata;
 
     private SessionSingleton() {
     }
@@ -16,6 +18,14 @@ public class SessionSingleton {
             instance = new SessionSingleton();
         }
         return instance;
+    }
+
+    public void setAutoSelezionata(Macchina auto) {
+        this.autoSelezionata = auto;
+    }
+
+    public model.macchina.Macchina getAutoSelezionata() {
+        return this.autoSelezionata;
     }
 
     public void setUtenteCorrente(Utente utente) {

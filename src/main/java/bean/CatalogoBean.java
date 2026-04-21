@@ -9,7 +9,7 @@ public class CatalogoBean {
     private String alimentazione="";
 
     public CatalogoBean(){
-
+    //Costruttore
     }
 
     public String getModello() { return modello; }
