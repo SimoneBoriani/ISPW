@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
 
-<HBox fx:id="rootAnchor" spacing="15" styleClass="car-card" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="rootAnchor" prefHeight="141.0" prefWidth="373.0" spacing="15" styleClass="car-card" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
         <ImageView fx:id="imgAuto" fitHeight="120" fitWidth="160" preserveRatio="true" />
-        <VBox spacing="5" HBox.hgrow="ALWAYS">
+        <VBox prefHeight="121.0" prefWidth="186.0" spacing="5" HBox.hgrow="ALWAYS">
                 <Label fx:id="lblModello" styleClass="car-title" text="Marca Modello" />
                 <Label fx:id="lblDettagli" styleClass="car-details" text="Km • Anno • Alimentazione" />
                 <Label fx:id="lblPrezzo" styleClass="car-price" text="€ 0.00" />

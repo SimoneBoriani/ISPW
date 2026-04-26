@@ -173,30 +173,84 @@ public class DbmsDaoMacchina extends DaoMacchina {
             throw new GenericSystemException(e);
         }
     }
+
     @Override
     public void update(Macchina macchina) {
-        String query = "UPDATE macchine SET anno=?, km=?, posti=?, proprietari=?, modello=?, " +
-                "casa=?, alimentazione=?, prezzo=?, tipologia=?, immagine_url=? WHERE auto_id=?";
 
-        try (Connection conn = ConnectionHandler.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+            List<String> setClauses = new ArrayList<>();
+            List<Object> parameters = new ArrayList<>();
 
-            ps.setInt(1, macchina.getAnno());
-            ps.setInt(2, macchina.getKm());
-            ps.setInt(3, macchina.getPosti());
-            ps.setInt(4, macchina.getProprietari());
-            ps.setString(5, macchina.getModello());
-            ps.setString(6, macchina.getCasa());
-            ps.setString(7, macchina.getAlimentazione());
-            ps.setInt(8, macchina.getPrezzo());
-            ps.setString(9, macchina.getTipologia());
-            ps.setString(10, macchina.getImageUrl());
+            if (macchina.getAnno() > 0) {
+                setClauses.add("anno=?");
+                parameters.add(macchina.getAnno());
+            }
 
-            ps.setInt(11, macchina.getId());
+            if (macchina.getKm() > 0) {
+                setClauses.add("km=?");
+                parameters.add(macchina.getKm());
+            }
 
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new GenericSystemException(e);
+            if (macchina.getPosti() > 0) {
+                setClauses.add("posti=?");
+                parameters.add(macchina.getPosti());
+            }
+
+            if (macchina.getProprietari() >= 0) {
+                setClauses.add("proprietari=?");
+                parameters.add(macchina.getProprietari());
+            }
+
+            if (macchina.getModello() != null && !macchina.getModello().trim().isEmpty()) {
+                setClauses.add("modello=?");
+                parameters.add(macchina.getModello());
+            }
+
+            if (macchina.getCasa() != null && !macchina.getCasa().trim().isEmpty()) {
+                setClauses.add("casa=?");
+                parameters.add(macchina.getCasa());
+            }
+
+            if (macchina.getAlimentazione() != null && !macchina.getAlimentazione().trim().isEmpty()) {
+                setClauses.add("alimentazione=?");
+                parameters.add(macchina.getAlimentazione());
+            }
+
+            if (macchina.getPrezzo() > 0) {
+                setClauses.add("prezzo=?");
+                parameters.add(macchina.getPrezzo());
+            }
+
+            if (macchina.getTipologia() != null && !macchina.getTipologia().trim().isEmpty()) {
+                setClauses.add("tipologia=?");
+                parameters.add(macchina.getTipologia());
+            }
+
+            if (macchina.getImageUrl() != null && !macchina.getImageUrl().trim().isEmpty() && !macchina.getImageUrl().equals("no_image.png")) {
+                setClauses.add("immagine_url=?");
+                parameters.add(macchina.getImageUrl());
+            }
+
+            if (setClauses.isEmpty()) {
+                return;
+            }
+
+            StringBuilder query = new StringBuilder("UPDATE macchine SET ");
+            query.append(String.join(", ", setClauses));
+            query.append(" WHERE auto_id=?");
+
+            parameters.add(macchina.getId());
+
+            Connection conn = ConnectionHandler.getInstance().getConnection();
+
+            try (PreparedStatement ps = conn.prepareStatement(query.toString())) {
+
+                for (int i = 0; i < parameters.size(); i++) {
+                    ps.setObject(i + 1, parameters.get(i));
+                }
+                ps.executeUpdate();
+
+            } catch (SQLException e) {
+                throw new GenericSystemException(e);
+            }
         }
-    }
 }

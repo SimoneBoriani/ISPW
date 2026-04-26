@@ -4,14 +4,15 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="utils.provafunzioni">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiGestioneCatalogo">
       <Button layoutX="89.0" layoutY="43.0" mnemonicParsing="false" onAction="#backHome" text="HOME" />
       <Button layoutX="89.0" layoutY="101.0" mnemonicParsing="false" onAction="#delete" text="REMOVE" />
-      <Button layoutX="285.0" layoutY="256.0" mnemonicParsing="false" onAction="#modificaCar" text="UPDATE" />
+      <Button layoutX="285.0" layoutY="347.0" mnemonicParsing="false" onAction="#modificaCar" text="UPDATE" />
       <TextField fx:id="model" layoutX="240.0" layoutY="43.0" promptText="modello" />
       <TextField fx:id="alimentazione" layoutX="240.0" layoutY="219.0" promptText="alimentazione" />
       <TextField fx:id="prezzo" layoutX="240.0" layoutY="114.0" promptText="prezzo" />
       <TextField fx:id="km" layoutX="240.0" layoutY="147.0" promptText="km" />
       <TextField fx:id="posti" layoutX="240.0" layoutY="184.0" promptText="posti" />
       <TextField fx:id="brand" layoutX="240.0" layoutY="76.0" promptText="brand" />
+   <TextField fx:id="urlFoto" layoutX="241.0" layoutY="254.0" promptText="URL foto" />
 </AnchorPane>

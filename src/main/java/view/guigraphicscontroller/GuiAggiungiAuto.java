@@ -6,10 +6,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import utils.StageHandler;
+import view.factory.ControllerFactory;
 
 import java.io.IOException;
 
-public class GuiAggiungiAuto extends AggiungiAutoController  {
+public class GuiAggiungiAuto{
+
+    private AggiungiAutoController aggiungiAutoController= ControllerFactory.getGraphicalSingletonFactory().createAggiungiAutoController();
 
     @FXML
     private TextField carYear;
@@ -55,7 +58,7 @@ public class GuiAggiungiAuto extends AggiungiAutoController  {
         aggiungiAutoBean.setCarYear(Integer.parseInt(carYearStr));
         aggiungiAutoBean.setCarOwners(Integer.parseInt(carOwnersStr));
 
-        addCar(aggiungiAutoBean);
+        aggiungiAutoController.addCar(aggiungiAutoBean);
 
         carYear.clear();
         carName.clear();

@@ -1,5 +1,7 @@
 package view.guigraphicscontroller;
 
+import exceptions.GenericSystemException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -7,6 +9,10 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import model.macchina.Macchina;
+import utils.StageHandler;
+import utils.ImageUtils;
+import utils.SessionSingleton; // Aggiungi il tuo import
+
 import java.io.IOException;
 
 public class CarCell extends ListCell<Macchina> {
@@ -23,8 +29,6 @@ public class CarCell extends ListCell<Macchina> {
     protected void updateItem(Macchina macchina, boolean empty) {
         super.updateItem(macchina, empty);
 
-
-
         if (empty || macchina == null) {
             setGraphic(null);
             setText(null);
@@ -35,20 +39,32 @@ public class CarCell extends ListCell<Macchina> {
                 try {
                     loader.load();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new GenericSystemException("Errore caricamento cella", e);
                 }
             }
 
             if (imgAuto != null) {
-                imgAuto.setImage(utils.ImageUtils.loadCarImage(macchina.getImageUrl()));
+                imgAuto.setImage(ImageUtils.loadCarImage(macchina.getImageUrl()));
             }
 
             lblModello.setText(macchina.getCasa() + " " + macchina.getModello());
-            lblPrezzo.setText(macchina.getPrezzo()+" €");
+            lblPrezzo.setText(macchina.getPrezzo() + " €");
             lblDettagli.setText(macchina.getKm() + " km • " + macchina.getAnno() + " • " + macchina.getAlimentazione());
 
             setGraphic(rootAnchor);
             setText(null);
         }
+    }
+
+    @FXML
+    public void managePage(ActionEvent event) throws IOException {
+
+        Macchina autoCliccata = getItem();
+        if (autoCliccata != null) {
+            SessionSingleton.getInstance().setAutoSelezionata(autoCliccata);
+        }
+
+        String str = "/view/provafunzioni.fxml";
+        StageHandler.getSingletonInstance().loadPage(str);
     }
 }
