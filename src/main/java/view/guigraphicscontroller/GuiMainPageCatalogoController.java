@@ -10,12 +10,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.macchina.Macchina;
 import utils.StageHandler;
+import view.factory.ControllerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 
-public class GuiMainPageCatalogoController extends MainPageCatalogoController {
+public class GuiMainPageCatalogoController{
+
+    private final MainPageCatalogoController mainPageCatalogoController= ControllerFactory.getGraphicalSingletonFactory().createMainPageCatalogoController();
 
     @FXML
     private Button btnAddCar;
@@ -51,7 +54,7 @@ public class GuiMainPageCatalogoController extends MainPageCatalogoController {
     private void configuraCatalogo() {
         try {
             if (carListView != null) {
-                List<Macchina> listaAuto = getCars();
+                List<Macchina> listaAuto = mainPageCatalogoController.getCars();
 
                 if (listaAuto != null && !listaAuto.isEmpty()) {
                     ObservableList<Macchina> data = FXCollections.observableArrayList(listaAuto);
@@ -120,6 +123,6 @@ public class GuiMainPageCatalogoController extends MainPageCatalogoController {
     }
     @FXML
     public void goToTest(ActionEvent event) throws IOException {
-        StageHandler.getSingletonInstance().loadPage("/view/provafunzioni.fxml");
+        StageHandler.getSingletonInstance().loadPage("/view/OpzioniAuto.fxml");
     }
 }

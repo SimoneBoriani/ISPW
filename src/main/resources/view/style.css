@@ -97,3 +97,7 @@
     -fx-font-weight: bold;
     -fx-text-fill: #204080;
 }
+
+.clickable-Image{
+    -fx-cursor: hand;
+}

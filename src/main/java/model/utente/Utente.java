@@ -32,6 +32,9 @@ public class Utente {
 
     }
 
+    public void setIdUser(int idUser) {this.idUser = idUser;}
+    public int getIdUser() {return idUser;}
+
     public String getUsername() {return username;}
     public void setUsername(String username) {this.username = username;}
 

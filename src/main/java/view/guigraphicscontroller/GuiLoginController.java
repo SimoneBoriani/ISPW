@@ -12,12 +12,14 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import utils.StageHandler;
+import view.factory.ControllerFactory;
 
 
 import java.io.IOException;
 
-public class GuiLoginController extends LogInController{
+public class GuiLoginController{
 
+    private final LogInController logInController= ControllerFactory.getGraphicalSingletonFactory().createLoginController();
 
     @FXML
     private Label errorLabel;
@@ -53,7 +55,7 @@ public class GuiLoginController extends LogInController{
 
         try {
 
-            authenticate(credenziali);
+            logInController.authenticate(credenziali);
 
             if(SessionSingleton.getInstance().getUtenteCorrente()!=null){
 
@@ -101,7 +103,7 @@ public class GuiLoginController extends LogInController{
         credenziali.setUsername(user);
         credenziali.setPassword(pass);
 
-        if(researchUser(credenziali)){
+        if(logInController.researchUser(credenziali)){
 
             errorLabel.setStyle(STYLE);
             errorLabel.setText("Utente già registrato!");
@@ -110,7 +112,7 @@ public class GuiLoginController extends LogInController{
 
         else{
 
-            insert(credenziali);
+            logInController.insert(credenziali);
             errorLabel.setStyle("-fx-text-fill: green;");
             errorLabel.setText("Registrazione effettuata con successo!");
 

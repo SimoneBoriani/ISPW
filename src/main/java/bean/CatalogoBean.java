@@ -2,11 +2,17 @@ package bean;
 
 public class CatalogoBean {
 
-    private String modello="";
-    private String marca="";
-    private int prezzo=0;
-    private int km=0;
-    private String alimentazione="";
+    private int id;
+    private int anno;
+    private int km;
+    private int posti;
+    private int proprietari;
+    private String modello;
+    private String marca;
+    private String alimentazione;
+    private int prezzo;
+    private String tipologia;
+    private String foto;
 
     public CatalogoBean(){
     //Costruttore
@@ -26,5 +32,23 @@ public class CatalogoBean {
 
     public String getAlimentazione() { return alimentazione; }
     public void setAlimentazione(String alimentazione) { this.alimentazione = alimentazione; }
+
+    public int getId(){return id;}
+    public void setId(int id){this.id=id;}
+
+    public int getAnno(){return anno;}
+    public void setAnno(int anno){this.anno=anno;}
+
+    public int getPosti(){return posti;}
+    public void setPosti(int posti){this.posti=posti;}
+
+    public int getProprietari(){return proprietari;}
+    public void setProprietari(int proprietari){this.proprietari=proprietari;}
+
+    public String getTipologia(){return tipologia;}
+    public void setTipologia(String tipologia){this.tipologia=tipologia;}
+
+    public String getFoto(){return foto;}
+    public void setFoto(String foto){this.foto=foto;}
 
 }
