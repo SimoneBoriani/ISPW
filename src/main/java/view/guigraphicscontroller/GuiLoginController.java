@@ -1,7 +1,7 @@
 package view.guigraphicscontroller;
 
 import utils.SessionSingleton;
-import bean.LoginBean;
+import bean.ProfileBean;
 import controller.LogInController;
 import exceptions.IncorrectCredentialExeption;
 import javafx.event.ActionEvent;
@@ -49,17 +49,22 @@ public class GuiLoginController{
             return;
         }
 
-        LoginBean credenziali=new LoginBean();
+        ProfileBean credenziali=new ProfileBean();
         credenziali.setUsername(user);
         credenziali.setPassword(pass);
 
         try {
 
+            String str;
             logInController.authenticate(credenziali);
 
             if(SessionSingleton.getInstance().getUtenteCorrente()!=null){
+                if(SessionSingleton.getInstance().getUtenteCorrente().getRuolo().equals("USER")) {
+                    str = "/view/CatalogoView.fxml";
 
-                String str= "/view/CatalogoView.fxml";
+                }else{
+                    str = "/view/AdminView.fxml";
+                }
                 StageHandler.getSingletonInstance().loadPage(str);
             }
 
@@ -98,7 +103,7 @@ public class GuiLoginController{
             return;
         }
 
-        LoginBean credenziali=new LoginBean();
+        ProfileBean credenziali=new ProfileBean();
 
         credenziali.setUsername(user);
         credenziali.setPassword(pass);

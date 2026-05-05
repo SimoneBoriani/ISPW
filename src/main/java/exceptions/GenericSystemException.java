@@ -12,8 +12,7 @@ public class GenericSystemException extends RuntimeException {
         super(message, cause);
     }
 
-    public GenericSystemException(SQLException e) {
-        super("Si è verificato un errore generico");
+    public GenericSystemException(SQLException e) {super("Si è verificato un errore generico", e);
     }
 
 }

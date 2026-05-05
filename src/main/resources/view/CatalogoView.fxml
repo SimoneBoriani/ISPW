@@ -33,34 +33,29 @@
 
     <VBox layoutX="45.0" layoutY="51.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="51.0">
       <AnchorPane prefHeight="45.0" prefWidth="533.0">
-         <children>
               <Label alignment="TOP_CENTER" layoutX="-45.0" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="578.0" text="CATALOGO" textAlignment="CENTER" textFill="#204080" AnchorPane.leftAnchor="-45.0" AnchorPane.rightAnchor="0.0">
                   <font>
                       <Font name="System Bold" size="13.0" />
                   </font>
               </Label>
-              <ImageView fitHeight="29.0" fitWidth="31.0" layoutX="-37.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+              <ImageView onMouseClicked="#research" fitHeight="29.0" fitWidth="31.0" layoutX="-37.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
                   <Image url="@../images/lente_ricerca.png" />
               </ImageView>
-         </children>
       </AnchorPane>
 
         <ListView fx:id="carListView" styleClass="subito-list-view" VBox.vgrow="ALWAYS" />
     </VBox>
-   <ImageView fitHeight="29.0" fitWidth="31.0" layoutX="9.0" layoutY="91.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
-      <image>
+   <ImageView onMouseClicked="#refresh" fitHeight="29.0" fitWidth="31.0" layoutX="9.0" layoutY="91.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
          <Image url="@../images/refresh_logo.png" />
-      </image>
    </ImageView>
-   <ImageView fitHeight="29.0" fitWidth="31.0" layoutX="7.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
-      <image>
+   <ImageView onMouseClicked="#goToGarage" fitHeight="29.0" fitWidth="31.0" layoutX="7.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
          <Image url="@../images/garage.png" />
-      </image>
    </ImageView>
    <ImageView fitHeight="29.0" fitWidth="31.0" layoutX="10.0" layoutY="161.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
-      <image>
          <Image url="@../images/autoselector.png" />
-      </image>
+   </ImageView>
+   <ImageView onMousePressed="#goToProfile" fitHeight="27.0" fitWidth="26.0" layoutX="13.0" layoutY="187.0" onMouseClicked="#goToProfile" pickOnBounds="true" preserveRatio="true" styleClass="clickable-Image">
+         <Image url="@../images/carsphoto/yaris.jpeg" />
    </ImageView>
 
 </AnchorPane>

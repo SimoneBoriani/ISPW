@@ -1,9 +1,6 @@
 package view.factory;
 
-import controller.AggiungiAutoController;
-import controller.GestioneCatalogoController;
-import controller.LogInController;
-import controller.MainPageCatalogoController;
+import controller.*;
 import exceptions.GenericSystemException;
 
 public class ControllerFactory {
@@ -29,6 +26,8 @@ public class ControllerFactory {
     public MainPageCatalogoController createMainPageCatalogoController(){
         return new MainPageCatalogoController();
     }
+
+    public GestioneProfiloController createGestioneProfiloController(){return new GestioneProfiloController();}
 
     public static synchronized ControllerFactory getGraphicalSingletonFactory() throws GenericSystemException {
 

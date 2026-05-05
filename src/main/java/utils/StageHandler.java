@@ -1,5 +1,6 @@
 package utils;
 
+import exceptions.ItemNotFoundException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,21 +30,21 @@ public class StageHandler {
         FXMLLoader fxmlLoader = new FXMLLoader(xmlUrl);
         Parent root = fxmlLoader.load();
 
-        Scene scene = new Scene(root, 1500, 700);
+        Scene scene = new Scene(root);
 
         if (this.stage == null) {
             throw new IllegalStateException("Stage non inizializzato!");
         }
 
         scene.setOnKeyPressed(event -> {
-            if (event.getCode() == javafx.scene.input.KeyCode.ESCAPE){
+            if (event.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
                 this.stage.close();
             }
         });
 
+        this.stage.setFullScreen(false);
         this.stage.setScene(scene);
         this.stage.setFullScreenExitHint("");
-        this.stage.setFullScreen(false);
         this.stage.setResizable(false);
         this.stage.setTitle("Krusty No Dusty");
         this.stage.show();
@@ -52,5 +53,14 @@ public class StageHandler {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public void loadCss(Scene scene) {
+        try {
+            String css = getClass().getResource("/view/style.css").toExternalForm();
+            scene.getStylesheets().add(css);
+        } catch (NullPointerException e) {
+            throw new ItemNotFoundException("Attenzione: File CSS non trovato! Assicurati che sia in src/main/resources");
+        }
     }
 }

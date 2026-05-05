@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiGestioneCatalogo">
+
+      <VBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane prefHeight="35.0" prefWidth="600.0">
+                  <Label alignment="CENTER" layoutX="50.0" layoutY="19.0" text="GESTIONE CATALOGO" textFill="#204080" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="14.0" layoutY="9.0" styleClass="link-label" text="Indietro" />
+            </AnchorPane>
+            <TableView fx:id="tabellaAuto" prefHeight="367.0" prefWidth="600.0">
+              <columns>
+                <TableColumn fx:id="colModello" prefWidth="75.0" text="Modello" />
+                <TableColumn fx:id="colMarca" prefWidth="75.0" text="Marca" />
+                  <TableColumn fx:id="colAlimentazione" prefWidth="90.6666259765625" text="Alimentazione" />
+                  <TableColumn fx:id="colPosti" prefWidth="60.00006103515625" text="Posti" />
+                  <TableColumn fx:id="colPrezzo" prefWidth="75.0" text="Prezzo" />
+              </columns>
+            </TableView>
+      </VBox>
+</AnchorPane>

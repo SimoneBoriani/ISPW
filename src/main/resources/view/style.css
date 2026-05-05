@@ -101,3 +101,16 @@
 .clickable-Image{
     -fx-cursor: hand;
 }
+
+.text-field {
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #b0bec5;
+    -fx-padding: 8;
+    -fx-background-color: white;
+}
+
+.text-field:focused {
+    -fx-border-color: #007bff;
+    -fx-border-width: 2;
+}

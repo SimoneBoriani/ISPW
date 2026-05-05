@@ -20,6 +20,7 @@ public class MainPageCatalogoController {
         autoFiltro.setCasa(filtri.getMarca());
         autoFiltro.setModello(filtri.getModello());
         autoFiltro.setAlimentazione(filtri.getAlimentazione());
+        autoFiltro.setPrezzo(filtri.getPrezzo());
 
         autoFiltro.setKm(filtri.getKm());
 
