@@ -47,11 +47,6 @@ public class DemoDaoMacchina extends DaoMacchina {
     }
 
     @Override
-    public void discount(int id, int sconto, int prezzo) {
-
-    }
-
-    @Override
     public void update(Macchina macchina) {
 
     }

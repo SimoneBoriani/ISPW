@@ -9,98 +9,142 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbmsAcquistoAutoDao extends DaoAcquistoAuto {
 
     @Override
+    public void buyRequest(Utente utente, Macchina macchina) {
+
+        String queryVendita = "INSERT INTO vendite (id_utente, auto_id) VALUES (?, ?)";
+        String querySaldo = "UPDATE utenti SET saldo = saldo - ? WHERE id = ?";
+        String queryNascondiAuto = "UPDATE macchine SET disponibile = 'false' WHERE auto_id = ?";
+
+        Connection connection = ConnectionHandler.getInstance().getConnection();
+
+        try {
+
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement stmtVendita = connection.prepareStatement(queryVendita)) {
+                stmtVendita.setInt(1, utente.getIdUser());
+                stmtVendita.setInt(2, macchina.getId());
+                stmtVendita.executeUpdate();
+            }
+            try (PreparedStatement stmtSaldo = connection.prepareStatement(querySaldo)) {
+                stmtSaldo.setInt(1, macchina.getPrezzo());
+                stmtSaldo.setInt(2, utente.getIdUser());
+                stmtSaldo.executeUpdate();
+            }
+            try (PreparedStatement stmtNascondi = connection.prepareStatement(queryNascondiAuto)) {
+                stmtNascondi.setInt(1, macchina.getId());
+                stmtNascondi.executeUpdate();
+            }
+
+            connection.commit();
+
+        } catch (SQLException e) {
+
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new GenericSystemException("Errore critico nel rollback: " + ex.getMessage());
+            }
+            throw new GenericSystemException("Errore durante l'acquisto: " + e.getMessage());
+
+        } finally {
+
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new GenericSystemException("Errore nel ripristino della connessione: " + e.getMessage());
+            }
+        }
+    }
+
+
+    @Override
     public boolean checkInfo(Utente utente, Macchina macchina) {
 
-        // 1. Query separate e corrette (assumo che l'id_transazione sia un SERIAL/AUTO_INCREMENT nel DB)
         String queryAuto = "SELECT prezzo FROM macchine WHERE auto_id = ?";
-
-        // Assicurati che i nomi 'utenti' e 'saldo' (o 'portafoglio') corrispondano al tuo DB
         String queryUtente = "SELECT saldo FROM utenti WHERE id = ?";
-
-        String insertVendita = "INSERT INTO vendite (id_utente, auto_id) VALUES (?, ?)";
 
         Connection con = ConnectionHandler.getInstance().getConnection();
 
         try {
-            // DISABILITIAMO L'AUTOCOMMIT: Inizia la transazione sicura
-            con.setAutoCommit(false);
 
             int prezzoAuto = 0;
             double soldiUtente = 0.0;
 
-            // --- STEP 1: Controlliamo il prezzo REALE dell'auto nel DB ---
             try (PreparedStatement psAuto = con.prepareStatement(queryAuto)) {
                 psAuto.setInt(1, macchina.getId());
                 try (ResultSet rs = psAuto.executeQuery()) {
                     if (rs.next()) {
                         prezzoAuto = rs.getInt("prezzo");
                     } else {
-                        return false; // L'auto non esiste più nel DB
+                        return false;
                     }
                 }
             }
 
-            // --- STEP 2: Controlliamo i soldi REALI dell'utente nel DB ---
             try (PreparedStatement psUtente = con.prepareStatement(queryUtente)) {
-                psUtente.setInt(1, utente.getIdUser()); // Assumo che l'oggetto Utente abbia un getId()
+
+                psUtente.setInt(1, utente.getIdUser());
                 try (ResultSet rs = psUtente.executeQuery()) {
                     if (rs.next()) {
                         soldiUtente = rs.getDouble("saldo");
                     } else {
-                        return false; // L'utente non esiste
+                        return false;
                     }
                 }
             }
 
-            // --- STEP 3: Controllo Logico (Ha i soldi?) ---
-            if (soldiUtente >= prezzoAuto) {
+            return soldiUtente >= prezzoAuto;
 
-                // --- STEP 4: Inserimento nella tabella vendite ---
-                try (PreparedStatement psVendita = con.prepareStatement(insertVendita)) {
-                    psVendita.setInt(1, utente.getIdUser());
-                    psVendita.setInt(2, macchina.getId());
-                    psVendita.executeUpdate();
+        } catch (SQLException e) {
+
+            throw new GenericSystemException("Errore DB durante il controllo acquisto: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Macchina> getUserCars(Utente utente) {
+
+        List<Macchina> autoAcquistate = new ArrayList<>();
+
+        String query = "SELECT m.* FROM macchine m JOIN vendite v ON m.auto_id = v.auto_id WHERE v.id_utente = ?";
+
+        Connection conn = ConnectionHandler.getInstance().getConnection();
+
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, utente.getIdUser());
+
+            try (ResultSet rs = statement.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Macchina m = new Macchina();
+                    m.setId(rs.getInt("auto_id"));
+                    m.setCasa(rs.getString("casa"));
+                    m.setModello(rs.getString("modello"));
+                    m.setAnno(rs.getInt("anno"));
+                    m.setKm(rs.getInt("km"));
+                    m.setPrezzo(rs.getInt("prezzo"));
+                    m.setAlimentazione(rs.getString("alimentazione"));
+                    m.setTipologia(rs.getString("tipologia"));
+                    m.setPosti(rs.getInt("posti"));
+                    m.setProprietari(rs.getInt("proprietari"));
+
+                    autoAcquistate.add(m);
                 }
-
-                /* * OPZIONALE (Ma consigliato per la coerenza del sistema):
-                 * Qui dovresti aggiungere anche le query per:
-                 * 1. Sottrarre i soldi all'utente (UPDATE utenti SET saldo = saldo - ? WHERE id = ?)
-                 * 2. Rimuovere l'auto dal catalogo (DELETE FROM macchine WHERE auto_id = ?) o segnarla come 'venduta'.
-                 */
-
-                // Tutto è andato bene! CONFERMIAMO LA TRANSAZIONE
-                con.commit();
-                return true;
-
-            } else {
-                // L'utente non ha i soldi, chiudiamo senza fare l'insert
-                return false;
             }
 
         } catch (SQLException e) {
-            // SE QUALCOSA ESPLODE: Annulliamo tutte le modifiche fatte finora
-            try {
-                if (con != null) {
-                    con.rollback();
-                }
-            } catch (SQLException ex) {
-                throw new GenericSystemException("Errore critico durante il rollback: " + ex.getMessage());
-            }
-            throw new GenericSystemException("Errore durante l'acquisto: " + e.getMessage());
-
-        } finally {
-            // Ripristiniamo sempre lo stato della connessione alla fine
-            try {
-                if (con != null) {
-                    con.setAutoCommit(true);
-                }
-            } catch (SQLException e) {
-                throw new GenericSystemException("Impossibile ripristinare l'autocommit: " + e.getMessage());
-            }
+            throw new GenericSystemException("Errore durante il recupero delle auto acquistate: " + e.getMessage());
         }
+
+        return autoAcquistate;
     }
 }

@@ -1,17 +1,34 @@
 package controller;
 
+import bean.AcquistoAutoBean;
+import bean.AggiungiAutoBean;
 import bean.CatalogoBean;
+import exceptions.GenericSystemException;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 
 public class GestioneCatalogoController {
 
-    public void removeCar(CatalogoBean catalogo){
-        DaoFactory.getDaoSingletonFactory().createMacchinaDao().remove(catalogo.getId());
+    public void removeCar(CatalogoBean bean){
+        DaoFactory.getDaoSingletonFactory().createMacchinaDao().remove(bean.getId());
     }
 
-    public void applyDiscount(CatalogoBean catalogo){
-        //TESTING
+    public void addCar(AggiungiAutoBean aggiungiAutoBean){ //catalogo bean
+
+        Macchina toAddCar = new Macchina(
+                aggiungiAutoBean.getCarYear(),
+                aggiungiAutoBean.getCarKm(),
+                aggiungiAutoBean.getCarSeat(),
+                aggiungiAutoBean.getCarOwners(),
+                aggiungiAutoBean.getCarName(),
+                aggiungiAutoBean.getCarBrand(),
+                aggiungiAutoBean.getCarAlimentation(),
+                aggiungiAutoBean.getCarPrice(),
+                aggiungiAutoBean.getCarType()
+        );
+
+        DaoFactory.getDaoSingletonFactory().createMacchinaDao().insert(toAddCar);
+
     }
 
     public void modifyCar(CatalogoBean catalogo) {
@@ -31,5 +48,20 @@ public class GestioneCatalogoController {
         macchinaSelezionata.setTipologia(catalogo.getTipologia());
 
         DaoFactory.getDaoSingletonFactory().createMacchinaDao().update(macchinaSelezionata);
+    }
+
+    public void buyRequest(AcquistoAutoBean bean){
+        if(checkData(bean)){
+            DaoFactory.getDaoSingletonFactory().createAcquistoAutoDao().buyRequest(bean.getBuyer(),bean.getMacchina());
+        }
+        else{
+            throw new GenericSystemException("Auto / Utente non trovato");
+        }
+    }
+
+    public boolean checkData(AcquistoAutoBean bean){
+
+        return DaoFactory.getDaoSingletonFactory().createAcquistoAutoDao().checkInfo(bean.getBuyer(),bean.getMacchina());
+
     }
 }

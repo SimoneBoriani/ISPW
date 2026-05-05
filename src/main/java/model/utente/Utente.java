@@ -11,6 +11,10 @@ public class Utente {
     private double saldo;
     private String ruolo;
 
+    public Utente(){
+        //Costruttore
+    }
+
     public Utente(int idUser, String username, String userPassword, String nome,String cognome) {
 
         this.idUser = idUser;

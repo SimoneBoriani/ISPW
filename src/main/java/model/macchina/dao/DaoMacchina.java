@@ -10,7 +10,6 @@ public abstract class DaoMacchina {
     public abstract List<Macchina> research(Macchina macchina);
     public abstract List<Macchina> getCars();
     public abstract void remove(int id);
-    public abstract void discount(int id, int sconto, int prezzo);
     public abstract void update(Macchina macchina);
 
 }

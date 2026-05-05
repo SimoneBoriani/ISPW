@@ -1,5 +1,6 @@
 package model.utente.dao;
 
+import exceptions.GenericSystemException;
 import utils.SessionSingleton;
 import model.utente.Utente;
 import utils.ConnectionHandler;
@@ -14,7 +15,6 @@ public class DbmsDaoUtente extends DaoUtente {
     public void insertUtente(Utente utente){
 
         String sql = "INSERT INTO utenti (username,password,nome,cognome) VALUES (?,?,?,?)";
-        int generatedId = -1;
 
         Connection session = ConnectionHandler.getInstance().getConnection();
 
@@ -39,26 +39,19 @@ public class DbmsDaoUtente extends DaoUtente {
 
             try (ResultSet rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    generatedId = rs.getInt(1);
+                     rs.getInt(1);
                 }
             }
 
-            /*return new Utente(
-                    generatedId,
-                    utente.getUsername(),
-                    utente.getUserPassword(),
-                    utente.getNome(),
-                    utente.getCognome()
-            );*/
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new GenericSystemException(e);
         }
     }
 
     @Override
     public Utente researchUser(Utente utente) throws SQLException {
 
-        String sql = "SELECT * FROM utenti WHERE username = ?";
+        String sql = "SELECT *" + " FROM utenti WHERE username = ?";
 
         Connection session = ConnectionHandler.getInstance().getConnection();
 
@@ -106,79 +99,96 @@ public class DbmsDaoUtente extends DaoUtente {
             statement.setString(2, utente.getUserPassword());
 
             try (ResultSet rs = statement.executeQuery()) {
-                return rs.next(); // Se c'è un risultato, rs.next() è true (utente trovato)
+                return rs.next();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new GenericSystemException(e);
         }
     }
 
     @Override
     public void update(Utente utente) {
-
-        StringBuilder sql = new StringBuilder("UPDATE utenti SET ");
         List<Object> parametri = new ArrayList<>();
-        Utente utenteSessione = SessionSingleton.getInstance().getUtenteCorrente();
-        boolean first = true;
+        String sql = costruisciQueryUpdate(utente, parametri);
 
-        if (utente.getUserPassword() != null && !utente.getUserPassword().trim().isEmpty()) {
-            sql.append("password = ?");
-            parametri.add(utente.getUserPassword());
-            first = false;
-        }
-
-        if (utente.getNome() != null && !utente.getNome().trim().isEmpty()) {
-            if (!first) sql.append(", ");
-            sql.append("nome = ?");
-            utenteSessione.setNome(utente.getNome());
-            parametri.add(utente.getNome());
-            first = false;
-        }
-
-        if (utente.getCognome() != null && !utente.getCognome().trim().isEmpty()) {
-            if (!first) sql.append(", ");
-            sql.append("cognome = ?");
-            parametri.add(utente.getCognome());
-            first = false;
-        }
-
-        if (utente.getAutoPossedute() > 0) {
-            if (!first) sql.append(", ");
-            sql.append("autopossedute = ?");
-            parametri.add(utente.getAutoPossedute());
-            first = false;
-        }
-
-        if (utente.getSaldo() >= 0.00) {
-            if (!first) sql.append(", ");
-            utenteSessione.setSaldo(utente.getSaldo());
-            sql.append("saldo = ?");
-            parametri.add(utente.getSaldo());
-            first = false;
-        }
-
-        if (first) {
-            System.out.println("Nessun campo da aggiornare.");
+        if (sql == null) {
             return;
         }
 
-        sql.append(" WHERE username = ?");
-        parametri.add(utente.getUsername());
+        int rowsAffected = eseguiQuery(sql, parametri);
 
-        System.out.println("Query generata: " + sql);
+        if (rowsAffected > 0) {
+            sincronizzaSessione(utente);
+        }
+    }
 
+    private String costruisciQueryUpdate(Utente utente, List<Object> parametri) {
+        List<String> setClauses = new ArrayList<>();
+
+        if (utente.getUsername() != null && !utente.getUsername().trim().isEmpty()) {
+            setClauses.add("username = ?");
+            parametri.add(utente.getUsername());
+        }
+        if (utente.getUserPassword() != null && !utente.getUserPassword().trim().isEmpty()) {
+            setClauses.add("password = ?");
+            parametri.add(utente.getUserPassword());
+        }
+        if (utente.getNome() != null && !utente.getNome().trim().isEmpty()) {
+            setClauses.add("nome = ?");
+            parametri.add(utente.getNome());
+        }
+        if (utente.getCognome() != null && !utente.getCognome().trim().isEmpty()) {
+            setClauses.add("cognome = ?");
+            parametri.add(utente.getCognome());
+        }
+        if (utente.getAutoPossedute() > 0) {
+            setClauses.add("autopossedute = ?");
+            parametri.add(utente.getAutoPossedute());
+        }
+        if (utente.getSaldo() >= 0.00) {
+            setClauses.add("saldo = ?");
+            parametri.add(utente.getSaldo());
+        }
+
+        if (setClauses.isEmpty()) {
+            return null;
+        }
+
+        String sql = "UPDATE utenti SET " + String.join(", ", setClauses) + " WHERE id = ?";
+        parametri.add(utente.getIdUser());
+
+        return sql;
+
+    }
+
+    private int eseguiQuery(String sql, List<Object> parametri) {
         Connection session = ConnectionHandler.getInstance().getConnection();
 
-        try (PreparedStatement ps = session.prepareStatement(sql.toString())) {
-
+        try (PreparedStatement ps = session.prepareStatement(sql)) {
             for (int i = 0; i < parametri.size(); i++) {
                 ps.setObject(i + 1, parametri.get(i));
             }
-
-            int rows = ps.executeUpdate();
-            System.out.println("Righe aggiornate: " + rows);
+            return ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new GenericSystemException(e);
+        }
+    }
+
+    private void sincronizzaSessione(Utente utente) {
+
+        Utente utenteSessione = SessionSingleton.getInstance().getUtenteCorrente();
+
+        if (utente.getUsername() != null && !utente.getUsername().trim().isEmpty()) {
+            utenteSessione.setUsername(utente.getUsername());
+        }
+        if (utente.getNome() != null && !utente.getNome().trim().isEmpty()) {
+            utenteSessione.setNome(utente.getNome());
+        }
+        if (utente.getSaldo() >= 0.00) {
+            utenteSessione.setSaldo(utente.getSaldo());
+        }
+        if(utente.getCognome() != null && !utente.getCognome().trim().isEmpty()) {
+            utenteSessione.setCognome(utente.getCognome());
         }
     }
 }

@@ -1,7 +1,8 @@
 package bean;
 
-public class LoginBean {
+public class ProfileBean {
 
+    int id;
     String username;
     String password;
     int autoPossedute;
@@ -9,14 +10,17 @@ public class LoginBean {
     String nome;
     String cognome;
 
-    public LoginBean() {
+    public ProfileBean() {
         //Costruttore
     }
 
-    public LoginBean(String username, String password) {
+    public ProfileBean(String username, String password) {
         this.username = username;
         this.password = password;
     }
+
+    public void setId(int id) {this.id = id;}
+    public int getId() {return id;}
 
     public String getUsername() {return username;}
     public void setUsername(String username) {this.username = username;}

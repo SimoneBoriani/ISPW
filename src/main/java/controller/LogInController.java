@@ -1,7 +1,7 @@
 package controller;
 
 import utils.SessionSingleton;
-import bean.LoginBean;
+import bean.ProfileBean;
 import exceptions.GenericSystemException;
 import exceptions.IncorrectCredentialExeption;
 import model.daofactory.DaoFactory;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 public class LogInController {
 
-    public void authenticate(LoginBean loginBean){
+    public void authenticate(ProfileBean loginBean){
 
         Utente utenteDati = new Utente(-1, loginBean.getUsername(), loginBean.getPassword(), null, null);
 
@@ -39,7 +39,7 @@ public class LogInController {
         }
     }
 
-    public boolean researchUser(LoginBean loginBean) {
+    public boolean researchUser(ProfileBean loginBean) {
 
         Utente ricercato = new Utente(-1, loginBean.getUsername(), "", "", "");
 
@@ -56,7 +56,7 @@ public class LogInController {
         }
     }
 
-    public void insert(LoginBean loginBean){
+    public void insert(ProfileBean loginBean){
 
         Utente nuovo=new Utente(-1, loginBean.getUsername(), loginBean.getPassword(), null, null);
         DaoFactory.getDaoSingletonFactory().createUtenteDao().insertUtente(nuovo);
