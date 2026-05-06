@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="578.0" style="-fx-background-color: white;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiMainPageCatalogoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="578.0" style="-fx-background-color: white;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiVisualizzaCatalogoController">
 
     <AnchorPane prefHeight="51.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Label alignment="CENTER" layoutX="40.0" layoutY="12.0" prefHeight="20.0" prefWidth="560.0" text="KRUSTY NO DUSTY" textFill="#204080" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0">
@@ -24,7 +24,6 @@
 
         <Button fx:id="btnAccedi" alignment="CENTER_RIGHT" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnAccediOnAction" styleClass="Button" text="Accedi" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
         <Button fx:id="btnLogout" layoutX="512.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnLogoutOnAction" styleClass="Button" text="Logout" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="10.0" />
-        <Button fx:id="btnAddCar" layoutX="450.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnAddCarOnAction" styleClass="Button" text="Aggiungi Auto" AnchorPane.rightAnchor="76.0" AnchorPane.topAnchor="10.0" />
     </AnchorPane>
 
     <VBox layoutX="5.0" layoutY="54.0" prefHeight="349.0" prefWidth="7.0" spacing="15.0" stylesheets="@style.css" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="54.0">
@@ -38,23 +37,23 @@
                       <Font name="System Bold" size="13.0" />
                   </font>
               </Label>
-              <ImageView onMouseClicked="#research" fitHeight="29.0" fitWidth="31.0" layoutX="-37.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+              <ImageView fitHeight="29.0" fitWidth="31.0" layoutX="-37.0" layoutY="4.0" onMouseClicked="#research" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
                   <Image url="@../images/lente_ricerca.png" />
               </ImageView>
       </AnchorPane>
 
         <ListView fx:id="carListView" styleClass="subito-list-view" VBox.vgrow="ALWAYS" />
     </VBox>
-   <ImageView onMouseClicked="#refresh" fitHeight="29.0" fitWidth="31.0" layoutX="9.0" layoutY="91.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+   <ImageView fitHeight="29.0" fitWidth="31.0" layoutX="9.0" layoutY="91.0" onMouseClicked="#refresh" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
          <Image url="@../images/refresh_logo.png" />
    </ImageView>
-   <ImageView onMouseClicked="#goToGarage" fitHeight="29.0" fitWidth="31.0" layoutX="7.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+   <ImageView fitHeight="29.0" fitWidth="31.0" layoutX="7.0" layoutY="127.0" onMouseClicked="#goToGarage" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
          <Image url="@../images/garage.png" />
    </ImageView>
    <ImageView fitHeight="29.0" fitWidth="31.0" layoutX="10.0" layoutY="161.0" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
          <Image url="@../images/autoselector.png" />
    </ImageView>
-   <ImageView onMousePressed="#goToProfile" fitHeight="27.0" fitWidth="26.0" layoutX="13.0" layoutY="187.0" onMouseClicked="#goToProfile" pickOnBounds="true" preserveRatio="true" styleClass="clickable-Image">
+   <ImageView fitHeight="27.0" fitWidth="26.0" layoutX="13.0" layoutY="187.0" onMouseClicked="#goToProfile" onMousePressed="#goToProfile" pickOnBounds="true" preserveRatio="true" styleClass="clickable-Image">
          <Image url="@../images/carsphoto/yaris.jpeg" />
    </ImageView>
 

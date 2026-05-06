@@ -83,6 +83,82 @@ public class GuiGestioneProfilo {
     }
 
     @FXML
+    public void btnSaldo(ActionEvent actionEvent) throws IOException {
+
+        String str="/view/Login.fxml";
+
+        if(SessionSingleton.getInstance().getUtenteCorrente()!=null) {
+
+            Stage popupStage = new Stage();
+
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+
+            popupStage.setTitle("Aggiungi Saldo");
+
+            TextField txtCodice = new TextField();
+            txtCodice.setPromptText("Codice Carta");
+
+            TextField txtScadenza = new TextField();
+            txtScadenza.setPromptText("Scadenza");
+
+            TextField txtCvv = new TextField();
+            txtCvv.setPromptText("CVV");
+
+            TextField txtSaldo = new TextField();
+            txtSaldo.setPromptText("Saldo");
+
+            Button btnUpdate = new Button("Conferma");
+
+            btnUpdate.getStyleClass().add("Button");
+
+            btnUpdate.setOnAction(e -> {
+
+                ProfileBean bean=new ProfileBean();
+
+
+                bean.setId(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
+                bean.setSaldo(Double.parseDouble(txtSaldo.getText()));
+                controller.updateProfile(bean);
+                String reload="/view/Profilo.fxml";
+                try {
+                    StageHandler.getSingletonInstance().loadPage(reload);
+                } catch (IOException ex) {
+                    throw new GenericSystemException("Errore:",ex);
+                }
+                popupStage.close();
+
+            });
+
+            VBox layoutPopup = new VBox(15);
+            layoutPopup.setPadding(new Insets(20));
+            layoutPopup.setAlignment(Pos.CENTER);
+
+            layoutPopup.getChildren().addAll(
+                    new Label("Aggiorna Dati Personali:"),
+                    txtCodice,
+                    txtScadenza,
+                    txtCvv,
+                    txtSaldo,
+                    btnUpdate
+            );
+
+            Scene scene = new Scene(layoutPopup, 300, 350);
+
+            StageHandler.getSingletonInstance().loadCss(scene);
+
+            popupStage.setScene(scene);
+            popupStage.showAndWait();
+
+            }
+        StageHandler.getSingletonInstance().loadPage(str);
+    }
+
+    @FXML
+    public void btnPassword(ActionEvent actionEvent){
+        //Implements function
+    }
+
+    @FXML
     public void goToHome(MouseEvent event) throws IOException {
         String str="/view/CatalogoView.fxml";
         StageHandler.getSingletonInstance().loadPage(str);

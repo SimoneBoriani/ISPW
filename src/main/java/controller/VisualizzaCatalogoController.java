@@ -8,7 +8,7 @@ import utils.SessionSingleton;
 
 import java.util.List;
 
-public class MainPageCatalogoController {
+public class VisualizzaCatalogoController {
 
     public List<Macchina> getCars() {
         return DaoFactory.getDaoSingletonFactory().createMacchinaDao().getCars();
@@ -17,12 +17,12 @@ public class MainPageCatalogoController {
     public List<Macchina> research(CatalogoBean filtri) throws CarNotFoundException {
 
         Macchina autoFiltro = new Macchina();
-        autoFiltro.setCasa(filtri.getMarca());
+
+        autoFiltro.setMarca(filtri.getMarca());
         autoFiltro.setModello(filtri.getModello());
         autoFiltro.setAlimentazione(filtri.getAlimentazione());
+        autoFiltro.setTrasmissione(filtri.getTrasmissione());
         autoFiltro.setPrezzo(filtri.getPrezzo());
-
-        autoFiltro.setKm(filtri.getKm());
 
         return DaoFactory.getDaoSingletonFactory().createMacchinaDao().research(autoFiltro);
     }

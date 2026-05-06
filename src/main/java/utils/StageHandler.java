@@ -30,7 +30,7 @@ public class StageHandler {
         FXMLLoader fxmlLoader = new FXMLLoader(xmlUrl);
         Parent root = fxmlLoader.load();
 
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 1000 , 700);
 
         if (this.stage == null) {
             throw new IllegalStateException("Stage non inizializzato!");
@@ -42,10 +42,12 @@ public class StageHandler {
             }
         });
 
+        this.stage.setMinHeight(scene.getHeight());
+        this.stage.setMinWidth(scene.getWidth());
         this.stage.setFullScreen(false);
         this.stage.setScene(scene);
         this.stage.setFullScreenExitHint("");
-        this.stage.setResizable(false);
+        this.stage.setResizable(true);
         this.stage.setTitle("Krusty No Dusty");
         this.stage.show();
 

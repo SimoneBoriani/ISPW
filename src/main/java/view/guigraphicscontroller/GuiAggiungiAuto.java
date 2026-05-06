@@ -1,7 +1,7 @@
 package view.guigraphicscontroller;
 
-import bean.AggiungiAutoBean;
-import controller.AggiungiAutoController;
+import bean.CatalogoBean;
+import controller.GestioneCatalogoController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class GuiAggiungiAuto{
 
-    private AggiungiAutoController aggiungiAutoController= ControllerFactory.getGraphicalSingletonFactory().createAggiungiAutoController();
+    private GestioneCatalogoController gestioneCatalogoController=ControllerFactory.getGraphicalSingletonFactory().createGestioneCatalogoController();
 
     @FXML
     private TextField carYear;
@@ -42,23 +42,19 @@ public class GuiAggiungiAuto{
         String carAlimentationStr = carAlimentation.getText();
         String carBrandStr = carBrand.getText();
         String carSeatStr = carSeat.getText();
-        String carOwnersStr = carOwners.getText();
-        String carKmStr = carKm.getText();
         String carTypeStr = carType.getText();
 
-        AggiungiAutoBean aggiungiAutoBean = new AggiungiAutoBean();
+        CatalogoBean aggiungiAutoBean = new CatalogoBean();
 
-        aggiungiAutoBean.setCarAlimentation(carAlimentationStr);
-        aggiungiAutoBean.setCarBrand(carBrandStr);
-        aggiungiAutoBean.setCarName(carNameStr);
-        aggiungiAutoBean.setCarType(carTypeStr);
-        aggiungiAutoBean.setCarSeat(Integer.parseInt(carSeatStr));
-        aggiungiAutoBean.setCarKm(Integer.parseInt(carKmStr));
-        aggiungiAutoBean.setCarPrice(Integer.parseInt(carPriceStr));
-        aggiungiAutoBean.setCarYear(Integer.parseInt(carYearStr));
-        aggiungiAutoBean.setCarOwners(Integer.parseInt(carOwnersStr));
+        aggiungiAutoBean.setAlimentazione(carAlimentationStr);
+        aggiungiAutoBean.setMarca(carBrandStr);
+        aggiungiAutoBean.setModello(carNameStr);
+        aggiungiAutoBean.setTipologia(carTypeStr);
+        aggiungiAutoBean.setPosti(Integer.parseInt(carSeatStr));
+        aggiungiAutoBean.setPrezzo(Integer.parseInt(carPriceStr));
+        aggiungiAutoBean.setAnno(Integer.parseInt(carYearStr));
 
-        aggiungiAutoController.addCar(aggiungiAutoBean);
+        gestioneCatalogoController.salvaAutoRam(aggiungiAutoBean);
 
         carYear.clear();
         carName.clear();

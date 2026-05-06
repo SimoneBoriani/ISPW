@@ -1,6 +1,6 @@
 package model.daofactory;
 
-import model.acquistoauto.dao.DaoAcquistoAuto;
+import model.noleggioauto.dao.DaoNoleggioAuto;
 import model.macchina.dao.DaoMacchina;
 import model.macchina.dao.DemoDaoMacchina;
 import model.utente.dao.DaoUtente;
@@ -19,7 +19,7 @@ public class DemoDaoFactory extends DaoFactory {
     }
 
     @Override
-    public DaoAcquistoAuto createAcquistoAutoDao() {
+    public DaoNoleggioAuto createNoleggioAutoDao() {
         return null;
     }
 }

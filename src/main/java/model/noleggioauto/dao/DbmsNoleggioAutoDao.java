@@ -1,4 +1,4 @@
-package model.acquistoauto.dao;
+package model.noleggioauto.dao;
 
 import exceptions.GenericSystemException;
 import model.macchina.Macchina;
@@ -12,14 +12,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DbmsAcquistoAutoDao extends DaoAcquistoAuto {
+public class DbmsNoleggioAutoDao extends DaoNoleggioAuto {
 
     @Override
-    public void buyRequest(Utente utente, Macchina macchina) {
+    public void rentRequest(Utente utente, Macchina macchina) {
 
-        String queryVendita = "INSERT INTO vendite (id_utente, auto_id) VALUES (?, ?)";
+        String queryNoleggio = "INSERT INTO noleggi_attivi (id_utente, auto_id) VALUES (?, ?)";
         String querySaldo = "UPDATE utenti SET saldo = saldo - ? WHERE id = ?";
-        String queryNascondiAuto = "UPDATE macchine SET disponibile = 'false' WHERE auto_id = ?";
+        String queryNascondiAuto = "UPDATE macchine SET disponibile = false WHERE auto_id = ?";
 
         Connection connection = ConnectionHandler.getInstance().getConnection();
 
@@ -27,10 +27,10 @@ public class DbmsAcquistoAutoDao extends DaoAcquistoAuto {
 
             connection.setAutoCommit(false);
 
-            try (PreparedStatement stmtVendita = connection.prepareStatement(queryVendita)) {
-                stmtVendita.setInt(1, utente.getIdUser());
-                stmtVendita.setInt(2, macchina.getId());
-                stmtVendita.executeUpdate();
+            try (PreparedStatement stmtNoleggio = connection.prepareStatement(queryNoleggio)) {
+                stmtNoleggio.setInt(1, utente.getIdUser());
+                stmtNoleggio.setInt(2, macchina.getId());
+                stmtNoleggio.executeUpdate();
             }
             try (PreparedStatement stmtSaldo = connection.prepareStatement(querySaldo)) {
                 stmtSaldo.setInt(1, macchina.getPrezzo());
@@ -51,7 +51,7 @@ public class DbmsAcquistoAutoDao extends DaoAcquistoAuto {
             } catch (SQLException ex) {
                 throw new GenericSystemException("Errore critico nel rollback: " + ex.getMessage());
             }
-            throw new GenericSystemException("Errore durante l'acquisto: " + e.getMessage());
+            throw new GenericSystemException("Errore durante il noleggio: " + e.getMessage());
 
         } finally {
 
@@ -104,16 +104,16 @@ public class DbmsAcquistoAutoDao extends DaoAcquistoAuto {
 
         } catch (SQLException e) {
 
-            throw new GenericSystemException("Errore DB durante il controllo acquisto: " + e.getMessage());
+            throw new GenericSystemException("Errore DB durante il controllo noleggio: " + e.getMessage());
         }
     }
 
     @Override
     public List<Macchina> getUserCars(Utente utente) {
 
-        List<Macchina> autoAcquistate = new ArrayList<>();
+        List<Macchina> autoNoleggiate = new ArrayList<>();
 
-        String query = "SELECT m.* FROM macchine m JOIN vendite v ON m.auto_id = v.auto_id WHERE v.id_utente = ?";
+        String query = "SELECT m.* FROM macchine m JOIN noleggi_attivi n ON m.auto_id = n.auto_id WHERE n.id_utente = ?";
 
         Connection conn = ConnectionHandler.getInstance().getConnection();
 
@@ -127,24 +127,25 @@ public class DbmsAcquistoAutoDao extends DaoAcquistoAuto {
 
                     Macchina m = new Macchina();
                     m.setId(rs.getInt("auto_id"));
-                    m.setCasa(rs.getString("casa"));
+
+                    m.setMarca(rs.getString("marca"));
                     m.setModello(rs.getString("modello"));
                     m.setAnno(rs.getInt("anno"));
-                    m.setKm(rs.getInt("km"));
+                    m.setTrasmissione(rs.getString("trasmissione"));
                     m.setPrezzo(rs.getInt("prezzo"));
                     m.setAlimentazione(rs.getString("alimentazione"));
                     m.setTipologia(rs.getString("tipologia"));
                     m.setPosti(rs.getInt("posti"));
-                    m.setProprietari(rs.getInt("proprietari"));
+                    m.setImageUrl(rs.getString("immagine_url"));
 
-                    autoAcquistate.add(m);
+                    autoNoleggiate.add(m);
                 }
             }
 
         } catch (SQLException e) {
-            throw new GenericSystemException("Errore durante il recupero delle auto acquistate: " + e.getMessage());
+            throw new GenericSystemException("Errore durante il recupero delle auto noleggiate: " + e.getMessage());
         }
 
-        return autoAcquistate;
+        return autoNoleggiate;
     }
 }

@@ -1,8 +1,8 @@
 package view.guigraphicscontroller;
 
-import bean.AcquistoAutoBean;
+import bean.NoleggioAutoBean;
 import controller.GestioneCatalogoController;
-import controller.MainPageCatalogoController;
+import controller.VisualizzaCatalogoController;
 import exceptions.GenericSystemException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,36 +27,20 @@ import java.io.IOException;
 public class GuiDettagliAuto {
 
 
-    private final MainPageCatalogoController controllerApplicativo= ControllerFactory.getGraphicalSingletonFactory().createMainPageCatalogoController();
+    private final VisualizzaCatalogoController controllerApplicativo= ControllerFactory.getGraphicalSingletonFactory().createMainPageCatalogoController();
     private final GestioneCatalogoController gestioneCatalogoController=ControllerFactory.getGraphicalSingletonFactory().createGestioneCatalogoController();
 
     @FXML private ImageView imgAuto;
     @FXML private Label modello;
-    @FXML private Label km;
     @FXML private Label posti;
     @FXML private Label alimentazione;
     @FXML private Label prezzo;
-    @FXML private Button btnModifica;
 
     @FXML
     public void initialize() {
 
         loadInfo();
-        buttonLogic();
 
-    }
-
-    private void buttonLogic() {
-
-        btnModifica.setVisible(false);
-        btnModifica.setManaged(false);
-
-        if(SessionSingleton.getInstance().getUtenteCorrente() != null ) {
-            if (SessionSingleton.getInstance().getUtenteCorrente().getRuolo().equals("ADMIN")) {
-                btnModifica.setVisible(true);
-                btnModifica.setManaged(true);
-            }
-        }
     }
 
     private void loadInfo(){
@@ -64,8 +48,7 @@ public class GuiDettagliAuto {
 
             if (autoSelezionata != null) {
 
-            modello.setText(autoSelezionata.getCasa() + " " + autoSelezionata.getModello());
-            km.setText(String.valueOf(autoSelezionata.getKm()));
+            modello.setText(autoSelezionata.getMarca() + " " + autoSelezionata.getModello());
             posti.setText(String.valueOf(autoSelezionata.getPosti()));
             alimentazione.setText(autoSelezionata.getAlimentazione());
             prezzo.setText(autoSelezionata.getPrezzo() + " €");
@@ -94,11 +77,11 @@ public class GuiDettagliAuto {
     @FXML
     public void shop(ActionEvent event) throws IOException {
 
-        AcquistoAutoBean pallenegre = new AcquistoAutoBean(); //USARE VECCHI BEAN -> COSTRUIRE NEL CONTROLLER
+        NoleggioAutoBean pallenegre = new NoleggioAutoBean(); //USARE VECCHI BEAN -> COSTRUIRE NEL CONTROLLER
 
-        pallenegre.setBuyer(SessionSingleton.getInstance().getUtenteCorrente());
+        pallenegre.setRenter(SessionSingleton.getInstance().getUtenteCorrente());
 
-        if(pallenegre.getBuyer()==null){
+        if(pallenegre.getRenter()==null){
             String str="/view/login.fxml";
             StageHandler.getSingletonInstance().loadPage(str);
             return;
@@ -109,7 +92,7 @@ public class GuiDettagliAuto {
 
     }
 
-    private void openWindow(AcquistoAutoBean acquistoAuto) {
+    private void openWindow(NoleggioAutoBean acquistoAuto) {
 
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -123,7 +106,7 @@ public class GuiDettagliAuto {
         btnCancela.getStyleClass().add("Button");
 
         btnConferma.setOnAction(e -> {
-            gestioneCatalogoController.buyRequest(acquistoAuto);
+            gestioneCatalogoController.rentRequest(acquistoAuto);
             popupStage.close();
         });
         btnCancela.setOnAction(e -> {

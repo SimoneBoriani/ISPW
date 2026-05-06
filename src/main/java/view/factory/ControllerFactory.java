@@ -15,16 +15,12 @@ public class ControllerFactory {
         return new LogInController();
     }
 
-    public AggiungiAutoController createAggiungiAutoController(){
-        return new AggiungiAutoController();
-    }
-
     public GestioneCatalogoController createGestioneCatalogoController(){
         return new GestioneCatalogoController();
     }
 
-    public MainPageCatalogoController createMainPageCatalogoController(){
-        return new MainPageCatalogoController();
+    public VisualizzaCatalogoController createMainPageCatalogoController(){
+        return new VisualizzaCatalogoController();
     }
 
     public GestioneProfiloController createGestioneProfiloController(){return new GestioneProfiloController();}
