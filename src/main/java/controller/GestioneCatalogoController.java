@@ -1,34 +1,22 @@
 package controller;
 
-import bean.AcquistoAutoBean;
-import bean.AggiungiAutoBean;
 import bean.CatalogoBean;
+import bean.NoleggioAutoBean;
 import exceptions.GenericSystemException;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 public class GestioneCatalogoController {
+
+    private final Logger logger = Logger.getLogger(String.valueOf(GestioneCatalogoController.class));
+    private final List<Macchina> autoDaAggiungereAlDB = new ArrayList<>();
 
     public void removeCar(CatalogoBean bean){
         DaoFactory.getDaoSingletonFactory().createMacchinaDao().remove(bean.getId());
-    }
-
-    public void addCar(AggiungiAutoBean aggiungiAutoBean){ //catalogo bean
-
-        Macchina toAddCar = new Macchina(
-                aggiungiAutoBean.getCarYear(),
-                aggiungiAutoBean.getCarKm(),
-                aggiungiAutoBean.getCarSeat(),
-                aggiungiAutoBean.getCarOwners(),
-                aggiungiAutoBean.getCarName(),
-                aggiungiAutoBean.getCarBrand(),
-                aggiungiAutoBean.getCarAlimentation(),
-                aggiungiAutoBean.getCarPrice(),
-                aggiungiAutoBean.getCarType()
-        );
-
-        DaoFactory.getDaoSingletonFactory().createMacchinaDao().insert(toAddCar);
-
     }
 
     public void modifyCar(CatalogoBean catalogo) {
@@ -38,30 +26,58 @@ public class GestioneCatalogoController {
         macchinaSelezionata.setId(catalogo.getId());
         macchinaSelezionata.setPrezzo(catalogo.getPrezzo());
         macchinaSelezionata.setModello(catalogo.getModello());
+        macchinaSelezionata.setMarca(catalogo.getMarca());
         macchinaSelezionata.setAlimentazione(catalogo.getAlimentazione());
-        macchinaSelezionata.setCasa(catalogo.getMarca());
-        macchinaSelezionata.setModello(catalogo.getModello());
+        macchinaSelezionata.setTrasmissione(catalogo.getTrasmissione());
         macchinaSelezionata.setAnno(catalogo.getAnno());
         macchinaSelezionata.setImageUrl(catalogo.getFoto());
-        macchinaSelezionata.setKm(catalogo.getKm());
         macchinaSelezionata.setPosti(catalogo.getPosti());
         macchinaSelezionata.setTipologia(catalogo.getTipologia());
 
         DaoFactory.getDaoSingletonFactory().createMacchinaDao().update(macchinaSelezionata);
     }
 
-    public void buyRequest(AcquistoAutoBean bean){
+    public void rentRequest(NoleggioAutoBean bean){
         if(checkData(bean)){
-            DaoFactory.getDaoSingletonFactory().createAcquistoAutoDao().buyRequest(bean.getBuyer(),bean.getMacchina());
+            DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().rentRequest(bean.getRenter(), bean.getMacchina());
         }
         else{
-            throw new GenericSystemException("Auto / Utente non trovato");
+            throw new GenericSystemException("Saldo insufficiente.");
         }
     }
 
-    public boolean checkData(AcquistoAutoBean bean){
+    public boolean checkData(NoleggioAutoBean bean){
+        return DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().checkInfo(bean.getRenter(), bean.getMacchina());
+    }
 
-        return DaoFactory.getDaoSingletonFactory().createAcquistoAutoDao().checkInfo(bean.getBuyer(),bean.getMacchina());
+    public void salvaAutoRam(CatalogoBean bean){
+
+        Macchina nuovaAuto = new Macchina();
+
+        nuovaAuto.setMarca(bean.getMarca());
+        nuovaAuto.setModello(bean.getModello());
+        nuovaAuto.setAnno(bean.getAnno());
+        nuovaAuto.setPosti(bean.getPosti());
+        nuovaAuto.setAlimentazione(bean.getAlimentazione());
+        nuovaAuto.setTrasmissione(bean.getTrasmissione());
+        nuovaAuto.setPrezzo(bean.getPrezzo());
+        nuovaAuto.setTipologia(bean.getTipologia());
+        nuovaAuto.setImageUrl("no_image.png");
+
+        autoDaAggiungereAlDB.add(nuovaAuto);
+
+    }
+
+    public void confermaSalvataggio() {
+
+        if (autoDaAggiungereAlDB.isEmpty()) {
+           logger.info("Nessuna nuova auto da inserire nel db");
+            return;
+        }
+
+        DaoFactory.getDaoSingletonFactory().createMacchinaDao().insert(autoDaAggiungereAlDB);
+        logger.info("Auto aggiunte al DB con successo!");
+        autoDaAggiungereAlDB.clear();
 
     }
 }

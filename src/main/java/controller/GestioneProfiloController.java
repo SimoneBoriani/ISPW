@@ -15,7 +15,7 @@ public class GestioneProfiloController {
 
         utente.setIdUser(profileBean.getId());
 
-        return DaoFactory.getDaoSingletonFactory().createAcquistoAutoDao().getUserCars(utente);
+        return DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().getUserCars(utente);
 
     }
 

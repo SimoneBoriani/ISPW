@@ -11,23 +11,20 @@ public class DemoDaoMacchina extends DaoMacchina {
     private static final List<Macchina> demoCars=new ArrayList<>();
 
     @Override
-    public void insert(Macchina macchina) {
-        demoCars.add(macchina);
+    public void insert(List<Macchina> macchina) {
+        demoCars.addAll(macchina);
     }
 
     @Override
     public List<Macchina> research(Macchina filtriAuto) throws CarNotFoundException {
 
-        String brand = filtriAuto.getCasa();
+
         String model = filtriAuto.getModello();
         String alimentation = filtriAuto.getAlimentazione();
-        int kmMax = filtriAuto.getKm();
 
         List<Macchina> results = demoCars.stream()
-                .filter(m -> (brand == null || brand.trim().isEmpty() || m.getCasa().equalsIgnoreCase(brand)))
                 .filter(m -> (model == null || model.trim().isEmpty() || m.getModello().toLowerCase().contains(model.toLowerCase())))
                 .filter(m -> (alimentation == null || alimentation.trim().isEmpty() || m.getAlimentazione().equalsIgnoreCase(alimentation)))
-                .filter(m -> (kmMax <= 0 || m.getKm() <= kmMax))
                 .toList();
 
         if (results.isEmpty()) {

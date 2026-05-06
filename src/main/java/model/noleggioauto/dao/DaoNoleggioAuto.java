@@ -1,13 +1,13 @@
-package model.acquistoauto.dao;
+package model.noleggioauto.dao;
 
 import model.macchina.Macchina;
 import model.utente.Utente;
 
 import java.util.List;
 
-public abstract class DaoAcquistoAuto {
+public abstract class DaoNoleggioAuto {
 
-    public abstract void buyRequest(Utente utente,Macchina macchina);
+    public abstract void rentRequest(Utente utente,Macchina macchina);
     public abstract boolean checkInfo(Utente utente,Macchina macchina);
     public abstract List<Macchina> getUserCars(Utente utente);
 

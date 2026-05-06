@@ -17,13 +17,13 @@
             <Font size="25.0" />
          </font>
       </Label>
-      <Label fx:id="km" layoutX="349.0" layoutY="119.0" prefHeight="17.0" prefWidth="246.0" text="km" />
+      <Label fx:id="km" layoutX="349.0" layoutY="119.0" prefHeight="17.0" prefWidth="246.0" text="Trasmissione" />
       <Label fx:id="posti" layoutX="349.0" layoutY="162.0" prefHeight="17.0" prefWidth="246.0" text="posti" />
-      <Label layoutX="349.0" layoutY="213.0" prefHeight="17.0" prefWidth="246.0" text="proprietari" />
+      <Label layoutX="349.0" layoutY="213.0" prefHeight="17.0" prefWidth="246.0" text="Text" />
       <Label fx:id="alimentazione" layoutX="349.0" layoutY="263.0" prefHeight="17.0" prefWidth="246.0" text="Alimentazione" />
       <Label layoutX="349.0" layoutY="308.0" prefHeight="17.0" prefWidth="246.0" text="Tipologia" />
    <Label fx:id="prezzo" layoutX="36.0" layoutY="66.0" text="Prezzo" AnchorPane.leftAnchor="36.0" />
-   <Label layoutX="349.0" layoutY="93.0" prefHeight="17.0" prefWidth="246.0" text="KM" textFill="#204080">
+   <Label layoutX="349.0" layoutY="93.0" prefHeight="17.0" prefWidth="246.0" text="TRASMISSIONE" textFill="#204080">
       <font>
          <Font size="17.0" />
       </font>
@@ -33,7 +33,7 @@
          <Font size="17.0" />
       </font>
    </Label>
-   <Label layoutX="349.0" layoutY="187.0" prefHeight="17.0" prefWidth="246.0" text="PROPRIETARI" textFill="#204080">
+   <Label layoutX="349.0" layoutY="187.0" prefHeight="17.0" prefWidth="246.0" text="Text" textFill="#204080">
       <font>
          <Font size="17.0" />
       </font>
@@ -48,6 +48,5 @@
          <Font size="17.0" />
       </font>
    </Label>
-   <Button fx:id="btnModifica" layoutX="414.0" layoutY="14.0" mnemonicParsing="false" onAction="#goManage" styleClass="Button" text="Opzioni" AnchorPane.rightAnchor="128.0" />
-   <Button onAction="#shop" layoutX="362.0" layoutY="347.0" mnemonicParsing="false" styleClass="Button" text="Acquista" />
+   <Button layoutX="362.0" layoutY="347.0" mnemonicParsing="false" onAction="#shop" styleClass="Button" text="Acquista" />
 </AnchorPane>

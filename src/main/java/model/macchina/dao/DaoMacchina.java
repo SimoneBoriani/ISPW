@@ -6,7 +6,7 @@ import java.util.List;
 
 public abstract class DaoMacchina {
 
-    public abstract void insert(Macchina macchina);
+    public abstract void insert(List<Macchina> macchina);
     public abstract List<Macchina> research(Macchina macchina);
     public abstract List<Macchina> getCars();
     public abstract void remove(int id);

@@ -2,7 +2,7 @@ package model.daofactory;
 
 import exceptions.GenericSystemException;
 
-import model.acquistoauto.dao.DaoAcquistoAuto;
+import model.noleggioauto.dao.DaoNoleggioAuto;
 import model.macchina.dao.DaoMacchina;
 import model.utente.dao.DaoUtente;
 
@@ -18,7 +18,7 @@ public abstract class DaoFactory {
 
    public abstract DaoMacchina createMacchinaDao();
    public abstract DaoUtente createUtenteDao();
-   public abstract DaoAcquistoAuto createAcquistoAutoDao();
+   public abstract DaoNoleggioAuto createNoleggioAutoDao();
 
    private static DaoFactory instance = null;
 

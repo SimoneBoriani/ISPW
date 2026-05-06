@@ -47,24 +47,12 @@ public class CarCell extends ListCell<Macchina> {
                 imgAuto.setImage(ImageUtils.loadCarImage(macchina.getImageUrl()));
             }
 
-            lblModello.setText(macchina.getCasa() + " " + macchina.getModello());
+            lblModello.setText(macchina.getMarca() + " " + macchina.getModello());
             lblPrezzo.setText(macchina.getPrezzo() + " €");
-            lblDettagli.setText(macchina.getKm() + " km • " + macchina.getAnno() + " • " + macchina.getAlimentazione());
+            lblDettagli.setText(macchina.getAnno() + " • " + macchina.getAlimentazione());
 
             setGraphic(rootAnchor);
             setText(null);
         }
-    }
-
-    @FXML
-    public void managePage(ActionEvent event) throws IOException {
-
-        Macchina autoCliccata = getItem();
-        if (autoCliccata != null) {
-            SessionSingleton.getInstance().setAutoSelezionata(autoCliccata);
-        }
-
-        String str = "/view/provafunzioni.fxml";
-        StageHandler.getSingletonInstance().loadPage(str);
     }
 }

@@ -12,31 +12,101 @@ import java.util.List;
 public class DbmsDaoMacchina extends DaoMacchina {
 
     @Override
-    public List<Macchina> getCars() {
+    public void remove(int idAuto) throws  GenericSystemException {
 
+        String query = "DELETE FROM macchine WHERE auto_id = ?";
+        Connection connection = ConnectionHandler.getInstance().getConnection();
+
+        try(PreparedStatement statement = connection.prepareStatement(query)){
+
+            statement.setInt(1, idAuto);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new GenericSystemException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void insert(List<Macchina> autoDaSalvare) {
+
+        String sql = "INSERT INTO macchine (marca, modello, tipologia, anno, prezzo, posti, alimentazione, trasmissione, immagine_url) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        Connection connection = ConnectionHandler.getInstance().getConnection();
+
+        try {
+
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+                for (Macchina auto : autoDaSalvare) {
+                    ps.setString(1, auto.getMarca());
+                    ps.setString(2, auto.getModello());
+                    ps.setString(3, auto.getTipologia());
+                    ps.setInt(4, auto.getAnno());
+                    ps.setInt(5, auto.getPrezzo());
+                    ps.setInt(6, auto.getPosti());
+                    ps.setString(7, auto.getAlimentazione());
+                    ps.setString(8, auto.getTrasmissione());
+                    ps.setString(9, auto.getImageUrl());
+
+                    ps.addBatch();
+                }
+
+                ps.executeBatch();
+            }
+
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            try {
+
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException ex) {
+                throw new GenericSystemException("Errore critico durante il rollback: ", ex);
+            }
+            throw new GenericSystemException("Errore durante il salvataggio in blocco delle auto: ", e);
+
+        } finally {
+            try {
+
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                }
+            } catch (SQLException e) {
+                throw new GenericSystemException("Errore nel ripristino dell'autocommit: ", e);
+            }
+        }
+    }
+
+
+    @Override
+    public List<Macchina> getCars() {
         List<Macchina> cars = new ArrayList<>();
         String sql = "SELECT *" + " FROM macchine WHERE disponibile = true";
-
         Connection session = ConnectionHandler.getInstance().getConnection();
 
         try (Statement statement = session.createStatement();
              ResultSet rs = statement.executeQuery(sql)) {
 
             while (rs.next()) {
-
-                int id = rs.getInt("auto_id");
-                int anno = rs.getInt("anno");
-                int km = rs.getInt("km");
-                String alimentazione = rs.getString("alimentazione");
-                int posti = rs.getInt("posti");
-                int proprietari = rs.getInt("proprietari");
-                String modello = rs.getString("modello");
-                String casa = rs.getString("casa");
-                int prezzo = rs.getInt("prezzo");
-                String tipologia = rs.getString("tipologia");
-                String foto=rs.getString("immagine_url");
-
-                Macchina macchina = new Macchina(id, anno, km, posti, proprietari, modello, casa, alimentazione, prezzo, tipologia,foto);
+                Macchina macchina = new Macchina(
+                        rs.getInt("auto_id"),
+                        rs.getString("modello"),
+                        rs.getString("marca"),
+                        rs.getInt("posti"),
+                        rs.getString("alimentazione"),
+                        rs.getString("trasmissione"),
+                        rs.getInt("prezzo"),
+                        rs.getString("tipologia"),
+                        rs.getInt("anno"),
+                        rs.getString("immagine_url")
+                );
                 cars.add(macchina);
             }
         } catch (SQLException e) {
@@ -46,59 +116,18 @@ public class DbmsDaoMacchina extends DaoMacchina {
     }
 
     @Override
-    public void remove(int idAuto) throws  GenericSystemException {
-
-        String query = "DELETE FROM macchine WHERE auto_id = ?";
-        Connection connection = ConnectionHandler.getInstance().getConnection();
-
-        try(PreparedStatement statement = connection.prepareStatement(query)){
-
-            statement.setInt(1, idAuto);
-
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-
-            throw new GenericSystemException(e.getMessage());
-        }
-    }
-
-    @Override
-    public void insert(Macchina macchina) throws GenericSystemException {
-
-        String query = "INSERT INTO macchine (anno, km, alimentazione, posti, proprietari, casa, modello, prezzo, tipologia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        Connection connection = ConnectionHandler.getInstance().getConnection();
-
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, macchina.getAnno());
-            statement.setInt(2, macchina.getKm());
-            statement.setString(3, macchina.getAlimentazione());
-            statement.setInt(4, macchina.getPosti());
-            statement.setInt(5, macchina.getProprietari());
-            statement.setString(6, macchina.getCasa());
-            statement.setString(7, macchina.getModello());
-            statement.setInt(8, macchina.getPrezzo());
-            statement.setString(9, macchina.getTipologia());
-
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new GenericSystemException(e.getMessage());
-        }
-    }
-    @Override
     public List<Macchina> research(Macchina filtriAuto) throws CarNotFoundException {
 
         List<Macchina> results = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
 
-        String brand = filtriAuto.getCasa();
+        String brand = filtriAuto.getMarca();
         String model = filtriAuto.getModello();
         String alimentation = filtriAuto.getAlimentazione();
-        int kmMax = filtriAuto.getKm();
-        int prezzoMax=filtriAuto.getPrezzo();
+        int prezzoMax = filtriAuto.getPrezzo();
 
-
-        StringBuilder sql = new StringBuilder("SELECT * FROM macchine WHERE 1=1");
+        // FIX: Aggiunto "disponibile = true" in modo che la ricerca non mostri auto già noleggiate
+        StringBuilder sql = new StringBuilder("SELECT * FROM macchine WHERE 1=1 AND disponibile = true");
 
         if (model != null && !model.trim().isEmpty()) {
             sql.append(" AND modello ILIKE ?");
@@ -106,7 +135,7 @@ public class DbmsDaoMacchina extends DaoMacchina {
         }
 
         if (brand != null && !brand.trim().isEmpty()) {
-            sql.append(" AND casa ILIKE ?");
+            sql.append(" AND marca ILIKE ?"); // FIX: cambiato da casa a marca
             parameters.add("%" + brand + "%");
         }
 
@@ -120,12 +149,6 @@ public class DbmsDaoMacchina extends DaoMacchina {
             parameters.add(prezzoMax);
         }
 
-        if (kmMax > 0) {
-            sql.append(" AND km <= ?");
-            parameters.add(kmMax);
-        }
-
-
         try {
             Connection connection = ConnectionHandler.getInstance().getConnection();
 
@@ -138,20 +161,21 @@ public class DbmsDaoMacchina extends DaoMacchina {
                 try (ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {
 
+                        // FIX: Adesso utilizza il nuovo costruttore completo per il noleggio!
                         Macchina m = new Macchina(
-                                rs.getInt("anno"),
-                                rs.getInt("km"),
-                                rs.getInt("posti"),
-                                rs.getInt("proprietari"),
+                                rs.getInt("auto_id"),
                                 rs.getString("modello"),
-                                rs.getString("casa"),
+                                rs.getString("marca"),
+                                rs.getInt("posti"),
                                 rs.getString("alimentazione"),
+                                rs.getString("trasmissione"),
                                 rs.getInt("prezzo"),
-                                rs.getString("tipologia")
+                                rs.getString("tipologia"),
+                                rs.getInt("anno"),
+                                rs.getString("immagine_url")
                         );
 
                         results.add(m);
-
                     }
                 }
             }
@@ -169,24 +193,28 @@ public class DbmsDaoMacchina extends DaoMacchina {
 
     private String generateUpdateQuery(Macchina macchina, List<String> setClauses, List<Object> parameters) {
 
-        if (macchina.getKm() > 0) {
-            setClauses.add("km=?");
-            parameters.add(macchina.getKm());
-        }
+        // FIX: Rimosso macchina.getKm() che non esiste più
 
         if (macchina.getModello() != null && !macchina.getModello().trim().isEmpty()) {
             setClauses.add("modello=?");
             parameters.add(macchina.getModello());
         }
 
-        if (macchina.getCasa() != null && !macchina.getCasa().trim().isEmpty()) {
-            setClauses.add("casa=?");
-            parameters.add(macchina.getCasa());
+        // FIX: Cambiato da getCasa() a getMarca()
+        if (macchina.getMarca() != null && !macchina.getMarca().trim().isEmpty()) {
+            setClauses.add("marca=?");
+            parameters.add(macchina.getMarca());
         }
 
         if (macchina.getAlimentazione() != null && !macchina.getAlimentazione().trim().isEmpty()) {
             setClauses.add("alimentazione=?");
             parameters.add(macchina.getAlimentazione());
+        }
+
+        // FIX: Aggiunta la Trasmissione
+        if (macchina.getTrasmissione() != null && !macchina.getTrasmissione().trim().isEmpty()) {
+            setClauses.add("trasmissione=?");
+            parameters.add(macchina.getTrasmissione());
         }
 
         if (macchina.getPrezzo() > 0) {

@@ -2,77 +2,59 @@ package model.macchina;
 
 public class Macchina {
 
-    private int id;
-    private int anno;
-    private int km;
-    private int posti;
-    private int proprietari;
+    private int id; // auto_id nel DB
     private String modello;
-    private String casa;
+    private String marca;
+    private int posti;
     private String alimentazione;
-    private int prezzo;
+    private String trasmissione; // Nuovo campo
+    private int prezzo; // Prezzo di noleggio (es. giornaliero)
     private String tipologia;
-    private String foto;
+    private int anno;
+    private String foto; // immagine_url nel DB
 
-    public Macchina() {
-        //Costruttore
-    }
-    public Macchina(int id,int anno,int km,int posti,int prorpietari,String nome,String casa,String alimentazione,int prezzo,String tipologia,String foto) {
+    public Macchina() {}
 
-        this.id=id;
-        this.anno=anno;
-        this.km=km;
-        this.posti=posti;
-        this.proprietari=prorpietari;
-        this.modello=nome;
-        this.casa=casa;
-        this.alimentazione=alimentazione;
-        this.prezzo=prezzo;
-        this.tipologia=tipologia;
-        this.foto=foto;
-    }
-    public Macchina(int anno,int km,int posti,int prorpietari,String nome,String casa,String alimentazione,int prezzo,String tipologia){
-        this.anno=anno;
-        this.km=km;
-        this.posti=posti;
-        this.proprietari=prorpietari;
-        this.modello=nome;
-        this.casa=casa;
-        this.alimentazione=alimentazione;
-        this.prezzo=prezzo;
-        this.tipologia=tipologia;
-        this.foto="no_image.png";
+    public Macchina(int id, String modello, String marca, int posti, String alimentazione, String trasmissione, int prezzo, String tipologia, int anno, String foto) {
+        this.id = id;
+        this.modello = modello;
+        this.marca = marca;
+        this.posti = posti;
+        this.alimentazione = alimentazione;
+        this.trasmissione = trasmissione;
+        this.prezzo = prezzo;
+        this.tipologia = tipologia;
+        this.anno = anno;
+        this.foto = foto;
     }
 
-    public int getId() {return id;}
-    public void setId(int id) {this.id = id;}
-
-    public int getAnno() { return anno; }
-    public void setAnno(int anno) { this.anno = anno; }
-
-    public int getKm() { return km; }
-    public void setKm(int km) { this.km = km; }
-
-    public int getPosti() { return posti; }
-    public void setPosti(int posti) { this.posti = posti; }
-
-    public int getProprietari() { return proprietari; }
-    public void setProprietari(int proprietari) { this.proprietari = proprietari; }
+    // Getters e Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getModello() { return modello; }
     public void setModello(String modello) { this.modello = modello; }
 
-    public String getCasa() { return casa; }
-    public void setCasa(String casa) { this.casa = casa; }
+    public String getMarca() { return marca; }
+    public void setMarca(String marca) { this.marca = marca; }
+
+    public int getPosti() { return posti; }
+    public void setPosti(int posti) { this.posti = posti; }
 
     public String getAlimentazione() { return alimentazione; }
     public void setAlimentazione(String alimentazione) { this.alimentazione = alimentazione; }
+
+    public String getTrasmissione() { return trasmissione; }
+    public void setTrasmissione(String trasmissione) { this.trasmissione = trasmissione; }
 
     public int getPrezzo() { return prezzo; }
     public void setPrezzo(int prezzo) { this.prezzo = prezzo; }
 
     public String getTipologia() { return tipologia; }
     public void setTipologia(String tipologia) { this.tipologia = tipologia; }
+
+    public int getAnno() { return anno; }
+    public void setAnno(int anno) { this.anno = anno; }
 
     public String getImageUrl() { return foto; }
     public void setImageUrl(String foto) { this.foto = foto; }

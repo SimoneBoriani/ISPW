@@ -145,8 +145,9 @@ public class DbmsDaoUtente extends DaoUtente {
             setClauses.add("autopossedute = ?");
             parametri.add(utente.getAutoPossedute());
         }
-        if (utente.getSaldo() >= 0.00) {
-            setClauses.add("saldo = ?");
+
+        if (utente.getSaldo() != 0.0) {
+            setClauses.add("saldo = saldo + ?");
             parametri.add(utente.getSaldo());
         }
 
@@ -158,7 +159,6 @@ public class DbmsDaoUtente extends DaoUtente {
         parametri.add(utente.getIdUser());
 
         return sql;
-
     }
 
     private int eseguiQuery(String sql, List<Object> parametri) {
@@ -181,12 +181,14 @@ public class DbmsDaoUtente extends DaoUtente {
         if (utente.getUsername() != null && !utente.getUsername().trim().isEmpty()) {
             utenteSessione.setUsername(utente.getUsername());
         }
+
         if (utente.getNome() != null && !utente.getNome().trim().isEmpty()) {
             utenteSessione.setNome(utente.getNome());
         }
-        if (utente.getSaldo() >= 0.00) {
-            utenteSessione.setSaldo(utente.getSaldo());
+        if (utente.getSaldo() != 0.0) {
+            utenteSessione.setSaldo(utenteSessione.getSaldo()+utente.getSaldo());
         }
+
         if(utente.getCognome() != null && !utente.getCognome().trim().isEmpty()) {
             utenteSessione.setCognome(utente.getCognome());
         }

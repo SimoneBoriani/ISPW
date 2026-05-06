@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import utils.SessionSingleton;
-import controller.MainPageCatalogoController;
+import controller.VisualizzaCatalogoController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,14 +24,12 @@ import view.factory.ControllerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 
 
-public class GuiMainPageCatalogoController{
+public class GuiVisualizzaCatalogoController {
 
-    private final MainPageCatalogoController mainPageCatalogoController= ControllerFactory.getGraphicalSingletonFactory().createMainPageCatalogoController();
-
-    @FXML
-    private Button btnAddCar;
+    private final VisualizzaCatalogoController mainPageCatalogoController= ControllerFactory.getGraphicalSingletonFactory().createMainPageCatalogoController();
 
     @FXML
     private Button btnAccedi;
@@ -42,7 +40,7 @@ public class GuiMainPageCatalogoController{
     @FXML
     private ListView<Macchina> carListView;
 
-    private static final Logger logger = LogManager.getLogger(GuiMainPageCatalogoController.class.getName());
+    private static final Logger logger = LogManager.getLogger(GuiVisualizzaCatalogoController.class.getName());
 
     @FXML
     public void initialize() {
@@ -89,8 +87,6 @@ public class GuiMainPageCatalogoController{
     private void configuraBottoni() {
 
         boolean loggedIn = SessionSingleton.getInstance().isUserLoggedIn();
-        btnAddCar.setVisible(false);
-        btnAddCar.setManaged(false);
 
         if (loggedIn) {
             btnAccedi.setVisible(false);
@@ -98,10 +94,6 @@ public class GuiMainPageCatalogoController{
             if (btnLogout != null) {
                 btnLogout.setVisible(true);
                 btnLogout.setManaged(true);
-                if(SessionSingleton.getInstance().getUtenteCorrente().getRuolo().equals("ADMIN")){
-                    btnAddCar.setVisible(true);
-                    btnAddCar.setManaged(true);
-                }
             }
         } else {
             btnAccedi.setVisible(true);
@@ -158,6 +150,12 @@ public class GuiMainPageCatalogoController{
         apriPopupFiltro();
     }
 
+    private void assegnaSeValido(String valore, Consumer<String> setter) {
+        if (valore != null && !valore.trim().isEmpty()) {
+            setter.accept(valore.trim());
+        }
+    }
+
     private void apriPopupFiltro() {
 
         Stage popupStage = new Stage();
@@ -173,11 +171,17 @@ public class GuiMainPageCatalogoController{
         TextField txtPrezzo = new TextField();
         txtPrezzo.setPromptText("Prezzo");
 
-        TextField txtKm = new TextField();
-        txtKm.setPromptText("Km)");
+        ComboBox<String> cbAlimentazione = new ComboBox<>();
+        cbAlimentazione.setPromptText("Alimentazione");
+        cbAlimentazione.getItems().addAll("Benzina", "Diesel", "Elettrica", "GPL", "Ibrida");
 
-        TextField txtAlimentazione = new TextField();
-        txtAlimentazione.setPromptText("Alimentazione");
+        ComboBox<String> cbTrasmissione = new ComboBox<>();
+        cbTrasmissione.setPromptText("Trasmissione");
+        cbTrasmissione.getItems().addAll("Manuale", "Automatica");
+
+        ComboBox<String> cbTipo = new ComboBox<>();
+        cbTipo.setPromptText("Tipologia");
+        cbTipo.getItems().addAll("Berlina", "Suv", "Utilitaria", "Sportiva", "Supercar");
 
         Button btnAvviaRicerca = new Button("Avvia Ricerca");
 
@@ -187,48 +191,30 @@ public class GuiMainPageCatalogoController{
 
             CatalogoBean bean = new CatalogoBean();
 
-            String marca = txtMarca.getText().trim();
-            if (!marca.isEmpty()) {
-                bean.setMarca(marca);
-            }
+            assegnaSeValido(txtMarca.getText(), bean::setMarca);
+            assegnaSeValido(txtModello.getText(), bean::setModello);
+            assegnaSeValido(cbAlimentazione.getValue(), bean::setAlimentazione);
+            assegnaSeValido(cbTrasmissione.getValue(), bean::setTrasmissione);
+            assegnaSeValido(cbTipo.getValue(), bean::setTipologia);
 
-            String modello = txtModello.getText().trim();
-            if (!modello.isEmpty()) {
-                bean.setModello(modello);
-            }
-
-            String prezzoStr = txtPrezzo.getText().trim();
-            if (!prezzoStr.isEmpty()) {
+            String prezzoStr = txtPrezzo.getText();
+            if (prezzoStr != null && !prezzoStr.trim().isEmpty()) {
                 try {
-                    bean.setPrezzo(Integer.parseInt(prezzoStr));
+                    bean.setPrezzo(Integer.parseInt(prezzoStr.trim()));
                 } catch (NumberFormatException ex) {
                     logger.error("Errore: Inserisci solo numeri nel Prezzo.");
                     return;
                 }
             }
 
-            String kmStr = txtKm.getText().trim();
-            if (!kmStr.isEmpty()) {
-                try {
-                    bean.setKm(Integer.parseInt(kmStr));
-                } catch (NumberFormatException ex) {
-                    logger.error("Errore: Inserisci solo numeri per i km.");
-                    return;
-                }
-
-            }
             try {
 
                 List<Macchina> autoTrovate = mainPageCatalogoController.research(bean);
 
-                if (carListView != null) {
-                    if (autoTrovate != null) {
-
+                if (carListView != null && autoTrovate != null) {
                         ObservableList<Macchina> data = FXCollections.observableArrayList(autoTrovate);
                         carListView.setItems(data);
                         carListView.setCellFactory(param -> new CarCell());
-
-                    }
                 }
             } catch (Exception ex) {
                 throw new GenericSystemException("Errore Ricerca: ", ex);
@@ -247,8 +233,9 @@ public class GuiMainPageCatalogoController{
                 txtMarca,
                 txtModello,
                 txtPrezzo,
-                txtKm,
-                txtAlimentazione,
+                cbAlimentazione,
+                cbTrasmissione,
+                cbTipo,
                 btnAvviaRicerca
         );
 

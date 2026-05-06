@@ -16,7 +16,7 @@
 
         <Label layoutX="15.0" layoutY="98.0" text="Cognome:" AnchorPane.leftAnchor="14.0" />
 
-        <Label layoutX="15.0" layoutY="123.0" text="Auto possedute:" AnchorPane.leftAnchor="14.0" />
+        <Label layoutX="15.0" layoutY="123.0" text="Auto noleggiate:" AnchorPane.leftAnchor="14.0" />
 
         <Label layoutX="14.0" layoutY="148.0" text="Saldo:" />
 
@@ -34,6 +34,8 @@
 
         <Label fx:id="roleUtenteLabel" layoutX="110.0" layoutY="173.0" text="UNLOGGED USER" />
 
-        <Button layoutX="395.0" layoutY="61.0" onAction="#btnUpdate" styleClass="Button" text="Aggiorna" AnchorPane.rightAnchor="140.0" />
+        <Button layoutX="361.0" layoutY="61.0" onAction="#btnUpdate" styleClass="Button" text="Aggiorna Informazioni" AnchorPane.rightAnchor="104.0" />
+   <Button layoutX="379.0" layoutY="94.0" onAction="#btnSaldo" styleClass="Button" text="Aggiungi Saldo" AnchorPane.rightAnchor="123.0" />
+   <Button layoutX="370.0" layoutY="128.0" onAction="#btnPassword" styleClass="Button" text="Modifica Password" AnchorPane.rightAnchor="114.0" />
 
 </AnchorPane>
