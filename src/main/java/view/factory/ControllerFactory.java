@@ -23,7 +23,12 @@ public class ControllerFactory {
         return new VisualizzaCatalogoController();
     }
 
+    public NoleggioController createNoleggioController(){return new  NoleggioController();}
+
     public GestioneProfiloController createGestioneProfiloController(){return new GestioneProfiloController();}
+
+    public GestioneAutoNoleggiateController createVisualizzaAutoNoleggiateController(){return new GestioneAutoNoleggiateController();}
+
 
     public static synchronized ControllerFactory getGraphicalSingletonFactory() throws GenericSystemException {
 

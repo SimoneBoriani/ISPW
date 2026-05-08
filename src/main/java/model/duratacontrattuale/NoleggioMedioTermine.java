@@ -6,13 +6,13 @@ public class NoleggioMedioTermine implements PianoNoleggio {
     public double calcolaPrezzo(double prezzoGiornaliero, int giorni) {
 
         double costoBase = prezzoGiornaliero * giorni;
-        return costoBase - (costoBase * 0.5);
+        return costoBase - (costoBase * 0.05);
     }
 
     @Override
     public String getDescrizione() {
 
-        return "Noleggio a medio termine- 31-364 giorni - (Sconto 5%)";
+        return "Noleggio a medio termine\n31-364 giorni\n(Sconto 5%)";
 
     }
 }

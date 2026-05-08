@@ -39,7 +39,7 @@ public class GestioneCatalogoController {
 
     public void rentRequest(NoleggioAutoBean bean){
         if(checkData(bean)){
-            DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().rentRequest(bean.getRenter(), bean.getMacchina());
+            DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().rentRequest(bean.getRenter(), bean.getMacchina(),bean.getGiorni());
         }
         else{
             throw new GenericSystemException("Saldo insufficiente.");

@@ -12,7 +12,7 @@ public class NoleggioLungoTermine implements PianoNoleggio {
     @Override
     public String getDescrizione() {
 
-        return "Noleggio a lungo termine- 365-700 giorni -(Sconto 15%)";
+        return "Noleggio a lungo termine\n365-700 giorni\n(Sconto 15%)";
 
     }
 }

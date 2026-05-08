@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox layoutX="9.0" layoutY="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane prefHeight="41.0" prefWidth="600.0">
+               <children>
+                  <Label alignment="CENTER" layoutY="3.0" text="Noleggi" textFill="#204080" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label layoutY="5.0" prefHeight="17.0" prefWidth="63.0" styleClass="link-label" text=" Indietro" AnchorPane.leftAnchor="0.0" />
+                  <ComboBox layoutX="436.0" layoutY="8.0" prefWidth="150.0" promptText="Stato noleggi" />
+               </children>
+            </AnchorPane>
+            <TableView prefHeight="361.0" prefWidth="600.0">
+              <columns>
+                <TableColumn prefWidth="75.0" text="Auto" />
+                <TableColumn prefWidth="75.0" text="Utente" />
+                  <TableColumn prefWidth="75.0" text="Stato" />
+                  <TableColumn prefWidth="75.0" text="Prezzo" />
+                  <TableColumn prefWidth="75.0" text="Data Fine" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

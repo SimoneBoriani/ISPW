@@ -23,7 +23,6 @@ import utils.SessionSingleton;
 import utils.StageHandler;
 import view.factory.ControllerFactory;
 
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
@@ -103,6 +102,7 @@ public class GuiGestioneCatalogo {
     }
 
     private void apriImpostazioniAuto(Macchina auto) {
+
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle("Impostazioni: " + auto.getMarca() + " " + auto.getModello());
@@ -129,9 +129,11 @@ public class GuiGestioneCatalogo {
         cbCambio.setValue(auto.getTrasmissione());
 
         Button btnUpdate = new Button("Salva Modifiche");
-        btnUpdate.getStyleClass().add("Button");
+
+        Button btnDelete = new Button("Elimina auto");
 
         btnUpdate.setOnAction(e -> {
+
             CatalogoBean bean = new CatalogoBean();
 
             bean.setId(auto.getId());
@@ -142,6 +144,7 @@ public class GuiGestioneCatalogo {
             assegnaStringa(cbTipo.getValue(), bean::setTipologia);
 
             try {
+
                 assegnaIntero(txtPrezzo.getText(), bean::setPrezzo);
                 assegnaIntero(txtAnno.getText(), bean::setAnno);
                 assegnaIntero(cbPosti.getValue(), bean::setPosti);
@@ -154,6 +157,19 @@ public class GuiGestioneCatalogo {
             } catch (NumberFormatException ex) {
                 logger.error("Attenzione: Inserire valori numerici validi per Prezzo, Anno e Posti.");
             }
+        });
+
+        btnDelete.setOnAction(e -> {
+
+            CatalogoBean bean = new CatalogoBean();
+
+            bean.setId(auto.getId());
+
+            gestioneCatalogoController.removeCar(bean);
+
+            caricaDati();
+
+            popupStage.close();
         });
 
         VBox layoutPopup = new VBox(15);
@@ -170,10 +186,11 @@ public class GuiGestioneCatalogo {
                 cbAlimentazione,
                 cbCambio,
                 cbTipo,
-                btnUpdate
+                btnUpdate,
+                btnDelete
         );
 
-        Scene scene = new Scene(layoutPopup, 350, 450);
+        Scene scene = new Scene(layoutPopup, 350, 470);
         StageHandler.getSingletonInstance().loadCss(scene);
         popupStage.setScene(scene);
         popupStage.showAndWait();
@@ -182,19 +199,6 @@ public class GuiGestioneCatalogo {
     @FXML
     public void backHome(ActionEvent event) throws IOException {
         StageHandler.getSingletonInstance().loadPage("/view/CatalogoView.fxml");
-    }
-
-    @FXML
-    public void delete(ActionEvent event) {
-        if (SessionSingleton.getInstance().getAutoSelezionata() == null) return;
-
-        CatalogoBean catalogoBean = new CatalogoBean();
-        catalogoBean.setId(SessionSingleton.getInstance().getAutoSelezionata().getId());
-
-        gestioneCatalogoController.removeCar(catalogoBean);
-
-        caricaDati();
-        svuotaForm();
     }
 
     @FXML
@@ -231,17 +235,6 @@ public class GuiGestioneCatalogo {
         } catch (NumberFormatException e) {
             throw new GenericSystemException("Errore di compilazione: Prezzo, Km e Posti devono contenere SOLO numeri interi.");
         }
-    }
-
-    private void svuotaForm() {
-        brand.clear();
-        model.clear();
-        alimentazione.clear();
-        prezzo.clear();
-        km.clear();
-        posti.clear();
-        urlFoto.clear();
-        SessionSingleton.getInstance().setAutoSelezionata(null);
     }
 
     @FXML
