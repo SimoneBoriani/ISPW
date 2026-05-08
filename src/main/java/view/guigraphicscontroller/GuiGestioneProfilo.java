@@ -46,39 +46,11 @@ public class GuiGestioneProfilo {
     @FXML
     private Label roleUtenteLabel;
 
-    public void getCars(){
-
-        ProfileBean bean=new ProfileBean();
-
-        bean.setId(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
-
-        try {
-            if (carListView != null) {
-                List<Macchina> listaAuto = controller.getUserCar(bean);
-
-                if (listaAuto != null && !listaAuto.isEmpty()) {
-                    ObservableList<Macchina> data = FXCollections.observableArrayList(listaAuto);
-                    carListView.setItems(data);
-                    carListView.setCellFactory(param -> new CarCell());
-                }
-            }
-        } catch (Exception e) {
-            throw new GenericSystemException("Errore Caricamento", e);
-        }
-    }
-
     @FXML
     public void initialize(){
-        if(SessionSingleton.getInstance().getUtenteCorrente()!=null) { //Temporaneo
 
-            if (carListView != null) {
-                getCars();
-            }
-
-            if (nomeUtenteLabel != null) {
+        if(SessionSingleton.getInstance().getUtenteCorrente()!=null) {
                 personalInfo();
-            }
-
         }
     }
 
@@ -149,19 +121,12 @@ public class GuiGestioneProfilo {
             popupStage.setScene(scene);
             popupStage.showAndWait();
 
-            }
-        StageHandler.getSingletonInstance().loadPage(str);
+            }else StageHandler.getSingletonInstance().loadPage(str);
     }
 
     @FXML
     public void btnPassword(ActionEvent actionEvent){
         //Implements function
-    }
-
-    @FXML
-    public void goToHome(MouseEvent event) throws IOException {
-        String str="/view/CatalogoView.fxml";
-        StageHandler.getSingletonInstance().loadPage(str);
     }
 
     public void personalInfo(){
@@ -265,5 +230,11 @@ public class GuiGestioneProfilo {
         updateProfile();
         String reload="/view/Profilo.fxml";
         StageHandler.getSingletonInstance().loadPage(reload);
+    }
+
+    @FXML
+    public void goToHome(MouseEvent event) throws IOException {
+        String str="/view/CatalogoView.fxml";
+        StageHandler.getSingletonInstance().loadPage(str);
     }
 }

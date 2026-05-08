@@ -2,22 +2,10 @@ package controller;
 
 import bean.ProfileBean;
 import model.daofactory.DaoFactory;
-import model.macchina.Macchina;
 import model.utente.Utente;
 
-import java.util.List;
 
 public class GestioneProfiloController {
-
-    public List<Macchina> getUserCar(ProfileBean profileBean){
-
-        Utente utente=new Utente();
-
-        utente.setIdUser(profileBean.getId());
-
-        return DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().getUserCars(utente);
-
-    }
 
     public void updateProfile(ProfileBean profileBean){
 

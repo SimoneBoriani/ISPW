@@ -11,6 +11,7 @@ import java.util.List;
 public class VisualizzaCatalogoController {
 
     public List<Macchina> getCars() {
+        DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().sbloccaAutoScadute("Chiusura Naturale");
         return DaoFactory.getDaoSingletonFactory().createMacchinaDao().getCars();
     }
 

@@ -54,7 +54,7 @@ public class GuiVisualizzaCatalogoController {
         try {
 
             SessionSingleton.getInstance().setAutoSelezionata(auto);
-            StageHandler.getSingletonInstance().loadPage("/view/CarDetailsView.fxml");
+            StageHandler.getSingletonInstance().loadPage("/view/NoleggioView.fxml");
 
         } catch (IOException e) {
             throw new GenericSystemException("Errore nel caricamento della pagina DettaglioAuto: ",e);

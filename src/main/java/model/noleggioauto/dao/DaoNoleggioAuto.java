@@ -7,8 +7,9 @@ import java.util.List;
 
 public abstract class DaoNoleggioAuto {
 
-    public abstract void rentRequest(Utente utente,Macchina macchina);
+    public abstract void rentRequest(Utente utente,Macchina macchina,int giorni);
     public abstract boolean checkInfo(Utente utente,Macchina macchina);
     public abstract List<Macchina> getUserCars(Utente utente);
+    public abstract void sbloccaAutoScadute(String motivo);
 
 }
