@@ -2,18 +2,6 @@
     -fx-border-radius: 80;
 }
 
-.Button{
-    -fx-background-color:#204080ff;
-    -fx-border-radius: 10px;
-    -fx-text-fill: white;
-}
-
-.Button:hover{
-        -fx-background-color: #3060c0;
-        -fx-cursor: hand;
-        -fx-background-insets:0 ;
-}
-
 .scroll-bar {
     -fx-background-color: transparent;
     -fx-padding: 0 10px 0 0;
@@ -48,15 +36,6 @@
 .scroll-bar .increment-arrow,
 .scroll-bar .decrement-arrow {
     -fx-shape: " ";
-}
-
-.link-label {
-    -fx-cursor: hand;
-    -fx-text-fill: #204080;
-}
-
-.link-label:hover {
-    -fx-underline: true;
 }
 
 .subito-list-view {
@@ -113,4 +92,80 @@
 .text-field:focused {
     -fx-border-color: #007bff;
     -fx-border-width: 2;
+}
+
+.root {
+    -fx-accent: #204080;
+}
+
+.white-card {
+    -fx-background-color: white;
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+.Button {
+    -fx-background-color: #204080;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 12;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-transition: 0.3s;
+}
+
+.Button:hover {
+    -fx-background-color: #3050a0; /* Blu leggermente più chiaro al passaggio */
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.Button:pressed {
+    -fx-background-color: #152a55;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+
+.Button-Secondary {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #204080;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.Button-Secondary:hover {
+    -fx-background-color: #e2e8f0;
+    -fx-border-color: #204080;
+}
+
+.link-label {
+    -fx-text-fill: #204080;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.link-label:hover {
+    -fx-underline: true;
+    -fx-opacity: 0.8;
+}
+
+
+.spec-box {
+    -fx-background-color: #f0f4ff;
+    -fx-padding: 10;
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(32, 64, 128, 0.1);
+    -fx-border-radius: 10;
+}
+
+.spec-title {
+    -fx-text-fill: #204080;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
 }

@@ -1,27 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiGestioneAutoNoleggiate">
-   <children>
-      <Label layoutX="10.0" layoutY="10.0" onMouseClicked="#goToHome" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <ScrollPane layoutX="29.0" layoutY="60.0" prefHeight="335.0" prefWidth="570.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
-         <content>
-            <VBox prefHeight="349.0" prefWidth="572.0">
-               <children>
-                  <ListView fx:id="carListView" prefHeight="350.0" prefWidth="572.0" />
-               </children>
-            </VBox>
-         </content>
-      </ScrollPane>
-   </children>
-</AnchorPane>
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: #0E1A33; -fx-padding: 30;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiGestioneAutoNoleggiate">
+
+    <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="840.0" spacing="20.0" styleClass="white-card" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="25.0" left="30.0" right="30.0" top="20.0" />
+        </padding>
+            <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0">
+                <Label onMouseClicked="#goToHome" styleClass="link-label" text="← Torna al catalogo" textFill="#204080">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+            </HBox>
+        <VBox alignment="CENTER" spacing="5.0">
+                <Label text="IL TUO GARAGE" textFill="#204080">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Label text="Gestisci i tuoi noleggi attivi e conclusi" textFill="#64748b">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+        </VBox>
+
+        <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                <ListView fx:id="carListView" prefHeight="400.0" styleClass="subito-list-view" VBox.vgrow="ALWAYS" />
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </VBox>
+
+        <HBox alignment="CENTER_RIGHT">
+                <Label text="Seleziona un'auto per vedere i dettagli o chiudere il contratto" textFill="#94a3b8">
+                    <font>
+                        <Font name="System Italic" size="12.0" />
+                    </font>
+                </Label>
+        </HBox>
+    </VBox>
+</VBox>

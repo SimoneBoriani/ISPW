@@ -5,52 +5,65 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Selection {
 
-    private static final Logger logger = LogManager.getLogger(Selection.class.getName());
-    public Selection(){
-        //Costruttore
+    private static final Logger LOGGER = LogManager.getLogger(Selection.class);
+    private static final String CONFIG_FILE_PATH = "src/main/resources/config.properties";
+    private static final String CHOICE_PROP_KEY = "user_choice";
+
+    private static final Integer DEBUG_CHOICE = 1;
+
+    public void init() {
+        int choice = getChoice();
+        String mode = (choice == 2) ? "CLI" : "GUI";
+
+        updateConfiguration(mode);
+
+        if ("GUI".equals(mode)) {
+            Launcher.starter();
+        } else {
+            LOGGER.info("Modalità CLI avviata correttamente.");
+        }
     }
 
-    public void init(){
+    private int getChoice() {
 
-        String configFilePath = "src/main/resources/config.properties";
-        int choice;
+        if (DEBUG_CHOICE != null) {
+            LOGGER.info("[DEBUG] Utilizzo scelta forzata: {}", DEBUG_CHOICE);
+            return DEBUG_CHOICE;
+        }
+
+        LOGGER.info("SCEGLI LA MODALITA' GRAFICA:");
+        LOGGER.info("1. GUI");
+        LOGGER.info("2. CLI");
+
+        Scanner scanner = new Scanner(System.in);
+        try {
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            LOGGER.warn("Input non valido, utilizzo default: GUI");
+            return 1;
+        }
+    }
+
+    private void updateConfiguration(String mode) {
         Properties prop = new Properties();
 
-        logger.info("SCEGLI LA MODALITA' GRAFICA:");
-        logger.info("1. GUI");
-        logger.info("2. CLI");
-
-        //BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-        try (FileInputStream configFile = new FileInputStream(configFilePath)) {
-            prop.load(configFile);
-            String choiceProperty = "user_choice";
-            choice =1; //Integer.parseInt(reader.readLine());
-
-            switch(choice){
-
-                case 1:
-                    prop.setProperty(choiceProperty, "GUI");
-                    prop.store(new FileOutputStream(configFilePath), "case gui");
-                    Launcher.starter();
-                    break;
-
-                case 2:
-                    prop.setProperty(choiceProperty, "CLI");
-                    prop.store(new FileOutputStream(configFilePath), "case cli");
-                    break;
-
-                default:
-                    prop.setProperty(choiceProperty, "GUI");
-                    prop.store(new FileOutputStream(configFilePath), "default(gui)");
-                    Launcher.starter();
-                    break;
-            }
+        try (InputStream input = new FileInputStream(CONFIG_FILE_PATH)) {
+            prop.load(input);
         } catch (IOException e) {
-            throw new ExceptionInInitializerError(e);
+            LOGGER.warn("Impossibile leggere il file, ne verrà creato uno nuovo: {}", e.getMessage());
+        }
+
+        prop.setProperty(CHOICE_PROP_KEY, mode);
+
+        try (OutputStream output = new FileOutputStream(CONFIG_FILE_PATH)) {
+            prop.store(output, "Aggiornamento modalità interfaccia");
+        } catch (IOException e) {
+            LOGGER.error("Errore critico nel salvataggio della configurazione", e);
+            throw new UncheckedIOException(e);
         }
     }
 }
