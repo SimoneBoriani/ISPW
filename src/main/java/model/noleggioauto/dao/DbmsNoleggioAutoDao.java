@@ -2,12 +2,16 @@ package model.noleggioauto.dao;
 
 import exceptions.GenericSystemException;
 import model.macchina.Macchina;
+import model.noleggioauto.NoleggioAuto;
 import model.utente.Utente;
 import utils.ConnectionHandler;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class DbmsNoleggioAutoDao extends DaoNoleggioAuto {
 
@@ -87,6 +91,7 @@ public class DbmsNoleggioAutoDao extends DaoNoleggioAuto {
         }
     }
 
+
     @Override
     public List<Macchina> getUserCars(Utente utente) {
 
@@ -131,5 +136,93 @@ public class DbmsNoleggioAutoDao extends DaoNoleggioAuto {
         } catch (SQLException e) {
             throw new GenericSystemException("Errore controllo saldo", e);
         }
+    }
+
+    public List<NoleggioAuto> getRented() {
+
+        List<NoleggioAuto> rentals = new ArrayList<>();
+
+        String sql = "SELECT n.*, m.marca, m.modello, m.immagine_url, u.username, u.nome, u.cognome " +
+                "FROM noleggi n " +
+                "JOIN macchine m ON n.auto_id = m.auto_id " +
+                "JOIN utenti u ON n.id_utente = u.id";
+
+
+        Connection conn = ConnectionHandler.getInstance().getConnection();
+
+
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                NoleggioAuto n = new NoleggioAuto();
+
+
+                Macchina m = new Macchina();
+                m.setId(rs.getInt("auto_id"));
+                m.setMarca(rs.getString("marca"));
+                m.setModello(rs.getString("modello"));
+                m.setImageUrl(rs.getString("immagine_url"));
+                n.setMacchina(m);
+
+
+                Utente u = new Utente();
+                u.setIdUser(rs.getInt("id_utente"));
+                u.setNome(rs.getString("nome"));
+                u.setCognome(rs.getString("cognome"));
+                u.setUsername(rs.getString("username"));
+                n.setUtente(u);
+
+
+                n.setStato(rs.getString("stato"));
+                n.setPrezzoTotalePagato(rs.getDouble("prezzo_totale"));
+                n.setMotivoChiusura(rs.getString("motivo_chiusura"));
+
+
+                java.sql.Date dataSql = rs.getDate("data_fine");
+                if (dataSql != null) {
+                    n.setDataFine(dataSql.toLocalDate());
+                }
+
+                rentals.add(n);
+            }
+
+        } catch (SQLException e) {
+
+            throw new GenericSystemException("Errore nel recupero dello storico noleggi dal database", e);
+        }
+
+        return rentals;
+    }
+
+    public Map<LocalDate, Double> getProfittiPerData() {
+
+        Map<LocalDate, Double> profitti = new TreeMap<>();
+
+        String sql = "SELECT data_fine, SUM(prezzo_totale) as totale " +
+                "FROM noleggi " +
+                "WHERE stato = 'TERMINATO' " +
+                "GROUP BY data_fine " +
+                "ORDER BY data_fine ASC";
+
+        Connection conn = ConnectionHandler.getInstance().getConnection();
+
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                java.sql.Date dataSql = rs.getDate("data_fine");
+                if (dataSql != null) {
+                    LocalDate data = dataSql.toLocalDate();
+                    double totaleGiorno = rs.getDouble("totale");
+                    profitti.put(data, totaleGiorno);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new GenericSystemException("Errore nel recupero dei profitti per il grafico", e);
+        }
+
+        return profitti;
     }
 }

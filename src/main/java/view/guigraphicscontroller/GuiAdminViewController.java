@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import utils.SessionSingleton;
 import utils.StageHandler;
 
+import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 
 public class GuiAdminViewController {
@@ -17,12 +18,17 @@ public class GuiAdminViewController {
 
     @FXML
     public void goToStorico(ActionEvent event) throws IOException {
-        String str="/view/GestioneCatalogo.fxml";
+        String str="/view/StoricoNoleggi.fxml";
+        StageHandler.getSingletonInstance().loadPage(str);
+    }
+    @FXML
+    public void goToProfit(ActionEvent event) throws IOException {
+        String str="/view/StoricoProfitti.fxml";
         StageHandler.getSingletonInstance().loadPage(str);
     }
 
     @FXML
-    public void logOut(ActionEvent event) throws IOException {
+    public void logOut(MouseEvent event) throws IOException {
 
         SessionSingleton.getInstance().logout();
         String str="/view/CatalogoView.fxml";

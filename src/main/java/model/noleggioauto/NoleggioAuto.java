@@ -3,6 +3,7 @@ package model.noleggioauto;
 import model.duratacontrattuale.PianoNoleggio;
 import model.macchina.Macchina;
 import model.utente.Utente;
+import java.time.LocalDate;
 
 public class NoleggioAuto {
 
@@ -10,19 +11,13 @@ public class NoleggioAuto {
     private Utente utente;
     private PianoNoleggio pianoScelto;
     private int giorniNoleggio;
+    private String stato;
+    private LocalDate dataFine;
+    private double prezzoTotalePagato;
+    private String motivoChiusura;
 
     public NoleggioAuto() {
         // Costruttore
-    }
-
-
-    public double calcolaPrezzoTotale() {
-
-        double prezzoAuto = macchina.getPrezzo();
-
-        double costoFinale = pianoScelto.calcolaPrezzo(prezzoAuto, giorniNoleggio);
-
-        return costoFinale;
     }
 
     public Macchina getMacchina() { return macchina; }
@@ -36,4 +31,16 @@ public class NoleggioAuto {
 
     public int getGiorniNoleggio() { return giorniNoleggio; }
     public void setGiorniNoleggio(int giorniNoleggio) { this.giorniNoleggio = giorniNoleggio; }
+
+    public String getStato() { return stato; }
+    public void setStato(String stato) { this.stato = stato; }
+
+    public LocalDate getDataFine() { return dataFine; }
+    public void setDataFine(LocalDate dataFine) { this.dataFine = dataFine; }
+
+    public double getPrezzoTotalePagato() { return prezzoTotalePagato; }
+    public void setPrezzoTotalePagato(double prezzoTotalePagato) { this.prezzoTotalePagato = prezzoTotalePagato; }
+
+    public String getMotivoChiusura() { return motivoChiusura; }
+    public void setMotivoChiusura(String motivoChiusura) { this.motivoChiusura = motivoChiusura; }
 }

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiGestioneCatalogo">
+<AnchorPane prefHeight="400.0" prefWidth="819.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiGestioneCatalogo">
 
       <VBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <AnchorPane prefHeight="35.0" prefWidth="600.0">
@@ -18,10 +18,10 @@
                      </font>
                   </Label>
          <Button layoutX="519.0" layoutY="5.0" mnemonicParsing="false" onAction="#btnAdd" styleClass="Button" text="Aggiungi Auto" AnchorPane.rightAnchor="7.0" />
-         <Button layoutX="390.0" layoutY="5.0" mnemonicParsing="false" onAction="#btnSave" styleClass="Button" text="Salva Modifiche" AnchorPane.rightAnchor="110.0" />
+         <Button layoutX="519.0" layoutY="5.0" mnemonicParsing="false" onAction="#btnSave" styleClass="Button" text="Salva Modifiche" AnchorPane.rightAnchor="154.0" />
          <Button layoutX="2.0" layoutY="5.0" mnemonicParsing="false" onAction="#btnBack" styleClass="Button" text="Chiudi" AnchorPane.leftAnchor="2.0" />
             </AnchorPane>
-            <TableView fx:id="tabellaAuto" prefHeight="367.0" prefWidth="600.0">
+            <TableView fx:id="tabellaAuto" prefHeight="355.0" prefWidth="857.0">
               <columns>
                 <TableColumn fx:id="colModello" prefWidth="75.0" text="Modello" />
                 <TableColumn fx:id="colMarca" prefWidth="75.0" text="Marca" />

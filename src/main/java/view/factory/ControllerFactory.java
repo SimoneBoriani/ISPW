@@ -29,6 +29,7 @@ public class ControllerFactory {
 
     public GestioneAutoNoleggiateController createVisualizzaAutoNoleggiateController(){return new GestioneAutoNoleggiateController();}
 
+    public VisualizzaStoricoController createVisualizzaStoricoController(){return new VisualizzaStoricoController();}
 
     public static synchronized ControllerFactory getGraphicalSingletonFactory() throws GenericSystemException {
 
