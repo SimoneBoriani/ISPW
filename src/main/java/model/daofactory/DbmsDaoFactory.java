@@ -1,7 +1,7 @@
 package model.daofactory;
 
 import model.noleggioauto.dao.DaoNoleggioAuto;
-import model.noleggioauto.dao.DbmsNoleggioAutoDao;
+import model.noleggioauto.dao.DbmsDaoNoleggioAutoDao;
 import model.macchina.dao.DaoMacchina;
 import model.macchina.dao.DbmsDaoMacchina;
 import model.utente.dao.DaoUtente;
@@ -18,5 +18,5 @@ public class DbmsDaoFactory extends DaoFactory {
     public DaoUtente createUtenteDao() {return new DbmsDaoUtente();}
 
     @Override
-    public DaoNoleggioAuto createNoleggioAutoDao() {return new DbmsNoleggioAutoDao();}
+    public DaoNoleggioAuto createNoleggioAutoDao() {return new DbmsDaoNoleggioAutoDao();}
 }

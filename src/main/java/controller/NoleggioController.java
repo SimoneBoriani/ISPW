@@ -28,8 +28,6 @@ public class NoleggioController {
             throw new GenericSystemException("Saldo insufficiente! Hai " + utente.getSaldo() + "€ ma ne servono " + totale + "€");
         }
 
-        auto.setPrezzo((int) totale);
-
         DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().rentRequest(utente, auto,giorni);
 
         utente.setSaldo(utente.getSaldo() - totale);

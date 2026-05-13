@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -23,62 +24,60 @@
         </padding>
 
         <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="300.0">
-            <Label onMouseClicked="#labelCatalogo" styleClass="link-label" stylesheets="@style.css" text="← Torna al catalogo" textFill="#204080ff">>
+            <Label onMouseClicked="#labelCatalogo" styleClass="link-label" text="← Torna al catalogo" textFill="#204080">
                 <font>
                     <Font size="13.0" />
                 </font>
             </Label>
         </HBox>
-      <StackPane prefHeight="96.0" prefWidth="300.0" styleClass="logoImageView" stylesheets="@style.css">
-                          <ImageView fitHeight="123.0" fitWidth="178.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" style="-fx-smooth: 6;" styleClass="logoImageView">
-                      <Image url="@../images/logo.png" />
-              </ImageView>
-      </StackPane>
 
-                          <GridPane alignment="CENTER" hgap="10.0" prefHeight="147.0" prefWidth="161.0" vgap="15.0">
+        <StackPane prefHeight="96.0" prefWidth="300.0" styleClass="logoImageView">
+            <ImageView fitHeight="123.0" fitWidth="178.0" pickOnBounds="true" preserveRatio="true" smooth="true">
+                <Image url="@../images/logo.png" />
+            </ImageView>
+        </StackPane>
 
-                              <Label alignment="CENTER" prefHeight="17.0" prefWidth="151.0" text="Username" textFill="#204080" GridPane.rowIndex="1">
-            <font>
-               <Font name="System Bold" size="12.0" />
-            </font>
-         </Label>
-            <TextField fx:id="txtUsername" alignment="CENTER" promptText="username" GridPane.rowIndex="2" />
+        <GridPane alignment="CENTER" hgap="10.0" prefWidth="161.0" vgap="10.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="20.0" />
+                <RowConstraints minHeight="10.0" prefHeight="35.0" />
+                <RowConstraints minHeight="10.0" prefHeight="20.0" />
+                <RowConstraints minHeight="10.0" prefHeight="35.0" />
+                <RowConstraints minHeight="10.0" prefHeight="20.0" />
+            </rowConstraints>
 
-                              <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="151.0" text="Password" textFill="#204080" GridPane.rowIndex="3">
-            <font>
-               <Font name="System Bold" size="12.0" />
-            </font>
-         </Label>
-            <PasswordField fx:id="txtPassword" alignment="CENTER" promptText="password" GridPane.rowIndex="4" />
-         <columnConstraints>
-            <ColumnConstraints />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
-            <RowConstraints maxHeight="18.0" minHeight="0.0" prefHeight="18.0" />
-            <RowConstraints maxHeight="42.66666666666666" minHeight="24.666676839192704" prefHeight="24.666676839192704" />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
+            <children>
+                <Label alignment="CENTER" prefWidth="300.0" text="Username" textFill="#204080">
+                    <font><Font name="System Bold" size="12.0" /></font>
+                </Label>
+                <TextField fx:id="txtUsername" alignment="CENTER" promptText="username" GridPane.rowIndex="1" />
+
+                <Label alignment="CENTER" prefWidth="300.0" text="Password" textFill="#204080" GridPane.rowIndex="2">
+                    <font><Font name="System Bold" size="12.0" /></font>
+                </Label>
+
+                <StackPane GridPane.rowIndex="3">
+                    <children>
+                        <TextField fx:id="txtPasswordVisible" alignment="CENTER" managed="false" promptText="password" visible="false" />
+                        <PasswordField fx:id="txtPassword" alignment="CENTER" promptText="password" />
+                    </children>
+                </StackPane>
+
+                      <CheckBox fx:id="checkMostraPassword" alignment="CENTER" mnemonicParsing="false" onAction="#togglePasswordVisibility" prefHeight="16.0" prefWidth="316.0" text="Mostra password" textFill="#64748b" GridPane.rowIndex="4">
+                    <font>
+                  <Font size="11.0" />
+               </font>
+                </CheckBox>
+            </children>
         </GridPane>
-      <Label fx:id="errorLabel" alignment="CENTER" prefHeight="17.0" prefWidth="572.0" textFill="RED" />
 
-        <Button fx:id="btnAccedi" mnemonicParsing="false" onAction="#auth" prefHeight="40.0" prefWidth="300.0" styleClass="Button" stylesheets="@style.css" text="Accedi " textFill="WHITE">
-            <font>
-                <Font name="System Bold" size="14.0" />
-            </font>
-            <VBox.margin>
-                <Insets top="10.0" />
-            </VBox.margin>
-        </Button>
-      <Label alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#goToReg" prefHeight="49.0" prefWidth="300.0" styleClass="link-label" stylesheets="@style.css" text="Registrati" textFill="#204080">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
+        <Label fx:id="errorLabel" alignment="CENTER" prefHeight="17.0" prefWidth="300.0" textFill="RED" />
 
-        <VBox.margin>
-            <Insets top="10.0" />
-        </VBox.margin>
+        <Button fx:id="btnAccedi" mnemonicParsing="false" onAction="#auth" prefHeight="40.0" prefWidth="300.0" styleClass="Button" text="Accedi" />
+
+        <Label onMouseClicked="#goToReg" styleClass="link-label" text="Registrati" />
     </VBox>
 </VBox>

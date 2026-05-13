@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Logger;
 import utils.SessionSingleton;
 import utils.StageHandler;
 import view.factory.ControllerFactory;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,17 +41,6 @@ public class GuiGestioneCatalogo {
     @FXML private TableColumn<Macchina, String> colAlimentazione;
     @FXML private TableColumn<Macchina, Integer> colPrezzo;
     @FXML private TableColumn<Macchina, Integer> colPosti;
-
-    @FXML private TextField model;
-    @FXML private TextField brand;
-    @FXML private TextField alimentazione;
-    @FXML private TextField posti;
-    @FXML private TextField km;
-    @FXML private TextField prezzo;
-    @FXML private TextField urlFoto;
-
-    @FXML private Button delete;
-    @FXML private Button update;
 
     private final Logger logger= (Logger) LogManager.getLogger(GuiGestioneCatalogo.class);
 
@@ -142,15 +132,13 @@ public class GuiGestioneCatalogo {
             assegnaStringa(cbAlimentazione.getValue(), bean::setAlimentazione);
             assegnaStringa(cbCambio.getValue(), bean::setTrasmissione);
             assegnaStringa(cbTipo.getValue(), bean::setTipologia);
+            if (txtPrezzo.getText() != null && !txtPrezzo.getText().trim().isEmpty()) {bean.setPrezzo(Double.parseDouble(txtPrezzo.getText().trim()));}
+            assegnaIntero(txtAnno.getText(), bean::setAnno);
+            assegnaIntero(cbPosti.getValue(), bean::setPosti);
 
             try {
 
-                assegnaIntero(txtPrezzo.getText(), bean::setPrezzo);
-                assegnaIntero(txtAnno.getText(), bean::setAnno);
-                assegnaIntero(cbPosti.getValue(), bean::setPosti);
-
                 gestioneCatalogoController.modifyCar(bean);
-
                 caricaDati();
                 popupStage.close();
 
@@ -197,47 +185,6 @@ public class GuiGestioneCatalogo {
     }
 
     @FXML
-    public void backHome(ActionEvent event) throws IOException {
-        StageHandler.getSingletonInstance().loadPage("/view/CatalogoView.fxml");
-    }
-
-    @FXML
-    public void modificaCar(ActionEvent event) {
-
-        if (SessionSingleton.getInstance().getAutoSelezionata() == null) return;
-
-        CatalogoBean catalogo = new CatalogoBean();
-        catalogo.setId(SessionSingleton.getInstance().getAutoSelezionata().getId());
-
-        String model1 = model.getText().trim();
-        if (!model1.isEmpty()) catalogo.setModello(model1);
-
-        String brand1 = brand.getText().trim();
-        if (!brand1.isEmpty()) catalogo.setMarca(brand1);
-
-        String alimentazione1 = alimentazione.getText().trim();
-        if (!alimentazione1.isEmpty()) catalogo.setAlimentazione(alimentazione1);
-
-        String urlFoto1 = urlFoto.getText().trim();
-        if (!urlFoto1.isEmpty()) catalogo.setFoto(urlFoto1);
-
-        try {
-            String prezzo1 = prezzo.getText().trim();
-            if (!prezzo1.isEmpty()) catalogo.setPrezzo(Integer.parseInt(prezzo1));
-
-            String posti1 = posti.getText().trim();
-            if (!posti1.isEmpty()) catalogo.setPosti(Integer.parseInt(posti1));
-
-            gestioneCatalogoController.modifyCar(catalogo);
-
-            caricaDati();
-
-        } catch (NumberFormatException e) {
-            throw new GenericSystemException("Errore di compilazione: Prezzo, Km e Posti devono contenere SOLO numeri interi.");
-        }
-    }
-
-    @FXML
     public void btnAdd(ActionEvent event) {
         aggiungiAuto();
     }
@@ -249,7 +196,7 @@ public class GuiGestioneCatalogo {
     }
 
     @FXML
-    public void btnBack(ActionEvent event) throws IOException {
+    public void goBack(MouseEvent event) throws IOException {
         String str="/view/AdminView.fxml";
         StageHandler.getSingletonInstance().loadPage(str);
     }

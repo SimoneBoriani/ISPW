@@ -1,8 +1,6 @@
 package controller;
 
 import bean.CatalogoBean;
-import bean.NoleggioAutoBean;
-import exceptions.GenericSystemException;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 
@@ -37,19 +35,6 @@ public class GestioneCatalogoController {
         DaoFactory.getDaoSingletonFactory().createMacchinaDao().update(macchinaSelezionata);
     }
 
-    public void rentRequest(NoleggioAutoBean bean){
-        if(checkData(bean)){
-            DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().rentRequest(bean.getRenter(), bean.getMacchina(),bean.getGiorni());
-        }
-        else{
-            throw new GenericSystemException("Saldo insufficiente.");
-        }
-    }
-
-    public boolean checkData(NoleggioAutoBean bean){
-        return DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().checkInfo(bean.getRenter(), bean.getMacchina());
-    }
-
     public void salvaAutoRam(CatalogoBean bean){
 
         Macchina nuovaAuto = new Macchina();
@@ -63,6 +48,7 @@ public class GestioneCatalogoController {
         nuovaAuto.setPrezzo(bean.getPrezzo());
         nuovaAuto.setTipologia(bean.getTipologia());
         nuovaAuto.setImageUrl("no_image.png");
+        nuovaAuto.setDisponibile(true);
 
         autoDaAggiungereAlDB.add(nuovaAuto);
 
