@@ -46,7 +46,7 @@ public class DbmsDaoMacchina extends DaoMacchina {
                     ps.setString(2, auto.getModello());
                     ps.setString(3, auto.getTipologia());
                     ps.setInt(4, auto.getAnno());
-                    ps.setInt(5, auto.getPrezzo());
+                    ps.setDouble(5, auto.getPrezzo());
                     ps.setInt(6, auto.getPosti());
                     ps.setString(7, auto.getAlimentazione());
                     ps.setString(8, auto.getTrasmissione());
@@ -124,9 +124,9 @@ public class DbmsDaoMacchina extends DaoMacchina {
         String brand = filtriAuto.getMarca();
         String model = filtriAuto.getModello();
         String alimentation = filtriAuto.getAlimentazione();
-        int prezzoMax = filtriAuto.getPrezzo();
+        double prezzoMax = filtriAuto.getPrezzo();
 
-        // FIX: Aggiunto "disponibile = true" in modo che la ricerca non mostri auto già noleggiate
+
         StringBuilder sql = new StringBuilder("SELECT * FROM macchine WHERE 1=1 AND disponibile = true");
 
         if (model != null && !model.trim().isEmpty()) {
@@ -135,7 +135,7 @@ public class DbmsDaoMacchina extends DaoMacchina {
         }
 
         if (brand != null && !brand.trim().isEmpty()) {
-            sql.append(" AND marca ILIKE ?"); // FIX: cambiato da casa a marca
+            sql.append(" AND marca ILIKE ?");
             parameters.add("%" + brand + "%");
         }
 
@@ -161,7 +161,6 @@ public class DbmsDaoMacchina extends DaoMacchina {
                 try (ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {
 
-                        // FIX: Adesso utilizza il nuovo costruttore completo per il noleggio!
                         Macchina m = new Macchina(
                                 rs.getInt("auto_id"),
                                 rs.getString("modello"),
@@ -193,14 +192,11 @@ public class DbmsDaoMacchina extends DaoMacchina {
 
     private String generateUpdateQuery(Macchina macchina, List<String> setClauses, List<Object> parameters) {
 
-        // FIX: Rimosso macchina.getKm() che non esiste più
-
         if (macchina.getModello() != null && !macchina.getModello().trim().isEmpty()) {
             setClauses.add("modello=?");
             parameters.add(macchina.getModello());
         }
 
-        // FIX: Cambiato da getCasa() a getMarca()
         if (macchina.getMarca() != null && !macchina.getMarca().trim().isEmpty()) {
             setClauses.add("marca=?");
             parameters.add(macchina.getMarca());
@@ -211,7 +207,6 @@ public class DbmsDaoMacchina extends DaoMacchina {
             parameters.add(macchina.getAlimentazione());
         }
 
-        // FIX: Aggiunta la Trasmissione
         if (macchina.getTrasmissione() != null && !macchina.getTrasmissione().trim().isEmpty()) {
             setClauses.add("trasmissione=?");
             parameters.add(macchina.getTrasmissione());

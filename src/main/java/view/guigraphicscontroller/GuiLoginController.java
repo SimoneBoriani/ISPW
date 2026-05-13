@@ -1,15 +1,12 @@
 package view.guigraphicscontroller;
 
+import javafx.scene.control.*;
 import utils.SessionSingleton;
 import bean.ProfileBean;
 import controller.LogInController;
 import exceptions.IncorrectCredentialExeption;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import utils.StageHandler;
 import view.factory.ControllerFactory;
@@ -23,22 +20,33 @@ public class GuiLoginController{
 
     @FXML
     private Label errorLabel;
+
     @FXML
     private TextField txtUsername;
+
     @FXML
     private PasswordField txtPassword;
+
     @FXML
     private Button btnLogin;
 
     @FXML
     private TextField txtConfPass;
+
     @FXML
     private Button btnRegister;
+
+    @FXML
+    private TextField txtPasswordVisible;
+
+    @FXML
+    private CheckBox checkMostraPassword;
 
     private static final String STYLE = "-fx-text-fill: red;";
 
     @FXML
     public void auth(ActionEvent event){
+
 
         String user = txtUsername.getText().trim();
         String pass = txtPassword.getText().trim();
@@ -150,6 +158,25 @@ public class GuiLoginController{
         String str= "/view/CatalogoView.fxml";
         StageHandler.getSingletonInstance().loadPage(str);
 
+    }
+
+    @FXML
+    void togglePasswordVisibility(ActionEvent event) {
+        if (checkMostraPassword.isSelected()) {
+
+            txtPasswordVisible.setText(txtPassword.getText());
+            txtPasswordVisible.setVisible(true);
+            txtPasswordVisible.setManaged(true);
+            txtPassword.setVisible(false);
+            txtPassword.setManaged(false);
+        } else {
+
+            txtPassword.setText(txtPasswordVisible.getText());
+            txtPassword.setVisible(true);
+            txtPassword.setManaged(true);
+            txtPasswordVisible.setVisible(false);
+            txtPasswordVisible.setManaged(false);
+        }
     }
 
 }

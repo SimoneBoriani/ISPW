@@ -100,29 +100,55 @@ public class GuiNoleggioiAuto {
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle("Riepilogo Noleggio");
 
+        VBox root = new VBox();
+        root.setAlignment(Pos.CENTER);
+        root.setStyle("-fx-background-color: #0E1A33; -fx-padding: 20;");
+
+        VBox mainCard = new VBox(20);
+        mainCard.getStyleClass().add("white-card");
+        mainCard.setPadding(new Insets(25));
+        mainCard.setAlignment(Pos.TOP_CENTER);
+        mainCard.setPrefWidth(350);
+
         Macchina auto = acquistoAuto.getMacchina();
+
+        Label lblTitolo = new Label("CONFIGURA NOLEGGIO");
+        lblTitolo.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #204080;");
+
         TextField txtGiorni = new TextField();
-        txtGiorni.setPromptText("Numero di giorni (es. 3)");
+        txtGiorni.setPromptText("Inserisci durata (giorni)");
+        txtGiorni.setStyle("-fx-background-radius: 10; -fx-pref-height: 35; -fx-alignment: center;");
 
-        Label lblScontrinoTitolo = new Label("--- SCONTRINO ---");
-        lblScontrinoTitolo.setStyle("-fx-font-weight: bold;");
-        Label lblAuto = new Label("Auto: " + auto.getMarca() + " " + auto.getModello());
-        Label lblDettagliPiano = new Label("Piano: Inserisci i giorni...");
-        Label lblPrezzoFinale = new Label(style);
-        lblPrezzoFinale.setStyle("-fx-font-weight: bold; -fx-text-fill: green; -fx-font-size: 16px;");
+        VBox scontrinoBox = new VBox(10);
+        scontrinoBox.getStyleClass().add("spec-box");
+        scontrinoBox.setAlignment(Pos.CENTER_LEFT);
 
-        VBox scontrinoBox = new VBox(5, lblScontrinoTitolo, lblAuto, lblDettagliPiano, lblPrezzoFinale);
-        scontrinoBox.setStyle("-fx-border-color: gray; -fx-border-width: 1px; -fx-padding: 10px; -fx-background-color: #f9f9f9;");
+        Label lblScontrinoTitolo = new Label("RIEPILOGO COSTI");
+        lblScontrinoTitolo.setStyle("-fx-font-weight: bold; -fx-text-fill: #204080; -fx-font-size: 12px;");
+
+        Label lblAuto = new Label("🚗 " + auto.getMarca() + " " + auto.getModello());
+        lblAuto.setStyle("-fx-text-fill: #475569;");
+
+        Label lblDettagliPiano = new Label("Piano: - ");
+        lblDettagliPiano.setStyle("-fx-text-fill: #475569;");
+
+        Label lblPrezzoFinale = new Label("Totale: € 0.00");
+        lblPrezzoFinale.setStyle("-fx-font-weight: bold; -fx-text-fill: #204080; -fx-font-size: 18px;");
+
+        scontrinoBox.getChildren().addAll(lblScontrinoTitolo, lblAuto, lblDettagliPiano, lblPrezzoFinale);
 
         txtGiorni.textProperty().addListener((obs, oldText, newText) ->
                 aggiornaScontrinoVisivo(newText, auto, lblDettagliPiano, lblPrezzoFinale)
         );
 
-        Button btnConferma = new Button("Conferma");
-        Button btnAnnulla = new Button("Annulla");
+        Button btnConferma = new Button("CONFERMA");
+        Button btnAnnulla = new Button("ANNULLA");
 
         btnConferma.getStyleClass().add("Button");
-        btnAnnulla.getStyleClass().add("Button");
+        btnAnnulla.getStyleClass().add("Button-Secondary");
+
+        btnConferma.setPrefWidth(140);
+        btnAnnulla.setPrefWidth(140);
 
         btnConferma.setOnAction(e -> gestisciConferma(txtGiorni.getText(), acquistoAuto, popupStage));
         btnAnnulla.setOnAction(e -> popupStage.close());
@@ -130,13 +156,14 @@ public class GuiNoleggioiAuto {
         HBox bottoniBox = new HBox(15, btnConferma, btnAnnulla);
         bottoniBox.setAlignment(Pos.CENTER);
 
-        VBox layoutPopup = new VBox(15, new Label("Inserisci i giorni di noleggio:"), txtGiorni, scontrinoBox, bottoniBox);
-        layoutPopup.setPadding(new Insets(20));
-        layoutPopup.setAlignment(Pos.CENTER);
+        mainCard.getChildren().addAll(lblTitolo, new Label("Quanti giorni desideri noleggiare l'auto?"), txtGiorni, scontrinoBox, bottoniBox);
+        root.getChildren().add(mainCard);
 
-        Scene scene = new Scene(layoutPopup, 350, 400);
+        Scene scene = new Scene(root, 400, 480);
         StageHandler.getSingletonInstance().loadCss(scene);
+
         popupStage.setScene(scene);
+        popupStage.setResizable(false);
         popupStage.showAndWait();
     }
 

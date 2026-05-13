@@ -2,20 +2,21 @@ package model.macchina;
 
 public class Macchina {
 
-    private int id; // auto_id nel DB
+    private int id;
     private String modello;
     private String marca;
     private int posti;
     private String alimentazione;
-    private String trasmissione; // Nuovo campo
-    private int prezzo; // Prezzo di noleggio (es. giornaliero)
+    private String trasmissione;
+    private double prezzo;
     private String tipologia;
     private int anno;
-    private String foto; // immagine_url nel DB
+    private String foto;
+    private boolean disponibile;
 
     public Macchina() {}
 
-    public Macchina(int id, String modello, String marca, int posti, String alimentazione, String trasmissione, int prezzo, String tipologia, int anno, String foto) {
+    public Macchina(int id, String modello, String marca, int posti, String alimentazione, String trasmissione, double prezzo, String tipologia, int anno, String foto) {
         this.id = id;
         this.modello = modello;
         this.marca = marca;
@@ -28,7 +29,6 @@ public class Macchina {
         this.foto = foto;
     }
 
-    // Getters e Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -47,8 +47,8 @@ public class Macchina {
     public String getTrasmissione() { return trasmissione; }
     public void setTrasmissione(String trasmissione) { this.trasmissione = trasmissione; }
 
-    public int getPrezzo() { return prezzo; }
-    public void setPrezzo(int prezzo) { this.prezzo = prezzo; }
+    public double getPrezzo() { return prezzo; }
+    public void setPrezzo(double prezzo) { this.prezzo = prezzo; }
 
     public String getTipologia() { return tipologia; }
     public void setTipologia(String tipologia) { this.tipologia = tipologia; }
@@ -58,4 +58,7 @@ public class Macchina {
 
     public String getImageUrl() { return foto; }
     public void setImageUrl(String foto) { this.foto = foto; }
+
+    public boolean getDisponibile() { return disponibile; }
+    public void setDisponibile(boolean disponibile) { this.disponibile = disponibile; }
 }

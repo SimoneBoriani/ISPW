@@ -44,9 +44,9 @@ public abstract class DaoFactory {
                     instance = new DbmsDaoFactory();
                 }
 
-        /*        if(persistence.equals("FILE")){
+                if(persistence.equals("FILE")){
                     instance = new FileDaoFactory();
-                }*/
+                }
             }
 
         } catch (FileNotFoundException e) {

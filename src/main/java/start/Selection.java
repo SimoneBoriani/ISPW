@@ -2,6 +2,7 @@ package start;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import view.cligraphicscontroller.CliBootPage;
 
 import java.io.*;
 import java.util.Properties;
@@ -13,7 +14,7 @@ public class Selection {
     private static final String CONFIG_FILE_PATH = "src/main/resources/config.properties";
     private static final String CHOICE_PROP_KEY = "user_choice";
 
-    private static final Integer DEBUG_CHOICE = 1;
+    private static final Integer DEBUG_CHOICE = 2;
 
     public void init() {
         int choice = getChoice();
@@ -25,6 +26,9 @@ public class Selection {
             Launcher.starter();
         } else {
             LOGGER.info("Modalità CLI avviata correttamente.");
+            CliBootPage cli = new CliBootPage();
+            cli.render();
+            LOGGER.info("Modalità CLI terminata correttamente.");
         }
     }
 

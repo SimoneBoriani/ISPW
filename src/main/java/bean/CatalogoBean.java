@@ -9,7 +9,7 @@ public class CatalogoBean {
     private int posti;
     private String alimentazione;
     private String trasmissione;
-    private int prezzo;
+    private double prezzo;
     private String tipologia;
     private String foto;
 
@@ -38,8 +38,8 @@ public class CatalogoBean {
     public String getTrasmissione() { return trasmissione; }
     public void setTrasmissione(String trasmissione) { this.trasmissione = trasmissione; }
 
-    public int getPrezzo() { return prezzo; }
-    public void setPrezzo(int prezzo) { this.prezzo = prezzo; }
+    public double getPrezzo() { return prezzo; }
+    public void setPrezzo(double prezzo) { this.prezzo = prezzo; }
 
     public String getTipologia() { return tipologia; }
     public void setTipologia(String tipologia) { this.tipologia = tipologia; }

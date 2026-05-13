@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class DbmsNoleggioAutoDao extends DaoNoleggioAuto {
+public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
     @Override
     public void rentRequest(Utente utente, Macchina macchina, int giorni) {

@@ -10,6 +10,8 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import model.noleggioauto.NoleggioAuto;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.StageHandler;
 import view.factory.ControllerFactory;
 
@@ -22,6 +24,8 @@ import java.util.TreeMap;
 public class GuiVisualizzaStorico {
 
     private final VisualizzaStoricoController controller = ControllerFactory.getGraphicalSingletonFactory().createVisualizzaStoricoController();
+
+    private final Logger logger= LogManager.getLogger(GuiVisualizzaStorico.class);
 
     @FXML
     private Label lblIndietro;
@@ -133,6 +137,6 @@ public class GuiVisualizzaStorico {
 
     @FXML private void goToHome() {
         try { StageHandler.getSingletonInstance().loadPage("/view/AdminView.fxml"); }
-        catch (IOException e) { e.printStackTrace(); }
+        catch (IOException e) { logger.error(e); }
     }
 }

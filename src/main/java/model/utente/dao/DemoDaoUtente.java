@@ -1,6 +1,7 @@
 package model.utente.dao;
 
 import model.utente.Utente;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,15 +12,17 @@ public class DemoDaoUtente extends DaoUtente {
 
     @Override
     public void insertUtente(Utente utente) {
-
-        if (counter == 0) {
-            utente.setRuolo("ADMIN");
-        } else {
-            utente.setRuolo("USER");
+        if (utente == null) {
+            throw new IllegalArgumentException("L'utente da inserire non può essere null");
         }
 
-        users.add(utente);
-        counter++;
+        String ruolo = users.isEmpty() ? "ADMIN" : "USER";
+        utente.setRuolo(ruolo);
+
+        synchronized (DemoDaoUtente.class) {
+            utente.setIdUser(counter++);
+            users.add(utente);
+        }
     }
 
     @Override
@@ -46,6 +49,32 @@ public class DemoDaoUtente extends DaoUtente {
 
     @Override
     public void update(Utente utente) {
-        //implementare
+        if (utente == null) {
+            return;
+        }
+
+        users.stream()
+                .filter(u -> u.getIdUser() == utente.getIdUser())
+                .findFirst()
+                .ifPresent(u -> {
+
+                    if (isNotBlank(utente.getUsername())) {
+                        u.setUsername(utente.getUsername());
+                    }
+                    if (isNotBlank(utente.getNome())) {
+                        u.setNome(utente.getNome());
+                    }
+                    if (isNotBlank(utente.getCognome())) {
+                        u.setCognome(utente.getCognome());
+                    }
+
+                    if (utente.getSaldo() > 0) {
+                        u.setSaldo(u.getSaldo() + utente.getSaldo());
+                    }
+                });
+    }
+
+    private boolean isNotBlank(String str) {
+        return str != null && !str.isBlank();
     }
 }
