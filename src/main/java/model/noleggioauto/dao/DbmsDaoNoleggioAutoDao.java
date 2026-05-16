@@ -15,6 +15,12 @@ import java.util.TreeMap;
 
 public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
+    private static final String COL_AUTO_ID = "auto_id";
+    private static final String COL_MARCA = "marca";
+    private static final String COL_MODELLO = "modello";
+    private static final String COL_IMMAGINE_URL = "immagine_url";
+    private static final String COL_DATA_FINE = "data_fine";
+
     @Override
     public void rentRequest(Utente utente, Macchina macchina, int giorni) {
         String queryNoleggio = "INSERT INTO noleggi (id_utente, auto_id, data_fine, prezzo_totale, stato) VALUES (?, ?, ?, ?, 'ATTIVO')";
@@ -32,8 +38,8 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
                 stmtNoleggio.setInt(1, utente.getIdUser());
                 stmtNoleggio.setInt(2, macchina.getId());
-                java.time.LocalDate dataScadenza = java.time.LocalDate.now().plusDays(giorni);
-                stmtNoleggio.setDate(3, java.sql.Date.valueOf(dataScadenza));
+                LocalDate dataScadenza = LocalDate.now().plusDays(giorni);
+                stmtNoleggio.setDate(3, Date.valueOf(dataScadenza));
                 stmtNoleggio.setDouble(4, macchina.getPrezzo());
                 stmtNoleggio.executeUpdate();
 
@@ -58,8 +64,11 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
     @Override
     public void sbloccaAutoScadute(String motivo) {
-
-        String queryChiudi = "UPDATE noleggi SET stato = 'TERMINATO', motivo_chiusura = ? " +
+        // Se il motivo è 'Chiusura Anticipata', aggiorna data_fine a CURRENT_DATE oltre a chiudere lo stato
+        String queryChiudi = "UPDATE noleggi SET " +
+                "stato = 'TERMINATO', " +
+                "motivo_chiusura = ?, " +
+                "data_fine = CASE WHEN ? = 'Chiusura Anticipata' THEN CURRENT_DATE ELSE data_fine END " +
                 "WHERE stato = 'ATTIVO' AND (data_fine < CURRENT_DATE OR ? = 'Chiusura Anticipata')";
 
         String queryLibera = "UPDATE macchine SET disponibile = true WHERE auto_id IN " +
@@ -75,6 +84,7 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
                 psChiudi.setString(1, motivo);
                 psChiudi.setString(2, motivo);
+                psChiudi.setString(3, motivo);
                 psChiudi.executeUpdate();
 
                 psLibera.executeUpdate();
@@ -91,15 +101,10 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
         }
     }
 
-
     @Override
     public List<Macchina> getUserCars(Utente utente) {
-
         List<Macchina> autoNoleggiate = new ArrayList<>();
-
-        String query = "SELECT m.* FROM macchine m JOIN noleggi n ON m.auto_id = n.auto_id " +
-                "WHERE n.id_utente = ? AND n.stato = 'ATTIVO'";
-
+        String query = "SELECT m.* FROM macchine m JOIN noleggi n ON m.auto_id = n.auto_id WHERE n.id_utente = ? AND n.stato = 'ATTIVO'";
         Connection conn = ConnectionHandler.getInstance().getConnection();
 
         try (PreparedStatement statement = conn.prepareStatement(query)) {
@@ -107,11 +112,11 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     Macchina m = new Macchina();
-                    m.setId(rs.getInt("auto_id"));
-                    m.setMarca(rs.getString("marca"));
-                    m.setModello(rs.getString("modello"));
+                    m.setId(rs.getInt(COL_AUTO_ID));
+                    m.setMarca(rs.getString(COL_MARCA));
+                    m.setModello(rs.getString(COL_MODELLO));
                     m.setPrezzo(rs.getInt("prezzo"));
-                    m.setImageUrl(rs.getString("immagine_url"));
+                    m.setImageUrl(rs.getString(COL_IMMAGINE_URL));
                     autoNoleggiate.add(m);
                 }
             }
@@ -138,91 +143,73 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
         }
     }
 
+    @Override
     public List<NoleggioAuto> getRented() {
-
         List<NoleggioAuto> rentals = new ArrayList<>();
-
         String sql = "SELECT n.*, m.marca, m.modello, m.immagine_url, u.username, u.nome, u.cognome " +
-                "FROM noleggi n " +
-                "JOIN macchine m ON n.auto_id = m.auto_id " +
-                "JOIN utenti u ON n.id_utente = u.id";
-
+                "FROM noleggi n JOIN macchine m ON n.auto_id = m.auto_id JOIN utenti u ON n.id_utente = u.id";
 
         Connection conn = ConnectionHandler.getInstance().getConnection();
-
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                NoleggioAuto n = new NoleggioAuto();
-
-
-                Macchina m = new Macchina();
-                m.setId(rs.getInt("auto_id"));
-                m.setMarca(rs.getString("marca"));
-                m.setModello(rs.getString("modello"));
-                m.setImageUrl(rs.getString("immagine_url"));
-                n.setMacchina(m);
-
-
-                Utente u = new Utente();
-                u.setIdUser(rs.getInt("id_utente"));
-                u.setNome(rs.getString("nome"));
-                u.setCognome(rs.getString("cognome"));
-                u.setUsername(rs.getString("username"));
-                n.setUtente(u);
-
-
-                n.setStato(rs.getString("stato"));
-                n.setPrezzoTotalePagato(rs.getDouble("prezzo_totale"));
-                n.setMotivoChiusura(rs.getString("motivo_chiusura"));
-
-
-                java.sql.Date dataSql = rs.getDate("data_fine");
-                if (dataSql != null) {
-                    n.setDataFine(dataSql.toLocalDate());
-                }
-
-                rentals.add(n);
+                rentals.add(mapResultSetToNoleggio(rs));
             }
-
         } catch (SQLException e) {
-
             throw new GenericSystemException("Errore nel recupero dello storico noleggi dal database", e);
         }
-
         return rentals;
     }
 
+    @Override
     public Map<LocalDate, Double> getProfittiPerData() {
-
         Map<LocalDate, Double> profitti = new TreeMap<>();
-
-        String sql = "SELECT data_fine, SUM(prezzo_totale) as totale " +
-                "FROM noleggi " +
-                "WHERE stato = 'TERMINATO' " +
-                "GROUP BY data_fine " +
-                "ORDER BY data_fine ASC";
-
+        String sql = "SELECT data_fine, SUM(prezzo_totale) as totale FROM noleggi WHERE stato = 'TERMINATO' GROUP BY data_fine ORDER BY data_fine ASC";
         Connection conn = ConnectionHandler.getInstance().getConnection();
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                java.sql.Date dataSql = rs.getDate("data_fine");
+                Date dataSql = rs.getDate(COL_DATA_FINE);
                 if (dataSql != null) {
-                    LocalDate data = dataSql.toLocalDate();
-                    double totaleGiorno = rs.getDouble("totale");
-                    profitti.put(data, totaleGiorno);
+                    profitti.put(dataSql.toLocalDate(), rs.getDouble("totale"));
                 }
             }
-
         } catch (SQLException e) {
             throw new GenericSystemException("Errore nel recupero dei profitti per il grafico", e);
         }
-
         return profitti;
+    }
+
+    private NoleggioAuto mapResultSetToNoleggio(ResultSet rs) throws SQLException {
+        NoleggioAuto n = new NoleggioAuto();
+
+        Macchina m = new Macchina();
+        m.setId(rs.getInt(COL_AUTO_ID));
+        m.setMarca(rs.getString(COL_MARCA));
+        m.setModello(rs.getString(COL_MODELLO));
+        m.setImageUrl(rs.getString(COL_IMMAGINE_URL));
+        n.setMacchina(m);
+
+        Utente u = new Utente();
+        u.setIdUser(rs.getInt("id_utente"));
+        u.setNome(rs.getString("nome"));
+        u.setCognome(rs.getString("cognome"));
+        u.setUsername(rs.getString("username"));
+        n.setUtente(u);
+
+        n.setStato(rs.getString("stato"));
+        n.setPrezzoTotalePagato(rs.getDouble("prezzo_totale"));
+        n.setMotivoChiusura(rs.getString("motivo_chiusura"));
+
+        Date dataSql = rs.getDate(COL_DATA_FINE);
+        if (dataSql != null) {
+            n.setDataFine(dataSql.toLocalDate());
+        }
+
+        return n;
     }
 }

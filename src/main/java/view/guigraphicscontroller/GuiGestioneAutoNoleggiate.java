@@ -17,7 +17,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 import utils.SessionSingleton;
 import utils.StageHandler;
@@ -87,7 +86,7 @@ public class GuiGestioneAutoNoleggiate {
         btnTermina.setOnAction(e -> {
             try {
 
-                DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().sbloccaAutoScadute("Chiusura Anticipata");
+                visualizzaAutoNoleggiateController.endRent();
                 getCars();
 
                 popupStage.close();

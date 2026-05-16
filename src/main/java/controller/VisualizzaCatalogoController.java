@@ -19,6 +19,7 @@ public class VisualizzaCatalogoController {
 
         Macchina autoFiltro = new Macchina();
 
+        autoFiltro.setId(filtri.getId());
         autoFiltro.setMarca(filtri.getMarca());
         autoFiltro.setModello(filtri.getModello());
         autoFiltro.setAlimentazione(filtri.getAlimentazione());

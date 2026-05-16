@@ -16,13 +16,15 @@ import java.util.*;
 public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
 
     private static final String CSV_PATH = "src/main/resources/csv/noleggi.csv";
-    private static final String CSV_CAR="src/main/resources/csv/car.csv";
-    private static final String CSV_USER="src/main/resources/csv/user.csv";
-    private static final String STATO="ATTIVO";
+    private static final String CSV_CAR = "src/main/resources/csv/car.csv";
+    private static final String CSV_USER = "src/main/resources/csv/user.csv";
+    private static final String STATO_ATTIVO = "ATTIVO";
+    private static final String STATO_TERMINATO = "TERMINATO";
+    private static final String CHIUSURA_ANTICIPATA = "Chiusura Anticipata";
     private static final String SEPARATOR = ",";
 
-    private final FileDaoUtente daoUtente=new FileDaoUtente();
-    private final FileDaoMacchina daoMacchina=new FileDaoMacchina();
+    private final FileDaoUtente daoUtente = new FileDaoUtente();
+    private final FileDaoMacchina daoMacchina = new FileDaoMacchina();
 
     private List<NoleggioAuto> loadAllRentals() {
         try {
@@ -38,7 +40,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
                     .toList();
 
         } catch (Exception e) {
-            throw new GenericSystemException("Errore critico lettura file noleggi: " + e.getMessage());
+            throw new GenericSystemException("Errore critico lettura file noleggi: " + e.getMessage(), e);
         }
     }
 
@@ -64,8 +66,8 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
         if (!Files.exists(Paths.get(CSV_USER))) return map;
 
         for (String l : Files.readAllLines(Paths.get(CSV_USER))) {
+            if (l.trim().isEmpty()) continue;
             String[] d = l.split(SEPARATOR);
-            if (l.isEmpty()) continue;
             map.put(Integer.parseInt(d[0]), new Utente(
                     Integer.parseInt(d[0]), d[1], d[2], d[3], d[4],
                     Integer.parseInt(d[5]), Double.parseDouble(d[6]), d[7]
@@ -79,8 +81,8 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
         if (!Files.exists(Paths.get(CSV_CAR))) return map;
 
         for (String l : Files.readAllLines(Paths.get(CSV_CAR))) {
+            if (l.trim().isEmpty()) continue;
             String[] d = l.split(SEPARATOR);
-            if (l.isEmpty()) continue;
             Macchina m = new Macchina(
                     Integer.parseInt(d[0]), d[1], d[2], Integer.parseInt(d[3]),
                     d[4], d[5], Double.parseDouble(d[6]), d[7],
@@ -112,7 +114,6 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
     @Override
     public void rentRequest(Utente utentePassato, Macchina macchinaPassata, int giorni) {
         try {
-
             Utente utenteReale = findUserById(utentePassato.getIdUser());
             Macchina macchinaReale = findCarById(macchinaPassata.getId());
 
@@ -129,7 +130,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
             updateFileField(CSV_USER, utenteReale.getIdUser(), 6, String.valueOf(utenteReale.getSaldo() - macchinaReale.getPrezzo()));
 
         } catch (IOException | NumberFormatException e) {
-            throw new GenericSystemException("Errore durante il noleggio: " + e.getMessage());
+            throw new GenericSystemException("Errore durante il noleggio: " + e.getMessage(), e);
         }
     }
 
@@ -139,7 +140,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
         n.setMacchina(m);
         n.setDataFine(LocalDate.now().plusDays(giorni));
         n.setPrezzoTotalePagato(m.getPrezzo());
-        n.setStato(STATO);
+        n.setStato(STATO_ATTIVO);
         return n;
     }
 
@@ -147,8 +148,9 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
         List<String> linee = Files.readAllLines(Paths.get(path));
         try (PrintWriter pw = new PrintWriter(new FileWriter(path))) {
             for (String linea : linee) {
+                if (linea.trim().isEmpty()) continue;
                 String[] colonne = linea.split(SEPARATOR);
-                if (!linea.isEmpty() && Integer.parseInt(colonne[0]) == idRicercato) {
+                if (Integer.parseInt(colonne[0]) == idRicercato) {
                     colonne[indexCampo] = nuovoValore;
                     pw.println(String.join(SEPARATOR, colonne));
                 } else {
@@ -160,6 +162,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
 
     private Utente findUserById(int id) throws IOException {
         return Files.readAllLines(Paths.get(CSV_USER)).stream()
+                .filter(line -> !line.trim().isEmpty())
                 .map(l -> l.split(SEPARATOR))
                 .filter(d -> Integer.parseInt(d[0]) == id)
                 .map(d -> new Utente(Integer.parseInt(d[0]), d[1], d[2], d[3], d[4], Integer.parseInt(d[5]), Double.parseDouble(d[6]), d[7]))
@@ -168,6 +171,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
 
     private Macchina findCarById(int id) throws IOException {
         return Files.readAllLines(Paths.get(CSV_CAR)).stream()
+                .filter(line -> !line.trim().isEmpty())
                 .map(l -> l.split(SEPARATOR))
                 .filter(d -> Integer.parseInt(d[0]) == id)
                 .map(d -> {
@@ -181,11 +185,16 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
     public void sbloccaAutoScadute(String motivo) {
         List<NoleggioAuto> rentals = loadAllRentals();
         boolean changed = false;
+        LocalDate oggi = LocalDate.now();
 
         for (NoleggioAuto n : rentals) {
-            if (n.getStato().equals(STATO) && (n.getDataFine().isBefore(LocalDate.now()) || motivo.equals("Chiusura Anticipata"))) {
-                n.setStato("TERMINATO");
+            if (n.getStato().equals(STATO_ATTIVO) && (n.getDataFine().isBefore(oggi) || CHIUSURA_ANTICIPATA.equals(motivo))) {
+                n.setStato(STATO_TERMINATO);
                 n.setMotivoChiusura(motivo);
+
+                if (CHIUSURA_ANTICIPATA.equals(motivo)) {
+                    n.setDataFine(oggi);
+                }
 
                 n.getMacchina().setDisponibile(true);
                 daoMacchina.update(n.getMacchina());
@@ -198,7 +207,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
     @Override
     public List<Macchina> getUserCars(Utente utente) {
         return loadAllRentals().stream()
-                .filter(n -> n.getUtente().getIdUser() == utente.getIdUser() && n.getStato().equals(STATO))
+                .filter(n -> n.getUtente().getIdUser() == utente.getIdUser() && n.getStato().equals(STATO_ATTIVO))
                 .map(NoleggioAuto::getMacchina)
                 .toList();
     }
@@ -218,7 +227,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
     public Map<LocalDate, Double> getProfittiPerData() {
         Map<LocalDate, Double> profitti = new TreeMap<>();
         for (NoleggioAuto n : loadAllRentals()) {
-            if ("TERMINATO".equals(n.getStato())) {
+            if (STATO_TERMINATO.equals(n.getStato())) {
                 profitti.merge(n.getDataFine(), n.getPrezzoTotalePagato(), Double::sum);
             }
         }

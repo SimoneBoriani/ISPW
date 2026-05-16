@@ -19,7 +19,7 @@ public class ControllerFactory {
         return new GestioneCatalogoController();
     }
 
-    public VisualizzaCatalogoController createMainPageCatalogoController(){
+    public VisualizzaCatalogoController createVisualizzaCatalogoController(){
         return new VisualizzaCatalogoController();
     }
 

@@ -2,7 +2,6 @@ package view.guigraphicscontroller;
 
 import bean.CatalogoBean;
 import controller.GestioneCatalogoController;
-import controller.VisualizzaCatalogoController;
 import exceptions.GenericSystemException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,8 +32,6 @@ public class GuiGestioneCatalogo {
 
     private final GestioneCatalogoController gestioneCatalogoController = ControllerFactory.getGraphicalSingletonFactory().createGestioneCatalogoController();
 
-    private final VisualizzaCatalogoController mainPageCatalogoController = ControllerFactory.getGraphicalSingletonFactory().createMainPageCatalogoController();
-
     @FXML private TableView<Macchina> tabellaAuto;
     @FXML private TableColumn<Macchina, String> colMarca;
     @FXML private TableColumn<Macchina, String> colModello;
@@ -63,7 +60,7 @@ public class GuiGestioneCatalogo {
 
     private void caricaDati() {
         try {
-            List<Macchina> listaAuto = mainPageCatalogoController.getCars();
+            List<Macchina> listaAuto = gestioneCatalogoController.getCars();
             if (listaAuto != null) {
                 ObservableList<Macchina> data = FXCollections.observableArrayList(listaAuto);
                 tabellaAuto.setItems(data);
