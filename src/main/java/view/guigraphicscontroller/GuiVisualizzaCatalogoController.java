@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 
 public class GuiVisualizzaCatalogoController {
 
-    private final VisualizzaCatalogoController mainPageCatalogoController= ControllerFactory.getGraphicalSingletonFactory().createMainPageCatalogoController();
+    private final VisualizzaCatalogoController visualizzaCatalogoController= ControllerFactory.getGraphicalSingletonFactory().createVisualizzaCatalogoController();
 
     @FXML
     private Button btnAccedi;
@@ -64,7 +64,7 @@ public class GuiVisualizzaCatalogoController {
     private void configuraCatalogo() {
         try {
             if (carListView != null) {
-                List<Macchina> listaAuto = mainPageCatalogoController.getCars();
+                List<Macchina> listaAuto = visualizzaCatalogoController.getCars();
 
                 if (listaAuto != null && !listaAuto.isEmpty()) {
                     ObservableList<Macchina> data = FXCollections.observableArrayList(listaAuto);
@@ -209,7 +209,7 @@ public class GuiVisualizzaCatalogoController {
 
             try {
 
-                List<Macchina> autoTrovate = mainPageCatalogoController.research(bean);
+                List<Macchina> autoTrovate = visualizzaCatalogoController.research(bean);
 
                 if (carListView != null && autoTrovate != null) {
                         ObservableList<Macchina> data = FXCollections.observableArrayList(autoTrovate);

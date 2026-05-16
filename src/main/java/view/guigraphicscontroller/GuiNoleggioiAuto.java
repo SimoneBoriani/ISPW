@@ -35,7 +35,7 @@ public class GuiNoleggioiAuto {
     private final Logger logger= LogManager.getLogger(GuiNoleggioiAuto.class);
     private static String style="Totale: 0,00 €";
 
-    private final VisualizzaCatalogoController controllerApplicativo= ControllerFactory.getGraphicalSingletonFactory().createMainPageCatalogoController();
+    private final VisualizzaCatalogoController controllerApplicativo= ControllerFactory.getGraphicalSingletonFactory().createVisualizzaCatalogoController();
     private final NoleggioController noleggioController=ControllerFactory.getGraphicalSingletonFactory().createNoleggioController();
 
     @FXML private ImageView imgAuto;
@@ -204,10 +204,10 @@ public class GuiNoleggioiAuto {
                 return;
             }
 
-            int giorni = Integer.parseInt(testoGiorni.trim());
-            if (giorni <= 0) throw new NumberFormatException();
+            bean.setGiorni(Integer.parseInt(testoGiorni.trim()));
+            if (bean.getGiorni() <= 0) throw new NumberFormatException();
 
-            noleggioController.processaNoleggio(bean, giorni);
+            noleggioController.processaNoleggio(bean);
             stage.close();
 
         } catch (NumberFormatException ex) {

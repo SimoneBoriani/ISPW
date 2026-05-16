@@ -59,7 +59,7 @@ public final class ConsolePrinter {
         logFormatted("%n%s >> %s%s%n", color, message, RESET);
     }
 
-    private static void logFormatted(String format, Object... args) {
+    public static void logFormatted(String format, Object... args) {
         String message = String.format(format, args);
         if (SYSTEM_CONSOLE != null) {
             SYSTEM_CONSOLE.writer().print(message);

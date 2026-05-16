@@ -5,10 +5,10 @@ public class ProfileBean {
     int id;
     String username;
     String password;
-    int autoPossedute;
     double saldo;
     String nome;
     String cognome;
+    String ruolo;
 
     public ProfileBean() {
         //Costruttore
@@ -34,10 +34,9 @@ public class ProfileBean {
     public String getCognome() {return cognome;}
     public void setCognome(String cognome) {this.cognome = cognome;}
 
-    public int getAutoPossedute() {return autoPossedute;}
-    public void setAutoPossedute(int autoPossedute) {this.autoPossedute = autoPossedute;}
-
     public double getSaldo(){return saldo;}
     public void setSaldo(double saldo){this.saldo = saldo;}
 
+    public String getRuolo() {return ruolo;}
+    public void setRuolo(String ruolo) {this.ruolo = ruolo;}
 }

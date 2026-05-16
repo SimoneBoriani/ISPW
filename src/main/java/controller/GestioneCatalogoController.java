@@ -3,6 +3,7 @@ package controller;
 import bean.CatalogoBean;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
+import view.factory.ControllerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,12 @@ public class GestioneCatalogoController {
 
     private final Logger logger = Logger.getLogger(String.valueOf(GestioneCatalogoController.class));
     private final List<Macchina> autoDaAggiungereAlDB = new ArrayList<>();
+    private final VisualizzaCatalogoController visualizzaCatalogoController = ControllerFactory.getGraphicalSingletonFactory().createVisualizzaCatalogoController();
+
+
+    public  List<Macchina> getCars(){
+        return visualizzaCatalogoController.getCars();
+    }
 
     public void removeCar(CatalogoBean bean){
         DaoFactory.getDaoSingletonFactory().createMacchinaDao().remove(bean.getId());

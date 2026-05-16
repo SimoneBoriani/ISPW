@@ -17,10 +17,11 @@ public class NoleggioController {
 
     }
 
-    public void processaNoleggio(NoleggioAutoBean bean, int giorni) {
+    public void processaNoleggio(NoleggioAutoBean bean) {
 
         Macchina auto = bean.getMacchina();
         Utente utente = bean.getRenter();
+        int giorni=bean.getGiorni();
 
         double totale = calcolaTotale(auto, giorni);
 
