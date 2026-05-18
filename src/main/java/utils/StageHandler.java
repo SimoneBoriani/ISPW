@@ -30,27 +30,30 @@ public class StageHandler {
         FXMLLoader fxmlLoader = new FXMLLoader(xmlUrl);
         Parent root = fxmlLoader.load();
 
-        Scene scene = new Scene(root, 1000 , 700);
-
         if (this.stage == null) {
             throw new IllegalStateException("Stage non inizializzato!");
         }
 
-        scene.setOnKeyPressed(event -> {
-            if (event.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
-                this.stage.close();
-            }
-        });
+        if (this.stage.getScene() != null) {
+            this.stage.getScene().setRoot(root);
+        } else {
+            Scene scene = new Scene(root, 1000, 700);
 
-        this.stage.setMinHeight(scene.getHeight());
-        this.stage.setMinWidth(scene.getWidth());
-        this.stage.setFullScreen(false);
-        this.stage.setScene(scene);
-        this.stage.setFullScreenExitHint("");
-        this.stage.setResizable(true);
+            scene.setOnKeyPressed(event -> {
+                if (event.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
+                    this.stage.close();
+                }
+            });
+
+            this.stage.setMinHeight(700);
+            this.stage.setMinWidth(1000);
+            this.stage.setScene(scene);
+            this.stage.setFullScreenExitHint("");
+            this.stage.setResizable(true);
+        }
+
         this.stage.setTitle("Krusty No Dusty");
         this.stage.show();
-
     }
 
     public void setStage(Stage stage) {

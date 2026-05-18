@@ -13,6 +13,12 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
+
+
+
+//DA FIXARE
+
+
 public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
 
     private static final String CSV_PATH = "src/main/resources/csv/noleggi.csv";
@@ -40,7 +46,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
                     .toList();
 
         } catch (Exception e) {
-            throw new GenericSystemException("Errore critico lettura file noleggi: " + e.getMessage(), e);
+            throw new GenericSystemException(e.getMessage(), e);
         }
     }
 
@@ -107,7 +113,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
                 ));
             }
         } catch (IOException e) {
-            throw new GenericSystemException("Errore scrittura CSV noleggi", e);
+            throw new GenericSystemException(e.getMessage(), e);
         }
     }
 
@@ -122,7 +128,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
             if (utenteReale == null || utenteReale.getSaldo() < macchinaReale.getPrezzo())
                 throw new GenericSystemException("Saldo insufficiente.");
 
-            List<NoleggioAuto> tuttiNoleggi = loadAllRentals();
+            List<NoleggioAuto> tuttiNoleggi = new ArrayList<>(loadAllRentals());
             tuttiNoleggi.add(creaNuovoNoleggio(utenteReale, macchinaReale, giorni));
             saveAllRentals(tuttiNoleggi);
 
@@ -130,7 +136,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
             updateFileField(CSV_USER, utenteReale.getIdUser(), 6, String.valueOf(utenteReale.getSaldo() - macchinaReale.getPrezzo()));
 
         } catch (IOException | NumberFormatException e) {
-            throw new GenericSystemException("Errore durante il noleggio: " + e.getMessage(), e);
+            throw new GenericSystemException(e.getMessage(), e);
         }
     }
 
@@ -202,6 +208,34 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
             }
         }
         if (changed) saveAllRentals(rentals);
+    }
+
+    public void chiudiNoleggioSpecifico(Utente utente, Macchina macchina) {
+        List<NoleggioAuto> rentals = new ArrayList<>(loadAllRentals());
+        boolean changed = false;
+
+        for (NoleggioAuto n : rentals) {
+            if (n.getUtente().getIdUser() == utente.getIdUser() &&
+                    n.getMacchina().getId() == macchina.getId() &&
+                    n.getStato().equals(STATO_ATTIVO)) {
+
+                n.setStato(STATO_TERMINATO);
+                n.setMotivoChiusura(CHIUSURA_ANTICIPATA);
+                n.setDataFine(LocalDate.now());
+
+                n.getMacchina().setDisponibile(true);
+                daoMacchina.update(n.getMacchina());
+
+                changed = true;
+                break;
+            }
+        }
+
+        if (changed) {
+            saveAllRentals(rentals);
+        } else {
+            throw new GenericSystemException("Impossibile trovare un noleggio attivo per questa auto.");
+        }
     }
 
     @Override

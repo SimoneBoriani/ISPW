@@ -30,14 +30,13 @@ public final class ConsolePrinter {
             }
         });
         rootLogger.addHandler(handler);
+
     }
 
     public static void clear() {
         if (SYSTEM_CONSOLE != null) {
             SYSTEM_CONSOLE.writer().print("\033[H\033[2J");
             SYSTEM_CONSOLE.flush();
-        } else {
-            LOGGER.info(() -> System.lineSeparator().repeat(10) + "--- REFRESH ---");
         }
     }
 
@@ -46,8 +45,9 @@ public final class ConsolePrinter {
         String line = "═".repeat(WIDTH - 2);
 
         logFormatted("%s╔%s╗%s%n", CYAN, line, RESET);
-        logFormatted("%s║%s%s%s║%s%n", BLUE, BOLD, center(title.toUpperCase(), WIDTH - 2), BLUE, RESET);
+        logFormatted("%s║%s%s%s%s║%s%n", CYAN, BLUE + BOLD, center(title.toUpperCase(), WIDTH - 2), CYAN, RESET, RESET);
         logFormatted("%s╚%s╝%s%n", CYAN, line, RESET);
+
     }
 
     public static void printMenuOption(String key, String label) {

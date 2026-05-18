@@ -82,7 +82,7 @@ public class CliLogInPage {
                     new CliAdminPage().render();
                 } else {
                     ConsolePrinter.printStatus("Reindirizzamento in corso...", false);
-                    ConsolePrinter.readLine("\n"+MSG);
+                    ConsolePrinter.readLine("\n"+"Premi INVIO...");
                 }
                 return true;
             }
@@ -138,7 +138,7 @@ public class CliLogInPage {
     }
 
     private boolean processaRegistrazioneController(ProfileBean credenziali) {
-        if (logInController.researchUser(credenziali)) {
+        if (logInController.researchUser(credenziali) != null) {
             ConsolePrinter.printStatus("Utente già registrato! Scegli un altro username.", true);
             ConsolePrinter.readLine("Premi INVIO per ricaricare la pagina...");
             return false;

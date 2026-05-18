@@ -1,6 +1,7 @@
 package view.guigraphicscontroller;
 
 import bean.CatalogoBean;
+import exceptions.CarNotFoundException;
 import exceptions.GenericSystemException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -216,8 +217,8 @@ public class GuiVisualizzaCatalogoController {
                         carListView.setItems(data);
                         carListView.setCellFactory(param -> new CarCell());
                 }
-            } catch (Exception ex) {
-                throw new GenericSystemException("Errore Ricerca: ", ex);
+            } catch (CarNotFoundException ex) {
+                carListView.getItems().clear();
             }
 
             popupStage.close();

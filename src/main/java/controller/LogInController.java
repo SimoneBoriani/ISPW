@@ -39,15 +39,13 @@ public class LogInController {
         }
     }
 
-    public boolean researchUser(ProfileBean loginBean) {
+    public Utente researchUser(ProfileBean loginBean) {
 
         Utente ricercato = new Utente(-1, loginBean.getUsername(), "", "", "");
 
         try {
 
-            Utente utenteEsistente=DaoFactory.getDaoSingletonFactory().createUtenteDao().researchUser(ricercato);
-
-            return utenteEsistente != null;
+            return DaoFactory.getDaoSingletonFactory().createUtenteDao().researchUser(ricercato);
 
         } catch (SQLException e) {
 
