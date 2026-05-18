@@ -2,11 +2,13 @@ package view.cligraphicscontroller;
 
 import bean.CatalogoBean;
 import controller.VisualizzaCatalogoController;
+import exceptions.CarNotFoundException;
 import model.macchina.Macchina;
 import utils.ConsolePrinter;
 import utils.SessionSingleton;
 import view.factory.ControllerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CliVisualizzaCatalogoPage {
@@ -17,34 +19,21 @@ public class CliVisualizzaCatalogoPage {
 
         boolean back = false;
 
+        mostraListaAuto(visualizzaCatalogoController.getCars());
+
         while (!back) {
 
-            ConsolePrinter.printHeader("Catalogo Krusty Rental");
 
-            boolean loggedIn = SessionSingleton.getInstance().isUserLoggedIn();
-            if (loggedIn) {
-                ConsolePrinter.printMenuOption("P", "Vai al Profilo");
-                ConsolePrinter.printMenuOption("G", "Vai al Garage");
-                ConsolePrinter.printMenuOption("L", "Logout");
-            } else {
-                ConsolePrinter.printMenuOption("A", "Accedi");
-            }
 
             ConsolePrinter.printMenuOption("R", "Ricerca (Filtri)");
             ConsolePrinter.printMenuOption("REF", "Aggiorna Catalogo");
             ConsolePrinter.printMenuOption("0", "Torna Indietro");
 
-            mostraListaAuto(visualizzaCatalogoController.getCars());
-
             String choice = ConsolePrinter.readLine("Scelta (ID per Noleggio o Lettera) > ").toUpperCase();
 
             switch (choice) {
-                case "A" -> new CliLogInPage().render();
-                case "L" -> logout();
-                case "P" -> goToProfile();
-                case "G" -> goToGarage();
                 case "R" -> apriRicerca();
-                case "REF" -> {}
+                case "REF" -> { /*Riavvia*/}
                 case "0" -> back = true;
                 default -> gestisciSelezioneAuto(choice);
             }
@@ -93,6 +82,7 @@ public class CliVisualizzaCatalogoPage {
     }
 
     private void apriRicerca() {
+
         ConsolePrinter.printHeader("Filtri di Ricerca");
         CatalogoBean bean = new CatalogoBean();
 
@@ -110,11 +100,13 @@ public class CliVisualizzaCatalogoPage {
 
         ConsolePrinter.printStatus("Ricerca in corso...", false);
 
+        List<Macchina> trovate = new ArrayList<>();
+
         try {
 
             ConsolePrinter.printStatus("Auto trovate:",false);
 
-            List<Macchina> trovate = visualizzaCatalogoController.research(bean);
+            trovate = visualizzaCatalogoController.research(bean);
             mostraListaAuto(trovate);
 
             ConsolePrinter.printMenuOption("N","Nuova ricerca");
@@ -133,16 +125,8 @@ public class CliVisualizzaCatalogoPage {
 
             }
 
-        } catch (Exception e) {
-            ConsolePrinter.printStatus("Errore ricerca.", true);
+        } catch (CarNotFoundException e) {
+            mostraListaAuto(trovate);
         }
     }
-
-    private void logout() {
-        SessionSingleton.getInstance().logout();
-        ConsolePrinter.printStatus("Logout effettuato.", false);
-    }
-
-    private void goToProfile() { /* new CliProfilePage().render(); */ }
-    private void goToGarage() { /* new CliGaragePage().render(); */ }
 }

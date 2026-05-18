@@ -5,10 +5,10 @@ import utils.SessionSingleton;
 
 public class CliBootPage {
 
-    private static final String CMD_CATALOGO = "1";
-    private static final String CMD_ACCESSO = "2";
-    private static final String CMD_PROFILO = "3";
-    private static final String CMD_AUTONOLEGGIATE = "4";
+    private static final String CMD_1 = "1";
+    private static final String CMD_2 = "2";
+    private static final String CMD_3 = "3";
+    private static final String CMD_4 = "4";
     private static final String CMD_EXIT = "0";
 
     public void render() {
@@ -16,23 +16,23 @@ public class CliBootPage {
         while (running) {
             ConsolePrinter.printHeader("Krusty No Dusty Rental");
 
-            ConsolePrinter.printMenuOption(CMD_CATALOGO, "Visualizza Catalogo");
+            ConsolePrinter.printMenuOption(CMD_1, "Visualizza Catalogo");
 
             if (SessionSingleton.getInstance().getUtenteCorrente() == null) {
-                ConsolePrinter.printMenuOption(CMD_ACCESSO, "Accedi al Sistema");
+                ConsolePrinter.printMenuOption(CMD_2, "Accedi al Sistema");
             } else {
-                ConsolePrinter.printMenuOption(CMD_ACCESSO, "Log out");
+                ConsolePrinter.printMenuOption(CMD_2, "Log out");
             }
 
-            ConsolePrinter.printMenuOption(CMD_PROFILO, "Gestione Profilo");
-            ConsolePrinter.printMenuOption(CMD_AUTONOLEGGIATE, "Auto noleggiate");
+            ConsolePrinter.printMenuOption(CMD_3, "Gestione Profilo");
+            ConsolePrinter.printMenuOption(CMD_4, "Auto noleggiate");
             ConsolePrinter.printMenuOption(CMD_EXIT, "Esci");
 
             String choice = ConsolePrinter.readLine("Selezione > ").trim();
 
             switch (choice) {
-                case CMD_CATALOGO -> navigateToCatalogo();
-                case CMD_ACCESSO -> {
+                case CMD_1 -> navigateToCatalogo();
+                case CMD_2 -> {
                     if (SessionSingleton.getInstance().getUtenteCorrente() == null) {
                         navigateToLogin();
                     } else {
@@ -41,8 +41,8 @@ public class CliBootPage {
                         ConsolePrinter.readLine("Premi INVIO per continuare...");
                     }
                 }
-                case CMD_PROFILO -> navigateToProfile();
-                case CMD_AUTONOLEGGIATE -> navigateToRented();
+                case CMD_3 -> navigateToProfile();
+                case CMD_4 -> navigateToRented();
                 case CMD_EXIT -> {
                     ConsolePrinter.printStatus("Arrivederci!", false);
                     running = false;

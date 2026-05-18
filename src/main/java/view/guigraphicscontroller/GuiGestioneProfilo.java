@@ -3,8 +3,6 @@ package view.guigraphicscontroller;
 import bean.ProfileBean;
 import controller.GestioneProfiloController;
 import exceptions.GenericSystemException;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -25,11 +23,10 @@ import utils.StageHandler;
 import view.factory.ControllerFactory;
 
 import java.io.IOException;
-import java.util.List;
 
 public class GuiGestioneProfilo {
 
-    private GestioneProfiloController controller= ControllerFactory.getGraphicalSingletonFactory().createGestioneProfiloController();
+    private final GestioneProfiloController controller= ControllerFactory.getGraphicalSingletonFactory().createGestioneProfiloController();
 
     @FXML
     private ListView<Macchina> carListView;

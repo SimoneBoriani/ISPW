@@ -116,7 +116,7 @@ public class GuiLoginController{
         credenziali.setUsername(user);
         credenziali.setPassword(pass);
 
-        if(logInController.researchUser(credenziali)){
+        if(logInController.researchUser(credenziali) != null){
 
             errorLabel.setStyle(STYLE);
             errorLabel.setText("Utente già registrato!");

@@ -8,7 +8,6 @@ import model.utente.dao.DaoUtente;
 
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -33,8 +32,6 @@ public abstract class DaoFactory {
             prop.load(config);
             String persistence = prop.getProperty("persistence");
 
-
-
             if(instance == null){
                if(persistence.equals("DEMO")){
                     instance = new DemoDaoFactory();
@@ -48,11 +45,8 @@ public abstract class DaoFactory {
                     instance = new FileDaoFactory();
                 }
             }
-
-        } catch (FileNotFoundException e) {
-            throw new GenericSystemException(e.getMessage());
         } catch (IOException e) {
-            throw new GenericSystemException(e.getMessage());
+            throw new GenericSystemException(e.getMessage(), e);
         }
         return instance;
     }
