@@ -49,12 +49,19 @@ public class GuiLoginController{
 
 
         String user = txtUsername.getText().trim();
-        String pass = txtPassword.getText().trim();
+        String pass ;
+
+        if (checkMostraPassword.isSelected()) {
+            pass = txtPasswordVisible.getText().trim();
+        } else {
+            pass = txtPassword.getText().trim();
+        }
 
         if (user.isEmpty() || pass.isEmpty()) {
 
             errorLabel.setText("Attenzione: Inserisci username e/o password!");
             return;
+
         }
 
         ProfileBean credenziali=new ProfileBean();
@@ -64,12 +71,12 @@ public class GuiLoginController{
         try {
 
             String str;
+
             logInController.authenticate(credenziali);
 
             if(SessionSingleton.getInstance().getUtenteCorrente()!=null){
                 if(SessionSingleton.getInstance().getUtenteCorrente().getRuolo().equals("USER")) {
                     str = "/view/CatalogoView.fxml";
-
                 }else{
                     str = "/view/AdminView.fxml";
                 }
@@ -162,6 +169,7 @@ public class GuiLoginController{
 
     @FXML
     void togglePasswordVisibility(ActionEvent event) {
+
         if (checkMostraPassword.isSelected()) {
 
             txtPasswordVisible.setText(txtPassword.getText());
@@ -169,6 +177,7 @@ public class GuiLoginController{
             txtPasswordVisible.setManaged(true);
             txtPassword.setVisible(false);
             txtPassword.setManaged(false);
+
         } else {
 
             txtPassword.setText(txtPasswordVisible.getText());

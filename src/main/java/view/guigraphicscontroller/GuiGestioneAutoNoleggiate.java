@@ -6,7 +6,6 @@ import exceptions.GenericSystemException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.macchina.Macchina;
+import model.noleggioauto.NoleggioAuto;
 import utils.SessionSingleton;
 import utils.StageHandler;
 import view.factory.ControllerFactory;
@@ -27,39 +27,27 @@ import java.util.List;
 
 public class GuiGestioneAutoNoleggiate {
 
-    private GestioneAutoNoleggiateController visualizzaAutoNoleggiateController=ControllerFactory.getGraphicalSingletonFactory().createVisualizzaAutoNoleggiateController();
+    private GestioneAutoNoleggiateController controller = ControllerFactory.getGraphicalSingletonFactory().createGestioneAutoNoleggiateController();
 
     @FXML
-    private ListView<Macchina> carListView;
+    private ListView<NoleggioAuto> carListView;
 
-    public void getCars(){
+    private void getCars() {
 
-        ProfileBean bean=new ProfileBean();
+        ProfileBean bean = new ProfileBean();
         bean.setId(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
-        try {
-            if (carListView != null) {
 
-                List<Macchina> listaAuto = visualizzaAutoNoleggiateController.findCar(bean);
+        List<NoleggioAuto> listaNoleggi = controller.findRentals(bean);
 
-                if (listaAuto != null && !listaAuto.isEmpty()) {
-                    ObservableList<Macchina> data = FXCollections.observableArrayList(listaAuto);
-                    carListView.setItems(data);
-                    carListView.setCellFactory(param -> new CarCell());
+        ObservableList<NoleggioAuto> data = FXCollections.observableArrayList(listaNoleggi);
+        carListView.setItems(data);
 
-                    carListView.setOnMouseClicked(event -> {
-                        Macchina selezionata = carListView.getSelectionModel().getSelectedItem();
-                        if (selezionata != null) {
-                            apriOpzioni(selezionata);
-                        }
-                    });
-                }
-            }
-        } catch (Exception e) {
-            throw new GenericSystemException("Errore Caricamento", e);
-        }
+        carListView.setCellFactory(param -> new CarCellNoleggio());
     }
 
-    private void apriOpzioni(Macchina macchina) {
+    private void apriOpzioni(NoleggioAuto noleggio) {
+
+        Macchina macchina = noleggio.getMacchina();
 
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -73,7 +61,7 @@ public class GuiGestioneAutoNoleggiate {
         Label lblTitolo = new Label(macchina.getMarca() + " " + macchina.getModello());
         lblTitolo.setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
 
-        Label lblSpesa = new Label("Totale pagato: " + macchina.getPrezzo() + " €");
+        Label lblSpesa = new Label("Prezzo giornaliero : " + macchina.getPrezzo() + " €");
         lblSpesa.setStyle("-fx-font-size: 14px;");
 
         Label lblInfo = new Label("Stato: Noleggio Attivo");
@@ -85,11 +73,10 @@ public class GuiGestioneAutoNoleggiate {
 
         btnTermina.setOnAction(e -> {
             try {
-
-                visualizzaAutoNoleggiateController.endRent();
+                controller.endRent(noleggio.getIdNoleggio());
                 getCars();
-
                 popupStage.close();
+
             } catch (Exception ex) {
                 throw new GenericSystemException("Errore durante la chiusura anticipata", ex);
             }
@@ -109,16 +96,23 @@ public class GuiGestioneAutoNoleggiate {
     @FXML
     public void initialize(){
 
-        if(SessionSingleton.getInstance().getUtenteCorrente()!=null) {
-                getCars();
+        if (SessionSingleton.getInstance().getUtenteCorrente() != null) {
+            getCars();
+
+            carListView.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    NoleggioAuto selezionato = carListView.getSelectionModel().getSelectedItem();
+                    if (selezionato != null) {
+                        apriOpzioni(selezionato);
+                    }
+                }
+            });
         }
     }
 
     @FXML
     public void goToHome(MouseEvent event) throws IOException {
-        String str="/view/CatalogoView.fxml";
+        String str = "/view/CatalogoView.fxml";
         StageHandler.getSingletonInstance().loadPage(str);
     }
-
-
 }

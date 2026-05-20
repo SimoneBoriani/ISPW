@@ -70,7 +70,7 @@ public class GuiVisualizzaCatalogoController {
                 if (listaAuto != null && !listaAuto.isEmpty()) {
                     ObservableList<Macchina> data = FXCollections.observableArrayList(listaAuto);
                     carListView.setItems(data);
-                    carListView.setCellFactory(param -> new CarCell());
+                    carListView.setCellFactory(param -> new CarCellAuto());
                 }
 
                 carListView.setOnMouseClicked(event -> {
@@ -215,7 +215,7 @@ public class GuiVisualizzaCatalogoController {
                 if (carListView != null && autoTrovate != null) {
                         ObservableList<Macchina> data = FXCollections.observableArrayList(autoTrovate);
                         carListView.setItems(data);
-                        carListView.setCellFactory(param -> new CarCell());
+                        carListView.setCellFactory(param -> new CarCellAuto());
                 }
             } catch (CarNotFoundException ex) {
                 carListView.getItems().clear();

@@ -1,5 +1,6 @@
 package model.noleggioauto.dao;
 
+import exceptions.GenericSystemException;
 import model.macchina.Macchina;
 import model.noleggioauto.NoleggioAuto;
 import model.utente.Utente;
@@ -13,25 +14,70 @@ import java.util.TreeMap;
 public class DemoDaoNoleggioAuto extends DaoNoleggioAuto {
 
     private static final List<NoleggioAuto> noleggi = new ArrayList<>();
-    private static final String STATE = "ATTIVO";
-    private static final String STATE1 = "TERMINATO";
-    private static final String CHIUSURA_ANTICIPATA = "Chiusura Anticipata";
+    private static final String TERMINATO = "TERMINATO";
+    private static final String ATTIVO = "ATTIVO";
 
     @Override
     public void rentRequest(Utente utente, Macchina macchina, int giorni) {
-        NoleggioAuto nuovoNoleggio = new NoleggioAuto();
-        nuovoNoleggio.setUtente(utente);
-        nuovoNoleggio.setMacchina(macchina);
-        nuovoNoleggio.setDataFine(LocalDate.now().plusDays(giorni));
-        nuovoNoleggio.setPrezzoTotalePagato(macchina.getPrezzo() * giorni);
-        nuovoNoleggio.setStato(STATE);
+        if (!macchina.getDisponibile()) {
+            throw new GenericSystemException("Auto non disponibile");
+        }
+        if (utente.getSaldo() < macchina.getPrezzo()) {
+            throw new GenericSystemException("Saldo insufficiente");
+        }
 
-        double saldoFinale = utente.getSaldo() - macchina.getPrezzo();
+        int nextId = noleggi.stream().mapToInt(NoleggioAuto::getIdNoleggio).max().orElse(0) + 1;
 
-        utente.setSaldo(saldoFinale);
+        NoleggioAuto n = new NoleggioAuto();
+        n.setIdNoleggio(nextId);
+        n.setUtente(utente);
+        n.setMacchina(macchina);
+        n.setDataInizio(LocalDate.now());
+        n.setDataFine(LocalDate.now().plusDays(giorni));
+        n.setPrezzoTotalePagato(macchina.getPrezzo());
+        n.setStato(ATTIVO);
+        n.setMotivoChiusura("");
+
+        noleggi.add(n);
+
         macchina.setDisponibile(false);
+        utente.setSaldo(utente.getSaldo() - macchina.getPrezzo());
+    }
 
-        noleggi.add(nuovoNoleggio);
+    @Override
+    public void terminaNoleggio(int idNoleggio, String motivo) {
+        for (NoleggioAuto n : noleggi) {
+            if (n.getIdNoleggio() == idNoleggio && ATTIVO.equals(n.getStato())) {
+                n.setStato(TERMINATO);
+                n.setMotivoChiusura(motivo);
+
+                if ("Chiusura Anticipata".equals(motivo)) {
+                    n.setDataFine(LocalDate.now());
+                }
+
+                n.getMacchina().setDisponibile(true);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public List<NoleggioAuto> getUserCars(Utente utente) {
+        return noleggi.stream()
+                .filter(n -> n.getUtente().getIdUser() == utente.getIdUser() && ATTIVO.equals(n.getStato()))
+                .toList();
+    }
+
+    @Override
+    public void sbloccaAutoScadute() {
+        LocalDate oggi = LocalDate.now();
+        for (NoleggioAuto n : noleggi) {
+            if (ATTIVO.equals(n.getStato()) && n.getDataFine() != null && n.getDataFine().isBefore(oggi)) {
+                n.setStato(TERMINATO);
+                n.setMotivoChiusura("Chiusura Naturale");
+                n.getMacchina().setDisponibile(true);
+            }
+        }
     }
 
     @Override
@@ -40,46 +86,16 @@ public class DemoDaoNoleggioAuto extends DaoNoleggioAuto {
     }
 
     @Override
-    public List<Macchina> getUserCars(Utente utente) {
-        return noleggi.stream()
-                .filter(n -> n.getUtente().getIdUser() == utente.getIdUser())
-                .filter(n -> STATE.equals(n.getStato()))
-                .map(NoleggioAuto::getMacchina)
-                .toList();
-    }
-
-    @Override
-    public void sbloccaAutoScadute(String motivo) {
-        LocalDate oggi = LocalDate.now();
-
-        for (NoleggioAuto n : noleggi) {
-            if (STATE.equals(n.getStato()) && (n.getDataFine().isBefore(oggi) || CHIUSURA_ANTICIPATA.equals(motivo))) {
-                n.setStato(STATE1);
-                n.setMotivoChiusura(motivo);
-                n.getMacchina().setDisponibile(true);
-
-                if (CHIUSURA_ANTICIPATA.equals(motivo)) {
-                    n.setDataFine(oggi);
-                }
-            }
-        }
-    }
-
-    @Override
     public List<NoleggioAuto> getRented() {
-        return noleggi;
+        return new ArrayList<>(noleggi);
     }
 
     @Override
     public Map<LocalDate, Double> getProfittiPerData() {
         Map<LocalDate, Double> profitti = new TreeMap<>();
-
         for (NoleggioAuto n : noleggi) {
-            if (STATE1.equals(n.getStato())) {
-                LocalDate data = n.getDataFine();
-                double importo = n.getPrezzoTotalePagato();
-
-                profitti.put(data, profitti.getOrDefault(data, 0.0) + importo);
+            if (TERMINATO.equals(n.getStato()) && n.getDataFine() != null) {
+                profitti.merge(n.getDataFine(), n.getPrezzoTotalePagato(), Double::sum);
             }
         }
         return profitti;

@@ -152,7 +152,6 @@
 
 .link-label:hover {
     -fx-underline: true;
-    -fx-opacity: 0.8;
 }
 
 

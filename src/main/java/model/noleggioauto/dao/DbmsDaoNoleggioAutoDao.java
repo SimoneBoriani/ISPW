@@ -23,6 +23,7 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
     @Override
     public void rentRequest(Utente utente, Macchina macchina, int giorni) {
+
         String queryNoleggio = "INSERT INTO noleggi (id_utente, auto_id, data_fine, prezzo_totale, stato) VALUES (?, ?, ?, ?, 'ATTIVO')";
         String querySaldo = "UPDATE utenti SET saldo = saldo - ? WHERE id = ?";
         String queryNascondiAuto = "UPDATE macchine SET disponibile = false WHERE auto_id = ?";
@@ -40,17 +41,17 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
                 stmtNoleggio.setInt(2, macchina.getId());
                 LocalDate dataScadenza = LocalDate.now().plusDays(giorni);
                 stmtNoleggio.setDate(3, Date.valueOf(dataScadenza));
-                stmtNoleggio.setDouble(4, macchina.getPrezzo());
+                stmtNoleggio.setDouble(4,macchina.getPrezzo());
                 stmtNoleggio.executeUpdate();
 
                 stmtSaldo.setDouble(1, macchina.getPrezzo());
                 stmtSaldo.setInt(2, utente.getIdUser());
                 stmtSaldo.executeUpdate();
-
                 stmtNascondi.setInt(1, macchina.getId());
                 stmtNascondi.executeUpdate();
 
                 connection.commit();
+
             } catch (SQLException e) {
                 connection.rollback();
                 throw new GenericSystemException("Errore durante la transazione di noleggio", e);
@@ -63,16 +64,16 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
     }
 
     @Override
-    public void sbloccaAutoScadute(String motivo) {
-        // Se il motivo è 'Chiusura Anticipata', aggiorna data_fine a CURRENT_DATE oltre a chiudere lo stato
+    public void terminaNoleggio(int idNoleggio, String motivo) {
+
         String queryChiudi = "UPDATE noleggi SET " +
                 "stato = 'TERMINATO', " +
                 "motivo_chiusura = ?, " +
                 "data_fine = CASE WHEN ? = 'Chiusura Anticipata' THEN CURRENT_DATE ELSE data_fine END " +
-                "WHERE stato = 'ATTIVO' AND (data_fine < CURRENT_DATE OR ? = 'Chiusura Anticipata')";
+                "WHERE id_transazione = ? AND stato = 'ATTIVO'";
 
-        String queryLibera = "UPDATE macchine SET disponibile = true WHERE auto_id IN " +
-                "(SELECT auto_id FROM noleggi WHERE stato = 'TERMINATO')";
+        String queryLibera = "UPDATE macchine SET disponibile = true WHERE auto_id = " +
+                "(SELECT auto_id FROM noleggi WHERE id_transazione = ?)";
 
         Connection conn = ConnectionHandler.getInstance().getConnection();
 
@@ -84,12 +85,16 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
                 psChiudi.setString(1, motivo);
                 psChiudi.setString(2, motivo);
-                psChiudi.setString(3, motivo);
-                psChiudi.executeUpdate();
+                psChiudi.setInt(3, idNoleggio);
+                int rowAffected = psChiudi.executeUpdate();
 
-                psLibera.executeUpdate();
+                if (rowAffected > 0) {
+                    psLibera.setInt(1, idNoleggio);
+                    psLibera.executeUpdate();
+                }
 
                 conn.commit();
+
             } catch (SQLException e) {
                 conn.rollback();
                 throw new GenericSystemException("Errore durante la chiusura del noleggio: " + motivo, e);
@@ -102,29 +107,83 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
     }
 
     @Override
-    public List<Macchina> getUserCars(Utente utente) {
-        List<Macchina> autoNoleggiate = new ArrayList<>();
-        String query = "SELECT m.* FROM macchine m JOIN noleggi n ON m.auto_id = n.auto_id WHERE n.id_utente = ? AND n.stato = 'ATTIVO'";
+    public List<NoleggioAuto> getUserCars(Utente utente) {
+
+        List<NoleggioAuto> autoNoleggiate = new ArrayList<>();
+        String query = "SELECT m.*, n.* FROM macchine m JOIN noleggi n ON m.auto_id = n.auto_id WHERE n.id_utente = ? AND n.stato = 'ATTIVO'";
         Connection conn = ConnectionHandler.getInstance().getConnection();
 
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, utente.getIdUser());
+
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
+
                     Macchina m = new Macchina();
                     m.setId(rs.getInt(COL_AUTO_ID));
                     m.setMarca(rs.getString(COL_MARCA));
                     m.setModello(rs.getString(COL_MODELLO));
                     m.setPrezzo(rs.getInt("prezzo"));
                     m.setImageUrl(rs.getString(COL_IMMAGINE_URL));
-                    autoNoleggiate.add(m);
+                    m.setAnno(rs.getInt("anno"));
+                    m.setAlimentazione(rs.getString("alimentazione"));
+                    m.setTrasmissione(rs.getString("trasmissione"));
+
+                    NoleggioAuto noleggio = new NoleggioAuto();
+                    noleggio.setIdNoleggio(rs.getInt("id_transazione"));
+                    noleggio.setPrezzoTotalePagato(rs.getDouble("prezzo_totale"));
+                    java.sql.Date sqlDataInizio = rs.getDate("data_inizio");
+
+                    if (sqlDataInizio != null) {
+                        noleggio.setDataInizio(sqlDataInizio.toLocalDate());
+                    }
+
+                    java.sql.Date sqlDataFine = rs.getDate(COL_DATA_FINE);
+                    if (sqlDataFine != null) {
+                        noleggio.setDataFine(sqlDataFine.toLocalDate());
+                    }
+
+                    noleggio.setMacchina(m);
+                    autoNoleggiate.add(noleggio);
                 }
             }
         } catch (SQLException e) {
             throw new GenericSystemException("Errore nel recupero delle auto attive", e);
         }
+
         return autoNoleggiate;
     }
+
+    @Override
+    public void sbloccaAutoScadute(){
+
+        String queryChiudi = "UPDATE noleggi SET stato = 'TERMINATO', motivo_chiusura = 'Chiusura Naturale' " +
+                "WHERE stato = 'ATTIVO' AND data_fine < CURRENT_DATE";
+
+        String queryLibera = "UPDATE macchine SET disponibile = true WHERE auto_id IN " +
+                "(SELECT auto_id FROM noleggi WHERE stato = 'TERMINATO' AND motivo_chiusura = 'Chiusura Naturale')";
+
+        Connection conn = ConnectionHandler.getInstance().getConnection();
+        try {
+            conn.setAutoCommit(false);
+            try (PreparedStatement psChiudi = conn.prepareStatement(queryChiudi);
+                 PreparedStatement psLibera = conn.prepareStatement(queryLibera)) {
+
+                int chiusi = psChiudi.executeUpdate();
+                if (chiusi > 0) {
+                    psLibera.executeUpdate();
+                }
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public boolean checkInfo(Utente utente, Macchina macchina) {

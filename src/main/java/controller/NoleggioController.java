@@ -1,14 +1,12 @@
 package controller;
 
 import bean.NoleggioAutoBean;
-import exceptions.GenericSystemException;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 import model.utente.Utente;
 import model.duratacontrattuale.*;
 
 public class NoleggioController {
-
 
     public double calcolaTotale(Macchina auto, int giorni) {
 
@@ -23,15 +21,21 @@ public class NoleggioController {
         Utente utente = bean.getRenter();
         int giorni=bean.getGiorni();
 
+        if(giorni<0){
+            throw new IllegalArgumentException("Giorni non devono essere negativi.");
+        }
+
+
         double totale = calcolaTotale(auto, giorni);
 
         if (utente.getSaldo() < totale) {
-            throw new GenericSystemException("Saldo insufficiente! Hai " + utente.getSaldo() + "€ ma ne servono " + totale + "€");
+            throw new IllegalArgumentException("Saldo insufficiente");
         }
+
+        bean.getMacchina().setPrezzo(totale);
 
         DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().rentRequest(utente, auto,giorni);
 
-        utente.setSaldo(utente.getSaldo() - totale);
     }
 
     public PianoNoleggio determinaPiano(int giorni) {
