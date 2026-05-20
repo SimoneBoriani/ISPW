@@ -27,7 +27,7 @@ public class ControllerFactory {
 
     public GestioneProfiloController createGestioneProfiloController(){return new GestioneProfiloController();}
 
-    public GestioneAutoNoleggiateController createVisualizzaAutoNoleggiateController(){return new GestioneAutoNoleggiateController();}
+    public GestioneAutoNoleggiateController createGestioneAutoNoleggiateController(){return new GestioneAutoNoleggiateController();}
 
     public VisualizzaStoricoController createVisualizzaStoricoController(){return new VisualizzaStoricoController();}
 

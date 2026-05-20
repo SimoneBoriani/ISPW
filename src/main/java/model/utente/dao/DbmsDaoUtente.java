@@ -14,6 +14,14 @@ public class DbmsDaoUtente extends DaoUtente {
     @Override
     public void insertUtente(Utente utente){
 
+        if (utente.getUsername() == null || utente.getUsername().trim().isEmpty()) {
+            throw new NullPointerException("L'username non può essere nullo o vuoto.");
+        }
+
+        if (utente.getUserPassword() == null || utente.getUserPassword().trim().isEmpty()) {
+            throw new NullPointerException("La password non può essere nulla o vuota.");
+        }
+
         String sql = "INSERT INTO utenti (username,password,nome,cognome) VALUES (?,?,?,?)";
 
         Connection session = ConnectionHandler.getInstance().getConnection();
@@ -39,7 +47,7 @@ public class DbmsDaoUtente extends DaoUtente {
 
             try (ResultSet rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                     rs.getInt(1);
+                    rs.getInt(1);
                 }
             }
 

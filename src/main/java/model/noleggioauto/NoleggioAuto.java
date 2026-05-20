@@ -7,11 +7,13 @@ import java.time.LocalDate;
 
 public class NoleggioAuto {
 
+    private int idNoleggio;
     private Macchina macchina;
     private Utente utente;
     private PianoNoleggio pianoScelto;
     private int giorniNoleggio;
     private String stato;
+    private LocalDate dataInizio;
     private LocalDate dataFine;
     private double prezzoTotalePagato;
     private String motivoChiusura;
@@ -19,6 +21,9 @@ public class NoleggioAuto {
     public NoleggioAuto() {
         // Costruttore
     }
+
+    public int getIdNoleggio() {return idNoleggio;}
+    public void setIdNoleggio(int idNoleggio){this.idNoleggio=idNoleggio;}
 
     public Macchina getMacchina() { return macchina; }
     public void setMacchina(Macchina macchina) { this.macchina = macchina; }
@@ -34,6 +39,9 @@ public class NoleggioAuto {
 
     public String getStato() { return stato; }
     public void setStato(String stato) { this.stato = stato; }
+
+    public LocalDate getDataInizio(){return dataInizio;}
+    public void setDataInizio(LocalDate dataInizio){this.dataInizio=dataInizio;}
 
     public LocalDate getDataFine() { return dataFine; }
     public void setDataFine(LocalDate dataFine) { this.dataFine = dataFine; }

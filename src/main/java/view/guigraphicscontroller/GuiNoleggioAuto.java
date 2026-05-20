@@ -30,19 +30,29 @@ import java.io.IOException;
 
 
 
-public class GuiNoleggioiAuto {
+public class GuiNoleggioAuto {
 
-    private final Logger logger= LogManager.getLogger(GuiNoleggioiAuto.class);
+    private final Logger logger= LogManager.getLogger(GuiNoleggioAuto.class);
     private static String style="Totale: 0,00 €";
 
     private final VisualizzaCatalogoController controllerApplicativo= ControllerFactory.getGraphicalSingletonFactory().createVisualizzaCatalogoController();
     private final NoleggioController noleggioController=ControllerFactory.getGraphicalSingletonFactory().createNoleggioController();
 
-    @FXML private ImageView imgAuto;
-    @FXML private Label modello;
-    @FXML private Label posti;
-    @FXML private Label alimentazione;
-    @FXML private Label prezzo;
+    @FXML
+    private ImageView imgAuto;
+
+    @FXML
+    private Label modello;
+
+    @FXML
+    private Label posti;
+
+    @FXML
+    private Label alimentazione;
+
+    @FXML
+    private Label prezzo;
+
 
     @FXML
     public void initialize() {
@@ -52,6 +62,7 @@ public class GuiNoleggioiAuto {
     }
 
     private void loadInfo(){
+
         Macchina autoSelezionata = controllerApplicativo.getAutoSelezionataDaSessione();
 
             if (autoSelezionata != null) {

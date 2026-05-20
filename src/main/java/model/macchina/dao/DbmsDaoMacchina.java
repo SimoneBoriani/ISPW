@@ -172,30 +172,75 @@ public class DbmsDaoMacchina extends DaoMacchina {
         );
     }
 
-    private String generateUpdateQuery(Macchina macchina, List<String> setClauses, List<Object> parameters) {
-        if (macchina.getModello() != null && !macchina.getModello().trim().isEmpty()) {
+    private String generateUpdateQuery(Macchina macchinaNuova, Macchina macchinaDb, List<String> setClauses, List<Object> parameters) {
+
+        if (macchinaNuova.getModello() != null &&
+                !macchinaNuova.getModello().trim().isEmpty() &&
+                !macchinaNuova.getModello().equals(macchinaDb.getModello())) {
+
             setClauses.add("modello=?");
-            parameters.add(macchina.getModello());
+            parameters.add(macchinaNuova.getModello());
         }
 
-        if (macchina.getMarca() != null && !macchina.getMarca().trim().isEmpty()) {
+        if (macchinaNuova.getMarca() != null &&
+                !macchinaNuova.getMarca().trim().isEmpty() &&
+                !macchinaNuova.getMarca().equals(macchinaDb.getMarca())) {
+
             setClauses.add("marca=?");
-            parameters.add(macchina.getMarca());
+            parameters.add(macchinaNuova.getMarca());
         }
 
-        if (macchina.getAlimentazione() != null && !macchina.getAlimentazione().trim().isEmpty()) {
+        if (macchinaNuova.getAnno() > 0 &&
+                macchinaNuova.getAnno() != macchinaDb.getAnno()) {
+
+            setClauses.add("anno=?");
+            parameters.add(macchinaNuova.getAnno());
+        }
+
+        if (macchinaNuova.getPosti() > 0 &&
+                macchinaNuova.getPosti() != macchinaDb.getPosti()) {
+
+            setClauses.add("posti=?");
+            parameters.add(macchinaNuova.getPosti());
+        }
+
+        if (macchinaNuova.getAlimentazione() != null &&
+                !macchinaNuova.getAlimentazione().trim().isEmpty() &&
+                !macchinaNuova.getAlimentazione().equals(macchinaDb.getAlimentazione())) {
+
             setClauses.add("alimentazione=?");
-            parameters.add(macchina.getAlimentazione());
+            parameters.add(macchinaNuova.getAlimentazione());
         }
 
-        if (macchina.getTrasmissione() != null && !macchina.getTrasmissione().trim().isEmpty()) {
+        if (macchinaNuova.getTrasmissione() != null &&
+                !macchinaNuova.getTrasmissione().trim().isEmpty() &&
+                !macchinaNuova.getTrasmissione().equals(macchinaDb.getTrasmissione())) {
+
             setClauses.add("trasmissione=?");
-            parameters.add(macchina.getTrasmissione());
+            parameters.add(macchinaNuova.getTrasmissione());
         }
 
-        if (macchina.getPrezzo() > 0) {
+        if (macchinaNuova.getTipologia() != null &&
+                !macchinaNuova.getTipologia().trim().isEmpty() &&
+                !macchinaNuova.getTipologia().equals(macchinaDb.getTipologia())) {
+
+            setClauses.add("tipologia=?");
+            parameters.add(macchinaNuova.getTipologia());
+        }
+
+        if (macchinaNuova.getPrezzo() > 0 &&
+                macchinaNuova.getPrezzo() != macchinaDb.getPrezzo()) {
+
             setClauses.add("prezzo=?");
-            parameters.add(macchina.getPrezzo());
+            parameters.add(macchinaNuova.getPrezzo());
+        }
+
+        if (macchinaNuova.getImageUrl() != null &&
+                !macchinaNuova.getImageUrl().trim().isEmpty() &&
+                !macchinaNuova.getImageUrl().equals(macchinaDb.getImageUrl())) {
+
+            setClauses.add("immagine_url=?");
+            parameters.add(macchinaNuova.getImageUrl());
         }
 
         if (setClauses.isEmpty()) {
@@ -203,20 +248,34 @@ public class DbmsDaoMacchina extends DaoMacchina {
         }
 
         StringBuilder query = new StringBuilder("UPDATE macchine SET ");
+
         query.append(String.join(", ", setClauses));
+
         query.append(" WHERE auto_id=?");
 
-        parameters.add(macchina.getId());
+        parameters.add(macchinaNuova.getId());
 
         return query.toString();
     }
 
     @Override
     public void update(Macchina macchina) {
+
         List<String> setClauses = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
 
-        String queryStr = generateUpdateQuery(macchina, setClauses, parameters);
+        Macchina macchinaDb = research(macchina).get(0);
+
+        if (macchinaDb == null) {
+            throw new CarNotFoundException("Auto non trovata.");
+        }
+
+        String queryStr = generateUpdateQuery(
+                macchina,
+                macchinaDb,
+                setClauses,
+                parameters
+        );
 
         if (queryStr.isEmpty()) {
             return;
@@ -225,12 +284,19 @@ public class DbmsDaoMacchina extends DaoMacchina {
         Connection conn = ConnectionHandler.getInstance().getConnection();
 
         try (PreparedStatement ps = conn.prepareStatement(queryStr)) {
+
             for (int i = 0; i < parameters.size(); i++) {
                 ps.setObject(i + 1, parameters.get(i));
             }
+
             ps.executeUpdate();
+
         } catch (SQLException e) {
-            throw new GenericSystemException("Errore durante l'aggiornamento dell'auto: ", e);
+
+            throw new GenericSystemException(
+                    "Errore durante l'aggiornamento dell'auto: ",
+                    e
+            );
         }
     }
 }

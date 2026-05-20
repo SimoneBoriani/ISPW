@@ -54,9 +54,23 @@ public class LogInController {
         }
     }
 
-    public void insert(ProfileBean loginBean){
+    public void insert(ProfileBean loginBean) {
 
-        Utente nuovo=new Utente(-1, loginBean.getUsername(), loginBean.getPassword(), null, null);
+
+        if (loginBean.getUsername() == null || loginBean.getUsername().trim().isEmpty()) {
+            throw new IncorrectCredentialExeption("L'username non può essere nullo o vuoto.");
+        }
+
+        if (loginBean.getPassword() == null || loginBean.getPassword().trim().isEmpty()) {
+            throw new IncorrectCredentialExeption("La password non può essere nulla o vuota.");
+        }
+
+        Utente utenteEsistente = researchUser(loginBean);
+        if (utenteEsistente != null) {
+            throw new IncorrectCredentialExeption("Username già registrato.");
+        }
+
+        Utente nuovo = new Utente(-1, loginBean.getUsername(), loginBean.getPassword(), null, null);
         DaoFactory.getDaoSingletonFactory().createUtenteDao().insertUtente(nuovo);
 
     }

@@ -8,20 +8,24 @@ import java.util.List;
 public class DemoDaoUtente extends DaoUtente {
 
     private static final List<Utente> users = new ArrayList<>();
-    private static int counter = 0;
+    private static int counter = 1;
 
     @Override
     public void insertUtente(Utente utente) {
-        if (utente == null) {
-            throw new IllegalArgumentException("L'utente da inserire non può essere null");
-        }
 
+        if (utente.getUsername() == null) {
+            throw new NullPointerException("L'username non può essere nullo o vuoto.");
+        }
+        if (utente.getUserPassword() == null) {
+            throw new NullPointerException("La password non può essere nulla o vuota.");
+        }
         String ruolo = users.isEmpty() ? "ADMIN" : "USER";
         utente.setRuolo(ruolo);
 
         synchronized (DemoDaoUtente.class) {
-            utente.setIdUser(counter++);
+            utente.setIdUser(counter);
             users.add(utente);
+            counter++;
         }
     }
 
@@ -40,7 +44,8 @@ public class DemoDaoUtente extends DaoUtente {
     public boolean authenticateUser(Utente utente) {
 
         for (Utente u : users) {
-            if (u.getUsername().equals(utente.getUsername())) {
+            if (u.getUsername().equals(utente.getUsername()) &&
+                    u.getUserPassword().equals(utente.getUserPassword())) {
                 return true;
             }
         }

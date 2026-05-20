@@ -16,6 +16,4 @@ public class VisualizzaStoricoController {
     public Map<LocalDate, Double> getProfittiPerData() {
         return DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().getProfittiPerData();
     }
-
-
 }

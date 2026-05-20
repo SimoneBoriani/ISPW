@@ -26,6 +26,15 @@ public class GestioneCatalogoController {
 
     public void modifyCar(CatalogoBean catalogo) {
 
+
+        if (catalogo == null) {
+            throw new IllegalArgumentException("L'oggetto passato non può essere null.");
+        }
+
+        if (catalogo.getMarca() == null || catalogo.getModello() == null) {
+            throw new IllegalArgumentException("Campi modello e marca devono essere not null.");
+        }
+
         Macchina macchinaSelezionata = new Macchina();
 
         macchinaSelezionata.setId(catalogo.getId());
@@ -40,9 +49,18 @@ public class GestioneCatalogoController {
         macchinaSelezionata.setTipologia(catalogo.getTipologia());
 
         DaoFactory.getDaoSingletonFactory().createMacchinaDao().update(macchinaSelezionata);
+
     }
 
     public void salvaAutoRam(CatalogoBean bean){
+
+        if (bean == null) {
+            throw new IllegalArgumentException("L'oggetto passato non può essere null.");
+        }
+
+        if (bean.getMarca() == null || bean.getModello() == null) {
+            throw new IllegalArgumentException("Campi modello e marca devono essere not null.");
+        }
 
         Macchina nuovaAuto = new Macchina();
 
@@ -58,19 +76,16 @@ public class GestioneCatalogoController {
         nuovaAuto.setDisponibile(true);
 
         autoDaAggiungereAlDB.add(nuovaAuto);
-
     }
 
     public void confermaSalvataggio() {
 
         if (autoDaAggiungereAlDB.isEmpty()) {
            logger.info("Nessuna nuova auto da inserire nel db");
-            return;
+        } else {
+            DaoFactory.getDaoSingletonFactory().createMacchinaDao().insert(autoDaAggiungereAlDB);
+            logger.info("Auto aggiunte al DB con successo!");
+            autoDaAggiungereAlDB.clear();
         }
-
-        DaoFactory.getDaoSingletonFactory().createMacchinaDao().insert(autoDaAggiungereAlDB);
-        logger.info("Auto aggiunte al DB con successo!");
-        autoDaAggiungereAlDB.clear();
-
     }
 }

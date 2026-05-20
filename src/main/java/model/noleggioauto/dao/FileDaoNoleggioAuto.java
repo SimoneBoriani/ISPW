@@ -2,10 +2,8 @@ package model.noleggioauto.dao;
 
 import exceptions.GenericSystemException;
 import model.macchina.Macchina;
-import model.macchina.dao.FileDaoMacchina;
 import model.noleggioauto.NoleggioAuto;
 import model.utente.Utente;
-import model.utente.dao.FileDaoUtente;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -13,29 +11,132 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
-
-
-
-//DA FIXARE
-
-
 public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
 
     private static final String CSV_PATH = "src/main/resources/csv/noleggi.csv";
     private static final String CSV_CAR = "src/main/resources/csv/car.csv";
     private static final String CSV_USER = "src/main/resources/csv/user.csv";
-    private static final String STATO_ATTIVO = "ATTIVO";
-    private static final String STATO_TERMINATO = "TERMINATO";
-    private static final String CHIUSURA_ANTICIPATA = "Chiusura Anticipata";
     private static final String SEPARATOR = ",";
+    private static final String TERMINATO = "TERMINATO";
+    private static final String ATTIVO = "ATTIVO";
 
-    private final FileDaoUtente daoUtente = new FileDaoUtente();
-    private final FileDaoMacchina daoMacchina = new FileDaoMacchina();
+    @Override
+    public void rentRequest(Utente utente, Macchina macchina, int giorni) {
+        try {
+            Utente u = findUserById(utente.getIdUser());
+            Macchina m = findCarById(macchina.getId());
+
+            if (m == null || !m.getDisponibile()) throw new GenericSystemException("Auto non disponibile");
+            if (u == null || u.getSaldo() < macchina.getPrezzo()) throw new GenericSystemException("Saldo insufficiente");
+
+            List<NoleggioAuto> tutti = new ArrayList<>(loadAllRentals());
+
+            int nextId = tutti.stream().mapToInt(NoleggioAuto::getIdNoleggio).max().orElse(0) + 1;
+
+            NoleggioAuto n = new NoleggioAuto();
+            n.setIdNoleggio(nextId);
+            n.setUtente(u);
+            n.setMacchina(m);
+            n.setDataInizio(LocalDate.now());
+            n.setDataFine(LocalDate.now().plusDays(giorni));
+
+            n.setPrezzoTotalePagato(macchina.getPrezzo());
+            n.setStato(ATTIVO);
+            n.setMotivoChiusura("");
+
+            tutti.add(n);
+            saveAllRentals(tutti);
+            updateFileField(CSV_CAR, m.getId(), 10, "false");
+            updateFileField(CSV_USER, u.getIdUser(), 6, String.valueOf(u.getSaldo() - macchina.getPrezzo()));
+
+        } catch (Exception e) {
+            throw new GenericSystemException("Errore durante la transazione di noleggio su file", e);
+        }
+    }
+
+    @Override
+    public void terminaNoleggio(int idNoleggio, String motivo) {
+        List<NoleggioAuto> rentals = loadAllRentals();
+        boolean changed = false;
+
+        for (NoleggioAuto n : rentals) {
+            if (n.getIdNoleggio() == idNoleggio && ATTIVO.equals(n.getStato())) {
+                n.setStato(TERMINATO);
+                n.setMotivoChiusura(motivo);
+
+                if ("Chiusura Anticipata".equals(motivo)) {
+                    n.setDataFine(LocalDate.now());
+                }
+
+                try {
+                    updateFileField(CSV_CAR, n.getMacchina().getId(), 10, "true");
+                } catch (Exception e) {
+                    throw new GenericSystemException("Errore di connessione durante lo sblocco auto", e);
+                }
+                changed = true;
+                break;
+            }
+        }
+        if (changed) saveAllRentals(rentals);
+    }
+
+    @Override
+    public List<NoleggioAuto> getUserCars(Utente utente) {
+        return loadAllRentals().stream()
+                .filter(n -> n.getUtente().getIdUser() == utente.getIdUser() && ATTIVO.equals(n.getStato()))
+                .toList();
+    }
+
+    @Override
+    public void sbloccaAutoScadute() {
+        List<NoleggioAuto> rentals = loadAllRentals();
+        boolean changed = false;
+        LocalDate oggi = LocalDate.now();
+
+        for (NoleggioAuto n : rentals) {
+            if (ATTIVO.equals(n.getStato()) && n.getDataFine() != null && n.getDataFine().isBefore(oggi)) {
+                n.setStato(TERMINATO);
+                n.setMotivoChiusura("Chiusura Naturale");
+                try {
+                    updateFileField(CSV_CAR, n.getMacchina().getId(), 10, "true");
+                } catch (Exception e) {
+                    //gestione ex
+                }
+                changed = true;
+            }
+        }
+        if (changed) saveAllRentals(rentals);
+    }
+
+    @Override
+    public boolean checkInfo(Utente utente, Macchina macchina) {
+        try {
+            Utente u = findUserById(utente.getIdUser());
+            return u != null && u.getSaldo() >= macchina.getPrezzo();
+        } catch (Exception e) {
+            throw new GenericSystemException("Errore controllo saldo", e);
+        }
+    }
+
+    @Override
+    public List<NoleggioAuto> getRented() {
+        return loadAllRentals();
+    }
+
+    @Override
+    public Map<LocalDate, Double> getProfittiPerData() {
+        Map<LocalDate, Double> profitti = new TreeMap<>();
+        for (NoleggioAuto n : loadAllRentals()) {
+            if (TERMINATO.equals(n.getStato()) && n.getDataFine() != null) {
+                profitti.merge(n.getDataFine(), n.getPrezzoTotalePagato(), Double::sum);
+            }
+        }
+        return profitti;
+    }
 
     private List<NoleggioAuto> loadAllRentals() {
         try {
             if (!Files.exists(Paths.get(CSV_PATH))) return new ArrayList<>();
-
             Map<Integer, Utente> utentiMap = loadUtentiMap();
             Map<Integer, Macchina> macchineMap = loadMacchineMap();
 
@@ -44,26 +145,49 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
                     .map(line -> mapToNoleggio(line, utentiMap, macchineMap))
                     .filter(Objects::nonNull)
                     .toList();
-
         } catch (Exception e) {
-            throw new GenericSystemException(e.getMessage(), e);
+            throw new GenericSystemException("Errore nel recupero dello storico noleggi dal file", e);
+        }
+    }
+
+    private void saveAllRentals(List<NoleggioAuto> rentals) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_PATH))) {
+            for (NoleggioAuto n : rentals) {
+                pw.println(String.join(SEPARATOR,
+                        String.valueOf(n.getIdNoleggio()),
+                        String.valueOf(n.getUtente().getIdUser()),
+                        String.valueOf(n.getMacchina().getId()),
+                        n.getDataInizio() != null ? n.getDataInizio().toString() : "",
+                        n.getDataFine() != null ? n.getDataFine().toString() : "",
+                        String.valueOf(n.getPrezzoTotalePagato()),
+                        n.getStato(),
+                        n.getMotivoChiusura() != null ? n.getMotivoChiusura() : ""
+                ));
+            }
+        } catch (IOException e) {
+            throw new GenericSystemException("Errore salvataggio file noleggi", e);
         }
     }
 
     private NoleggioAuto mapToNoleggio(String line, Map<Integer, Utente> uMap, Map<Integer, Macchina> mMap) {
         String[] d = line.split(SEPARATOR);
-        Utente u = uMap.get(Integer.parseInt(d[0]));
-        Macchina m = mMap.get(Integer.parseInt(d[1]));
+        if (d.length < 7) return null;
+
+        Utente u = uMap.get(Integer.parseInt(d[1]));
+        Macchina m = mMap.get(Integer.parseInt(d[2]));
 
         if (u == null || m == null) return null;
 
         NoleggioAuto n = new NoleggioAuto();
+        n.setIdNoleggio(Integer.parseInt(d[0]));
         n.setUtente(u);
         n.setMacchina(m);
-        n.setDataFine(LocalDate.parse(d[2]));
-        n.setPrezzoTotalePagato(Double.parseDouble(d[3]));
-        n.setStato(d[4]);
-        n.setMotivoChiusura(d.length > 5 ? d[5] : "");
+        if (!d[3].isEmpty()) n.setDataInizio(LocalDate.parse(d[3]));
+        if (!d[4].isEmpty()) n.setDataFine(LocalDate.parse(d[4]));
+        n.setPrezzoTotalePagato(Double.parseDouble(d[5]));
+        n.setStato(d[6]);
+        n.setMotivoChiusura(d.length > 7 ? d[7] : "");
+
         return n;
     }
 
@@ -100,57 +224,16 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
         return map;
     }
 
-    private void saveAllRentals(List<NoleggioAuto> rentals) {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_PATH))) {
-            for (NoleggioAuto n : rentals) {
-                pw.println(String.join(SEPARATOR,
-                        String.valueOf(n.getUtente().getIdUser()),
-                        String.valueOf(n.getMacchina().getId()),
-                        n.getDataFine().toString(),
-                        String.valueOf(n.getPrezzoTotalePagato()),
-                        n.getStato(),
-                        n.getMotivoChiusura() != null ? n.getMotivoChiusura() : ""
-                ));
-            }
-        } catch (IOException e) {
-            throw new GenericSystemException(e.getMessage(), e);
-        }
+    private Utente findUserById(int id) throws IOException {
+        return loadUtentiMap().get(id);
     }
 
-    @Override
-    public void rentRequest(Utente utentePassato, Macchina macchinaPassata, int giorni) {
-        try {
-            Utente utenteReale = findUserById(utentePassato.getIdUser());
-            Macchina macchinaReale = findCarById(macchinaPassata.getId());
-
-            if (macchinaReale == null || !macchinaReale.getDisponibile())
-                throw new GenericSystemException("Auto non disponibile.");
-            if (utenteReale == null || utenteReale.getSaldo() < macchinaReale.getPrezzo())
-                throw new GenericSystemException("Saldo insufficiente.");
-
-            List<NoleggioAuto> tuttiNoleggi = new ArrayList<>(loadAllRentals());
-            tuttiNoleggi.add(creaNuovoNoleggio(utenteReale, macchinaReale, giorni));
-            saveAllRentals(tuttiNoleggi);
-
-            updateFileField(CSV_CAR, macchinaReale.getId(), 10, "false");
-            updateFileField(CSV_USER, utenteReale.getIdUser(), 6, String.valueOf(utenteReale.getSaldo() - macchinaReale.getPrezzo()));
-
-        } catch (IOException | NumberFormatException e) {
-            throw new GenericSystemException(e.getMessage(), e);
-        }
-    }
-
-    private NoleggioAuto creaNuovoNoleggio(Utente u, Macchina m, int giorni) {
-        NoleggioAuto n = new NoleggioAuto();
-        n.setUtente(u);
-        n.setMacchina(m);
-        n.setDataFine(LocalDate.now().plusDays(giorni));
-        n.setPrezzoTotalePagato(m.getPrezzo());
-        n.setStato(STATO_ATTIVO);
-        return n;
+    private Macchina findCarById(int id) throws IOException {
+        return loadMacchineMap().get(id);
     }
 
     private void updateFileField(String path, int idRicercato, int indexCampo, String nuovoValore) throws IOException {
+        if (!Files.exists(Paths.get(path))) return;
         List<String> linee = Files.readAllLines(Paths.get(path));
         try (PrintWriter pw = new PrintWriter(new FileWriter(path))) {
             for (String linea : linee) {
@@ -164,107 +247,5 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
                 }
             }
         }
-    }
-
-    private Utente findUserById(int id) throws IOException {
-        return Files.readAllLines(Paths.get(CSV_USER)).stream()
-                .filter(line -> !line.trim().isEmpty())
-                .map(l -> l.split(SEPARATOR))
-                .filter(d -> Integer.parseInt(d[0]) == id)
-                .map(d -> new Utente(Integer.parseInt(d[0]), d[1], d[2], d[3], d[4], Integer.parseInt(d[5]), Double.parseDouble(d[6]), d[7]))
-                .findFirst().orElse(null);
-    }
-
-    private Macchina findCarById(int id) throws IOException {
-        return Files.readAllLines(Paths.get(CSV_CAR)).stream()
-                .filter(line -> !line.trim().isEmpty())
-                .map(l -> l.split(SEPARATOR))
-                .filter(d -> Integer.parseInt(d[0]) == id)
-                .map(d -> {
-                    Macchina m = new Macchina(Integer.parseInt(d[0]), d[1], d[2], Integer.parseInt(d[3]), d[4], d[5], Double.parseDouble(d[6]), d[7], Integer.parseInt(d[8]), d[9]);
-                    m.setDisponibile(Boolean.parseBoolean(d[10]));
-                    return m;
-                }).findFirst().orElse(null);
-    }
-
-    @Override
-    public void sbloccaAutoScadute(String motivo) {
-        List<NoleggioAuto> rentals = loadAllRentals();
-        boolean changed = false;
-        LocalDate oggi = LocalDate.now();
-
-        for (NoleggioAuto n : rentals) {
-            if (n.getStato().equals(STATO_ATTIVO) && (n.getDataFine().isBefore(oggi) || CHIUSURA_ANTICIPATA.equals(motivo))) {
-                n.setStato(STATO_TERMINATO);
-                n.setMotivoChiusura(motivo);
-
-                if (CHIUSURA_ANTICIPATA.equals(motivo)) {
-                    n.setDataFine(oggi);
-                }
-
-                n.getMacchina().setDisponibile(true);
-                daoMacchina.update(n.getMacchina());
-                changed = true;
-            }
-        }
-        if (changed) saveAllRentals(rentals);
-    }
-
-    public void chiudiNoleggioSpecifico(Utente utente, Macchina macchina) {
-        List<NoleggioAuto> rentals = new ArrayList<>(loadAllRentals());
-        boolean changed = false;
-
-        for (NoleggioAuto n : rentals) {
-            if (n.getUtente().getIdUser() == utente.getIdUser() &&
-                    n.getMacchina().getId() == macchina.getId() &&
-                    n.getStato().equals(STATO_ATTIVO)) {
-
-                n.setStato(STATO_TERMINATO);
-                n.setMotivoChiusura(CHIUSURA_ANTICIPATA);
-                n.setDataFine(LocalDate.now());
-
-                n.getMacchina().setDisponibile(true);
-                daoMacchina.update(n.getMacchina());
-
-                changed = true;
-                break;
-            }
-        }
-
-        if (changed) {
-            saveAllRentals(rentals);
-        } else {
-            throw new GenericSystemException("Impossibile trovare un noleggio attivo per questa auto.");
-        }
-    }
-
-    @Override
-    public List<Macchina> getUserCars(Utente utente) {
-        return loadAllRentals().stream()
-                .filter(n -> n.getUtente().getIdUser() == utente.getIdUser() && n.getStato().equals(STATO_ATTIVO))
-                .map(NoleggioAuto::getMacchina)
-                .toList();
-    }
-
-    @Override
-    public boolean checkInfo(Utente utente, Macchina macchina) {
-        Utente u = daoUtente.researchUser(utente);
-        return u != null && u.getSaldo() >= macchina.getPrezzo();
-    }
-
-    @Override
-    public List<NoleggioAuto> getRented() {
-        return loadAllRentals();
-    }
-
-    @Override
-    public Map<LocalDate, Double> getProfittiPerData() {
-        Map<LocalDate, Double> profitti = new TreeMap<>();
-        for (NoleggioAuto n : loadAllRentals()) {
-            if (STATO_TERMINATO.equals(n.getStato())) {
-                profitti.merge(n.getDataFine(), n.getPrezzoTotalePagato(), Double::sum);
-            }
-        }
-        return profitti;
     }
 }

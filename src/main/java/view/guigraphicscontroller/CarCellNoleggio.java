@@ -1,7 +1,6 @@
 package view.guigraphicscontroller;
 
 import exceptions.GenericSystemException;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -9,27 +8,39 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import model.macchina.Macchina;
-import utils.StageHandler;
+import model.noleggioauto.NoleggioAuto;
 import utils.ImageUtils;
-import utils.SessionSingleton; // Aggiungi il tuo import
 
 import java.io.IOException;
 
-public class CarCell extends ListCell<Macchina> {
+public class CarCellNoleggio extends ListCell<NoleggioAuto> {
 
-    @FXML private HBox rootAnchor;
-    @FXML private Label lblModello;
-    @FXML private Label lblPrezzo;
-    @FXML private Label lblDettagli;
-    @FXML private ImageView imgAuto;
+    @FXML
+    private HBox rootAnchor;
+
+    @FXML
+    private Label lblModello;
+
+    @FXML
+    private Label lblPrezzo;
+
+    @FXML
+    private Label lblDettagli;
+
+    @FXML
+    private Label lblNoleggio;
+
+    @FXML
+    private ImageView imgAuto;
 
     private FXMLLoader loader;
 
     @Override
-    protected void updateItem(Macchina macchina, boolean empty) {
-        super.updateItem(macchina, empty);
+    protected void updateItem(NoleggioAuto noleggio, boolean empty) {
 
-        if (empty || macchina == null) {
+        super.updateItem(noleggio, empty);
+
+        if (empty || noleggio == null) {
             setGraphic(null);
             setText(null);
         } else {
@@ -43,13 +54,16 @@ public class CarCell extends ListCell<Macchina> {
                 }
             }
 
+            Macchina macchina = noleggio.getMacchina();
+
             if (imgAuto != null) {
                 imgAuto.setImage(ImageUtils.loadCarImage(macchina.getImageUrl()));
             }
 
             lblModello.setText(macchina.getMarca() + " " + macchina.getModello());
-            lblPrezzo.setText(macchina.getPrezzo() + " €");
+            lblPrezzo.setText("TOTALE PAGATO: "+noleggio.getPrezzoTotalePagato() + " €");
             lblDettagli.setText(macchina.getAnno() + " • " + macchina.getAlimentazione());
+            lblNoleggio.setText(noleggio.getDataInizio() + " - " + noleggio.getDataFine());
 
             setGraphic(rootAnchor);
             setText(null);

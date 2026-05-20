@@ -14,7 +14,7 @@ public class CliBootPage {
     public void render() {
         boolean running = true;
         while (running) {
-            ConsolePrinter.printHeader("Krusty No Dusty Rental");
+            ConsolePrinter.printHeader("Boro Rental");
 
             ConsolePrinter.printMenuOption(CMD_1, "Visualizza Catalogo");
 

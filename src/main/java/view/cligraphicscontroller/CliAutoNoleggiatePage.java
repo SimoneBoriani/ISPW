@@ -3,15 +3,16 @@ package view.cligraphicscontroller;
 import bean.ProfileBean;
 import controller.GestioneAutoNoleggiateController;
 import model.macchina.Macchina;
+import model.noleggioauto.NoleggioAuto;
 import utils.ConsolePrinter;
 import utils.SessionSingleton;
 import view.factory.ControllerFactory;
 
 import java.util.List;
 
-public class CliAutoNoleggiatePage{
+public class CliAutoNoleggiatePage {
 
-    private final GestioneAutoNoleggiateController controller = ControllerFactory.getGraphicalSingletonFactory().createVisualizzaAutoNoleggiateController();
+    private final GestioneAutoNoleggiateController controller = ControllerFactory.getGraphicalSingletonFactory().createGestioneAutoNoleggiateController();
 
     public void render() {
         boolean back = false;
@@ -19,7 +20,7 @@ public class CliAutoNoleggiatePage{
             ConsolePrinter.printHeader("AUTO NOLEGGIATE");
 
             if (SessionSingleton.getInstance().getUtenteCorrente() == null) {
-                ConsolePrinter.printStatus("Devi essere loggato per vedere il garage!", true);
+                ConsolePrinter.printStatus("Devi essere loggato per vedere le auto noleggiate!", true);
                 return;
             }
 
@@ -27,21 +28,21 @@ public class CliAutoNoleggiatePage{
             bean.setId(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
 
             try {
-                List<Macchina> listaAuto = controller.findCar(bean);
+                List<NoleggioAuto> listaNoleggi = controller.findRentals(bean);
 
-                if (listaAuto == null || listaAuto.isEmpty()) {
+                if (listaNoleggi == null || listaNoleggi.isEmpty()) {
                     ConsolePrinter.printStatus("Non hai auto noleggiate al momento.", false);
                 } else {
-                    mostraTabellaAuto(listaAuto);
+                    mostraTabellaNoleggi(listaNoleggi);
                 }
 
-                ConsolePrinter.logFormatted("%n[ID] Seleziona auto | [0] Torna alla Home%n");
+                ConsolePrinter.logFormatted("%n[ID NOLEGGIO] Seleziona noleggio | [0] Torna alla Home%n");
                 String choice = ConsolePrinter.readLine("Scelta > ").trim();
 
                 if ("0".equals(choice)) {
                     back = true;
                 } else {
-                    gestisciSelezione(choice, listaAuto);
+                    gestisciSelezione(choice, listaNoleggi);
                 }
 
             } catch (Exception e) {
@@ -51,52 +52,65 @@ public class CliAutoNoleggiatePage{
         }
     }
 
-    private void mostraTabellaAuto(List<Macchina> lista) {
-        String format = "%-4s | %-12s | %-12s | %-8s%n";
-        ConsolePrinter.logFormatted(format, "ID", "MARCA", "MODELLO", "SPESA");
-        ConsolePrinter.logFormatted("-".repeat(46) + "%n");
+    private void mostraTabellaNoleggi(List<NoleggioAuto> lista) {
+        String format = "%-11s | %-18s | %-25s | %-10s%n";
+        ConsolePrinter.logFormatted(format, "ID_NOLEGGIO", "VEICOLO", "PERIODO", "SPESA_TOT");
+        ConsolePrinter.logFormatted("-".repeat(73) + "%n");
 
-        for (Macchina m : lista) {
+        for (NoleggioAuto n : lista) {
+            Macchina m = n.getMacchina();
+            String veicolo = m.getMarca() + " " + m.getModello();
+            if(veicolo.length() > 18) veicolo = veicolo.substring(0, 15) + "...";
+
+            String periodo = n.getDataInizio() + " al " + n.getDataFine();
+
             ConsolePrinter.logFormatted(format,
-                    m.getId(),
-                    m.getMarca(),
-                    m.getModello(),
-                    m.getPrezzo() + " €");
+                    n.getIdNoleggio(),
+                    veicolo,
+                    periodo,
+                    n.getPrezzoTotalePagato() + " €");
         }
     }
 
-    private void gestisciSelezione(String idInput, List<Macchina> lista) {
+    private void gestisciSelezione(String idInput, List<NoleggioAuto> lista) {
 
-        Macchina selezionata = lista.stream()
-                .filter(m -> String.valueOf(m.getId()).equals(idInput))
+        NoleggioAuto selezionato = lista.stream()
+                .filter(n -> String.valueOf(n.getIdNoleggio()).equals(idInput))
                 .findFirst()
                 .orElse(null);
 
-        if (selezionata != null) {
-            apriOpzioni(selezionata);
+        if (selezionato != null) {
+            apriOpzioni(selezionato);
         } else {
-            ConsolePrinter.printStatus("ID non valido.", true);
+            ConsolePrinter.printStatus("ID Noleggio non valido.", true);
         }
     }
 
-    private void apriOpzioni(Macchina macchina) {
+    private void apriOpzioni(NoleggioAuto noleggio) {
+        Macchina macchina = noleggio.getMacchina();
         boolean closePopup = false;
-        while (!closePopup) {
-            ConsolePrinter.printHeader("GESTIONE NOLEGGIO");
-            ConsolePrinter.logFormatted("Veicolo: %s %s%n", macchina.getMarca(), macchina.getModello());
-            ConsolePrinter.logFormatted("Totale pagato: %.2f €%n", macchina.getPrezzo());
-            ConsolePrinter.logFormatted("Stato: Noleggio Attivo%n");
-            ConsolePrinter.logFormatted("-".repeat(46) + "%n");
 
-            ConsolePrinter.printMenuOption("1", "Termina Noleggio");
-            ConsolePrinter.printMenuOption("0", "Annulla");
+        while (!closePopup) {
+            ConsolePrinter.printHeader("DETTAGLI NOLEGGIO #" + noleggio.getIdNoleggio());
+
+            ConsolePrinter.logFormatted("Veicolo       : %s %s%n", macchina.getMarca(), macchina.getModello());
+            ConsolePrinter.logFormatted("Periodo       : Dal %s al %s%n", noleggio.getDataInizio(), noleggio.getDataFine());
+            ConsolePrinter.logFormatted("Totale Pagato : %.2f €%n", noleggio.getPrezzoTotalePagato());
+            ConsolePrinter.logFormatted("Trasmissione  : %s %n", macchina.getTrasmissione());
+            ConsolePrinter.logFormatted("Alimentazione : %s %n",macchina.getAlimentazione());
+            ConsolePrinter.logFormatted("Anno          : %s %n",macchina.getAnno());
+            ConsolePrinter.logFormatted("Stato         : %s %n", "ATTIVO");
+            ConsolePrinter.logFormatted("-".repeat(50) + "%n");
+
+            ConsolePrinter.printMenuOption("1", "Termina Noleggio Anticipatamente");
+            ConsolePrinter.printMenuOption("0", "Annulla e Torna Indietro");
 
             String scelta = ConsolePrinter.readLine("Scelta > ").trim();
 
             switch (scelta) {
                 case "1" -> {
                     try {
-                        controller.endRent();
+                        controller.endRent(noleggio.getIdNoleggio());
                         ConsolePrinter.printStatus("Noleggio terminato con successo!", false);
                         closePopup = true;
                     } catch (Exception e) {
