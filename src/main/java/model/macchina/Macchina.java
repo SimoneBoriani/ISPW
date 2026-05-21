@@ -14,19 +14,8 @@ public class Macchina {
     private String foto;
     private boolean disponibile;
 
-    public Macchina() {}
-
-    public Macchina(int id, String modello, String marca, int posti, String alimentazione, String trasmissione, double prezzo, String tipologia, int anno, String foto) {
-        this.id = id;
-        this.modello = modello;
-        this.marca = marca;
-        this.posti = posti;
-        this.alimentazione = alimentazione;
-        this.trasmissione = trasmissione;
-        this.prezzo = prezzo;
-        this.tipologia = tipologia;
-        this.anno = anno;
-        this.foto = foto;
+    public Macchina() {
+        //Costruttore
     }
 
     public int getId() { return id; }

@@ -28,38 +28,42 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
         String querySaldo = "UPDATE utenti SET saldo = saldo - ? WHERE id = ?";
         String queryNascondiAuto = "UPDATE macchine SET disponibile = false WHERE auto_id = ?";
 
-        Connection connection = ConnectionHandler.getInstance().getConnection();
+        Connection connection = null;
+        PreparedStatement stmtNoleggio = null;
+        PreparedStatement stmtSaldo = null;
+        PreparedStatement stmtNascondi = null;
 
         try {
+            connection = ConnectionHandler.getInstance().getConnection();
             connection.setAutoCommit(false);
 
-            try (PreparedStatement stmtNoleggio = connection.prepareStatement(queryNoleggio);
-                 PreparedStatement stmtSaldo = connection.prepareStatement(querySaldo);
-                 PreparedStatement stmtNascondi = connection.prepareStatement(queryNascondiAuto)) {
+            stmtNoleggio = connection.prepareStatement(queryNoleggio);
+            stmtSaldo = connection.prepareStatement(querySaldo);
+            stmtNascondi = connection.prepareStatement(queryNascondiAuto);
 
-                stmtNoleggio.setInt(1, utente.getIdUser());
-                stmtNoleggio.setInt(2, macchina.getId());
-                LocalDate dataScadenza = LocalDate.now().plusDays(giorni);
-                stmtNoleggio.setDate(3, Date.valueOf(dataScadenza));
-                stmtNoleggio.setDouble(4,macchina.getPrezzo());
-                stmtNoleggio.executeUpdate();
+            stmtNoleggio.setInt(1, utente.getIdUser());
+            stmtNoleggio.setInt(2, macchina.getId());
+            stmtNoleggio.setDate(3, Date.valueOf(LocalDate.now().plusDays(giorni)));
+            stmtNoleggio.setDouble(4, macchina.getPrezzo());
+            stmtNoleggio.executeUpdate();
 
-                stmtSaldo.setDouble(1, macchina.getPrezzo());
-                stmtSaldo.setInt(2, utente.getIdUser());
-                stmtSaldo.executeUpdate();
-                stmtNascondi.setInt(1, macchina.getId());
-                stmtNascondi.executeUpdate();
+            stmtSaldo.setDouble(1, macchina.getPrezzo());
+            stmtSaldo.setInt(2, utente.getIdUser());
+            stmtSaldo.executeUpdate();
 
-                connection.commit();
+            stmtNascondi.setInt(1, macchina.getId());
+            stmtNascondi.executeUpdate();
 
-            } catch (SQLException e) {
-                connection.rollback();
-                throw new GenericSystemException("Errore durante la transazione di noleggio", e);
-            } finally {
-                connection.setAutoCommit(true);
-            }
+            connection.commit();
+            connection.setAutoCommit(true);
+
         } catch (SQLException e) {
-            throw new GenericSystemException("Errore DB: operazione di noleggio fallita", e);
+                try { connection.rollback(); connection.setAutoCommit(true); } catch (SQLException ex) { /* Log */ }
+            throw new GenericSystemException("Errore durante la transazione di noleggio", e);
+        } finally {
+            if (stmtNoleggio != null) try { stmtNoleggio.close(); } catch (SQLException e) { /* Log */ }
+            if (stmtSaldo != null) try { stmtSaldo.close(); } catch (SQLException e) { /* Log */ }
+            if (stmtNascondi != null) try { stmtNascondi.close(); } catch (SQLException e) { /* Log */ }
         }
     }
 

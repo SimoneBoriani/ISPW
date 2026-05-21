@@ -213,11 +213,18 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
         for (String l : Files.readAllLines(Paths.get(CSV_CAR))) {
             if (l.trim().isEmpty()) continue;
             String[] d = l.split(SEPARATOR);
-            Macchina m = new Macchina(
-                    Integer.parseInt(d[0]), d[1], d[2], Integer.parseInt(d[3]),
-                    d[4], d[5], Double.parseDouble(d[6]), d[7],
-                    Integer.parseInt(d[8]), d[9]
-            );
+
+            Macchina m = new Macchina();
+            m.setId(Integer.parseInt(d[0]));
+            m.setMarca(d[1]);
+            m.setModello(d[2]);
+            m.setAnno(Integer.parseInt(d[3]));
+            m.setTipologia(d[4]);
+            m.setAlimentazione(d[5]);
+            m.setPrezzo(Double.parseDouble(d[6]));
+            m.setTrasmissione(d[7]);
+            m.setPosti(Integer.parseInt(d[8]));
+            m.setImageUrl(d[9]);
             m.setDisponibile(Boolean.parseBoolean(d[10]));
             map.put(m.getId(), m);
         }
