@@ -3,6 +3,8 @@ package model.macchina.dao;
 import exceptions.CarNotFoundException;
 import exceptions.GenericSystemException;
 import model.macchina.Macchina;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.ConnectionHandler;
 
 import java.sql.*;
@@ -23,8 +25,9 @@ public class DbmsDaoMacchina extends DaoMacchina {
     private static final String TIPOLOGIA = "tipologia";
     private static final String ANNO = "anno";
     private static final String IMMAGINE_URL = "immagine_url";
-
     private static final String SELECT_BASE = "SELECT * FROM macchine WHERE 1=1 AND disponibile = true";
+
+    private static final Logger LOGGER = LogManager.getLogger(DbmsDaoMacchina.class);
 
     @Override
     public void remove(int idAuto) throws GenericSystemException {
@@ -69,32 +72,52 @@ public class DbmsDaoMacchina extends DaoMacchina {
             connection.setAutoCommit(originalAutoCommit);
 
         } catch (SQLException e) {
-                try { connection.rollback(); } catch (SQLException ex) { /* Log */ }
+
+            try {
+                    connection.rollback();
+                    LOGGER.warn("Rollback eseguito a seguito di un'eccezione: {}", e.getMessage());
+            } catch (SQLException rollbackEx) {
+                LOGGER.error("Errore critico durante il rollback: {}", rollbackEx.getMessage());
+            }
 
             throw new GenericSystemException("Errore durante il salvataggio in blocco: " + e.getMessage(), e);
         } finally {
+
             if (ps != null) {
-                try { ps.close(); } catch (SQLException e) { /* Log */ }
+                try {
+                    ps.close();
+                } catch (SQLException closeEx) {
+                    LOGGER.error("Errore durante la chiusura del PreparedStatement: {}", closeEx.getMessage());
+                }
             }
         }
     }
 
     @Override
     public List<Macchina> getCars() {
-        List<Macchina> cars = new ArrayList<>();
-        String sql = "SELECT *" + " FROM macchine WHERE disponibile = true";
-        Connection session = ConnectionHandler.getInstance().getConnection();
+        List<Macchina> listaMacchine = new ArrayList<>();
+        String sql = "SELECT *" + "FROM macchine WHERE disponibile = true";
 
-        try (Statement statement = session.createStatement();
+        try (Connection conn = ConnectionHandler.getInstance().getConnection();
+             Statement statement = conn.createStatement();
              ResultSet rs = statement.executeQuery(sql)) {
 
             while (rs.next()) {
-                cars.add(mapResultSetToMacchina(rs));
+                Macchina m = new Macchina();
+                m.setId(rs.getInt(AUTO_ID));
+                m.setMarca(rs.getString(MARCA));
+                m.setModello(rs.getString(MODELLO));
+                m.setPrezzo(rs.getInt(PREZZO));
+                m.setImageUrl(rs.getString(IMMAGINE_URL));
+                m.setAnno(rs.getInt(ANNO));
+                m.setAlimentazione(rs.getString(ALIMENTAZIONE));
+                m.setTrasmissione(rs.getString(TRASMISSIONE));
+                listaMacchine.add(m);
             }
         } catch (SQLException e) {
-            throw new GenericSystemException(e.getMessage(), e);
+            throw new GenericSystemException("Errore nel recupero delle macchine dal database", e);
         }
-        return cars;
+        return listaMacchine;
     }
 
     @Override

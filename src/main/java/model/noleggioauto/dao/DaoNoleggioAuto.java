@@ -12,7 +12,6 @@ public abstract class DaoNoleggioAuto {
 
     public abstract void rentRequest(Utente utente,Macchina macchina,int giorni);
     public abstract List<NoleggioAuto> getUserCars(Utente utente);
-    public abstract boolean checkInfo(Utente utente, Macchina macchina);
     public abstract void terminaNoleggio(int id,String motivo);
     public abstract void sbloccaAutoScadute();
     public abstract List<NoleggioAuto> getRented();

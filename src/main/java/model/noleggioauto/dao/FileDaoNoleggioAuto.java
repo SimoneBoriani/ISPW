@@ -109,16 +109,6 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
     }
 
     @Override
-    public boolean checkInfo(Utente utente, Macchina macchina) {
-        try {
-            Utente u = findUserById(utente.getIdUser());
-            return u != null && u.getSaldo() >= macchina.getPrezzo();
-        } catch (Exception e) {
-            throw new GenericSystemException("Errore controllo saldo", e);
-        }
-    }
-
-    @Override
     public List<NoleggioAuto> getRented() {
         return loadAllRentals();
     }

@@ -4,6 +4,8 @@ import exceptions.GenericSystemException;
 import model.macchina.Macchina;
 import model.noleggioauto.NoleggioAuto;
 import model.utente.Utente;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.ConnectionHandler;
 
 import java.sql.*;
@@ -20,6 +22,8 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
     private static final String COL_MODELLO = "modello";
     private static final String COL_IMMAGINE_URL = "immagine_url";
     private static final String COL_DATA_FINE = "data_fine";
+
+    private static final Logger log = LogManager.getLogger(DbmsDaoNoleggioAutoDao.class);
 
     @Override
     public void rentRequest(Utente utente, Macchina macchina, int giorni) {
@@ -58,17 +62,56 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
             connection.setAutoCommit(true);
 
         } catch (SQLException e) {
-                try { connection.rollback(); connection.setAutoCommit(true); } catch (SQLException ex) { /* Log */ }
-            throw new GenericSystemException("Errore durante la transazione di noleggio", e);
+            try {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                log.error("CRITICO: Impossibile completare il rollback e ripristinare l'autoCommit: {}",ex.getMessage());
+            }
+            throw new GenericSystemException("Errore durante la transazione di noleggio:" + e.getMessage());
         } finally {
-            if (stmtNoleggio != null) try { stmtNoleggio.close(); } catch (SQLException e) { /* Log */ }
-            if (stmtSaldo != null) try { stmtSaldo.close(); } catch (SQLException e) { /* Log */ }
-            if (stmtNascondi != null) try { stmtNascondi.close(); } catch (SQLException e) { /* Log */ }
+            if (stmtNoleggio != null)
+                try {
+                    stmtNoleggio.close();
+                } catch (SQLException e) {
+                    log.error("Errore durante la chiusura di stmtNoleggio: {}", e.getMessage());
+                }
+            if (stmtSaldo != null)
+                try {
+                    stmtSaldo.close();
+                } catch (SQLException e) {
+                    log.error("Errore durante la chiusura di stmtSaldo: {}" , e.getMessage());
+                }
+            if (stmtNascondi != null)
+                try {
+                    stmtNascondi.close();
+                } catch (SQLException e) {
+                    log.error("Errore durante la chiusura di stmtNascondi: {}" , e.getMessage());
+                }
+            if (connection != null)
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    log.error("Errore durante la chiusura della connessione: {}" , e.getMessage());
+                }
         }
     }
 
     @Override
     public void terminaNoleggio(int idNoleggio, String motivo) {
+        try (Connection conn = ConnectionHandler.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+
+            eseguiOperazioni(conn, idNoleggio, motivo);
+
+            conn.commit();
+            conn.setAutoCommit(true);
+        } catch (SQLException | GenericSystemException e) {
+            throw new GenericSystemException("Errore durante la chiusura del noleggio: " + motivo, e);
+        }
+    }
+
+    private void eseguiOperazioni(Connection conn, int idNoleggio, String motivo) throws SQLException {
 
         String queryChiudi = "UPDATE noleggi SET " +
                 "stato = 'TERMINATO', " +
@@ -79,34 +122,20 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
         String queryLibera = "UPDATE macchine SET disponibile = true WHERE auto_id = " +
                 "(SELECT auto_id FROM noleggi WHERE id_transazione = ?)";
 
-        Connection conn = ConnectionHandler.getInstance().getConnection();
+        try (PreparedStatement psChiudi = conn.prepareStatement(queryChiudi);
+             PreparedStatement psLibera = conn.prepareStatement(queryLibera)) {
 
-        try {
-            conn.setAutoCommit(false);
+            psChiudi.setString(1, motivo);
+            psChiudi.setString(2, motivo);
+            psChiudi.setInt(3, idNoleggio);
 
-            try (PreparedStatement psChiudi = conn.prepareStatement(queryChiudi);
-                 PreparedStatement psLibera = conn.prepareStatement(queryLibera)) {
-
-                psChiudi.setString(1, motivo);
-                psChiudi.setString(2, motivo);
-                psChiudi.setInt(3, idNoleggio);
-                int rowAffected = psChiudi.executeUpdate();
-
-                if (rowAffected > 0) {
-                    psLibera.setInt(1, idNoleggio);
-                    psLibera.executeUpdate();
-                }
-
-                conn.commit();
-
-            } catch (SQLException e) {
-                conn.rollback();
-                throw new GenericSystemException("Errore durante la chiusura del noleggio: " + motivo, e);
-            } finally {
-                conn.setAutoCommit(true);
+            if (psChiudi.executeUpdate() > 0) {
+                psLibera.setInt(1, idNoleggio);
+                psLibera.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new GenericSystemException("Errore di connessione durante lo sblocco auto", e);
+            conn.rollback();
+            throw e;
         }
     }
 
@@ -159,50 +188,36 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
     }
 
     @Override
-    public void sbloccaAutoScadute(){
+    public void sbloccaAutoScadute() {
 
+        try (Connection conn = ConnectionHandler.getInstance().getConnection()) {
+
+            conn.setAutoCommit(false);
+            eseguiOperazioniSblocco(conn);
+
+            conn.commit();
+            conn.setAutoCommit(true);
+        } catch (SQLException e) {
+            throw new GenericSystemException("Errore durante lo sblocco delle auto scadute", e);
+        }
+    }
+
+    private void eseguiOperazioniSblocco(Connection conn) throws SQLException {
         String queryChiudi = "UPDATE noleggi SET stato = 'TERMINATO', motivo_chiusura = 'Chiusura Naturale' " +
                 "WHERE stato = 'ATTIVO' AND data_fine < CURRENT_DATE";
 
         String queryLibera = "UPDATE macchine SET disponibile = true WHERE auto_id IN " +
                 "(SELECT auto_id FROM noleggi WHERE stato = 'TERMINATO' AND motivo_chiusura = 'Chiusura Naturale')";
 
-        Connection conn = ConnectionHandler.getInstance().getConnection();
-        try {
-            conn.setAutoCommit(false);
-            try (PreparedStatement psChiudi = conn.prepareStatement(queryChiudi);
-                 PreparedStatement psLibera = conn.prepareStatement(queryLibera)) {
+        try (PreparedStatement psChiudi = conn.prepareStatement(queryChiudi);
+             PreparedStatement psLibera = conn.prepareStatement(queryLibera)) {
 
-                int chiusi = psChiudi.executeUpdate();
-                if (chiusi > 0) {
-                    psLibera.executeUpdate();
-                }
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-            } finally {
-                conn.setAutoCommit(true);
+            if (psChiudi.executeUpdate() > 0) {
+                psLibera.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Override
-    public boolean checkInfo(Utente utente, Macchina macchina) {
-        String queryUtente = "SELECT saldo FROM utenti WHERE id = ?";
-        Connection con = ConnectionHandler.getInstance().getConnection();
-        try (PreparedStatement psUtente = con.prepareStatement(queryUtente)) {
-            psUtente.setInt(1, utente.getIdUser());
-            try (ResultSet rs = psUtente.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDouble("saldo") >= macchina.getPrezzo();
-                }
-            }
-            return false;
-        } catch (SQLException e) {
-            throw new GenericSystemException("Errore controllo saldo", e);
+            conn.rollback();
+            throw e;
         }
     }
 

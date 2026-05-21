@@ -81,11 +81,6 @@ public class DemoDaoNoleggioAuto extends DaoNoleggioAuto {
     }
 
     @Override
-    public boolean checkInfo(Utente utente, Macchina macchina) {
-        return utente.getSaldo() >= macchina.getPrezzo();
-    }
-
-    @Override
     public List<NoleggioAuto> getRented() {
         return new ArrayList<>(noleggi);
     }
