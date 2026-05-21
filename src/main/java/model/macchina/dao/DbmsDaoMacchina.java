@@ -8,6 +8,8 @@ import utils.ConnectionHandler;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
 public class DbmsDaoMacchina extends DaoMacchina {
 
@@ -22,7 +24,6 @@ public class DbmsDaoMacchina extends DaoMacchina {
     private static final String ANNO = "anno";
     private static final String IMMAGINE_URL = "immagine_url";
 
-    private static final String ERR_ROLLBACK = "Errore critico durante il rollback: ";
     private static final String SELECT_BASE = "SELECT * FROM macchine WHERE 1=1 AND disponibile = true";
 
     @Override
@@ -41,43 +42,39 @@ public class DbmsDaoMacchina extends DaoMacchina {
     @Override
     public void insert(List<Macchina> autoDaSalvare) {
         String sql = "INSERT INTO macchine (marca, modello, tipologia, anno, prezzo, posti, alimentazione, trasmissione, immagine_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        Connection connection = ConnectionHandler.getInstance().getConnection();
+
+        Connection connection = null;
+        PreparedStatement ps = null;
 
         try {
+            connection = ConnectionHandler.getInstance().getConnection();
+            boolean originalAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                for (Macchina auto : autoDaSalvare) {
-                    ps.setString(1, auto.getMarca());
-                    ps.setString(2, auto.getModello());
-                    ps.setString(3, auto.getTipologia());
-                    ps.setInt(4, auto.getAnno());
-                    ps.setDouble(5, auto.getPrezzo());
-                    ps.setInt(6, auto.getPosti());
-                    ps.setString(7, auto.getAlimentazione());
-                    ps.setString(8, auto.getTrasmissione());
-                    ps.setString(9, auto.getImageUrl());
-                    ps.addBatch();
-                }
-                ps.executeBatch();
+            ps = connection.prepareStatement(sql);
+            for (Macchina auto : autoDaSalvare) {
+                ps.setString(1, auto.getMarca());
+                ps.setString(2, auto.getModello());
+                ps.setString(3, auto.getTipologia());
+                ps.setInt(4, auto.getAnno());
+                ps.setDouble(5, auto.getPrezzo());
+                ps.setInt(6, auto.getPosti());
+                ps.setString(7, auto.getAlimentazione());
+                ps.setString(8, auto.getTrasmissione());
+                ps.setString(9, auto.getImageUrl());
+                ps.addBatch();
             }
+            ps.executeBatch();
             connection.commit();
+            connection.setAutoCommit(originalAutoCommit);
+
         } catch (SQLException e) {
-            try {
-                if (connection != null) {
-                    connection.rollback();
-                }
-            } catch (SQLException ex) {
-                throw new GenericSystemException(ERR_ROLLBACK, ex);
-            }
-            throw new GenericSystemException("Errore durante il salvataggio in blocco delle auto: ", e);
+                try { connection.rollback(); } catch (SQLException ex) { /* Log */ }
+
+            throw new GenericSystemException("Errore durante il salvataggio in blocco: " + e.getMessage(), e);
         } finally {
-            try {
-                if (connection != null) {
-                    connection.setAutoCommit(true);
-                }
-            } catch (SQLException e) {
-                throw new GenericSystemException("Errore nel ripristino dell'autocommit: ", e);
+            if (ps != null) {
+                try { ps.close(); } catch (SQLException e) { /* Log */ }
             }
         }
     }
@@ -158,104 +155,52 @@ public class DbmsDaoMacchina extends DaoMacchina {
     }
 
     private Macchina mapResultSetToMacchina(ResultSet rs) throws SQLException {
-        return new Macchina(
-                rs.getInt(AUTO_ID),
-                rs.getString(MODELLO),
-                rs.getString(MARCA),
-                rs.getInt(POSTI),
-                rs.getString(ALIMENTAZIONE),
-                rs.getString(TRASMISSIONE),
-                rs.getInt(PREZZO),
-                rs.getString(TIPOLOGIA),
-                rs.getInt(ANNO),
-                rs.getString(IMMAGINE_URL)
-        );
+
+        Macchina macchina = new Macchina();
+
+        macchina.setId(rs.getInt(AUTO_ID));
+        macchina.setModello(rs.getString(MODELLO));
+        macchina.setMarca(rs.getString(MARCA));
+        macchina.setPosti(rs.getInt(POSTI));
+        macchina.setAlimentazione(rs.getString(ALIMENTAZIONE));
+        macchina.setTrasmissione(rs.getString(TRASMISSIONE));
+        macchina.setPrezzo(rs.getDouble(PREZZO));
+        macchina.setTipologia(rs.getString(TIPOLOGIA));
+        macchina.setAnno(rs.getInt(ANNO));
+        macchina.setImageUrl(rs.getString(IMMAGINE_URL));
+
+        return macchina;
     }
 
-    private String generateUpdateQuery(Macchina macchinaNuova, Macchina macchinaDb, List<String> setClauses, List<Object> parameters) {
+    private String generateUpdateQuery(Macchina nuova, Macchina db, List<String> setClauses, List<Object> parameters) {
 
-        if (macchinaNuova.getModello() != null &&
-                !macchinaNuova.getModello().trim().isEmpty() &&
-                !macchinaNuova.getModello().equals(macchinaDb.getModello())) {
+        record FieldRule(String col, Function<Macchina, Object> getter, java.util.function.Predicate<Macchina> isValid) {}
+        List<FieldRule> rules = List.of(
+                new FieldRule(MODELLO, Macchina::getModello, m -> m.getModello() != null && !m.getModello().isBlank()),
+                new FieldRule(MARCA, Macchina::getMarca, m -> m.getMarca() != null && !m.getMarca().isBlank()),
+                new FieldRule(ANNO, Macchina::getAnno, m -> m.getAnno() > 0),
+                new FieldRule(POSTI, Macchina::getPosti, m -> m.getPosti() > 0),
+                new FieldRule(ALIMENTAZIONE, Macchina::getAlimentazione, m -> m.getAlimentazione() != null && !m.getAlimentazione().isBlank()),
+                new FieldRule(TRASMISSIONE, Macchina::getTrasmissione, m -> m.getTrasmissione() != null && !m.getTrasmissione().isBlank()),
+                new FieldRule(TIPOLOGIA, Macchina::getTipologia, m -> m.getTipologia() != null && !m.getTipologia().isBlank()),
+                new FieldRule(PREZZO, Macchina::getPrezzo, m -> m.getPrezzo() > 0),
+                new FieldRule(IMMAGINE_URL, Macchina::getImageUrl, m -> m.getImageUrl() != null && !m.getImageUrl().isBlank())
+        );
 
-            setClauses.add("modello=?");
-            parameters.add(macchinaNuova.getModello());
+        for (FieldRule rule : rules) {
+            Object newVal = rule.getter().apply(nuova);
+            Object oldVal = rule.getter().apply(db);
+
+            if (rule.isValid().test(nuova) && !Objects.equals(newVal, oldVal)) {
+                setClauses.add(rule.col() + "=?");
+                parameters.add(newVal);
+            }
         }
 
-        if (macchinaNuova.getMarca() != null &&
-                !macchinaNuova.getMarca().trim().isEmpty() &&
-                !macchinaNuova.getMarca().equals(macchinaDb.getMarca())) {
+        if (setClauses.isEmpty()) return "";
 
-            setClauses.add("marca=?");
-            parameters.add(macchinaNuova.getMarca());
-        }
-
-        if (macchinaNuova.getAnno() > 0 &&
-                macchinaNuova.getAnno() != macchinaDb.getAnno()) {
-
-            setClauses.add("anno=?");
-            parameters.add(macchinaNuova.getAnno());
-        }
-
-        if (macchinaNuova.getPosti() > 0 &&
-                macchinaNuova.getPosti() != macchinaDb.getPosti()) {
-
-            setClauses.add("posti=?");
-            parameters.add(macchinaNuova.getPosti());
-        }
-
-        if (macchinaNuova.getAlimentazione() != null &&
-                !macchinaNuova.getAlimentazione().trim().isEmpty() &&
-                !macchinaNuova.getAlimentazione().equals(macchinaDb.getAlimentazione())) {
-
-            setClauses.add("alimentazione=?");
-            parameters.add(macchinaNuova.getAlimentazione());
-        }
-
-        if (macchinaNuova.getTrasmissione() != null &&
-                !macchinaNuova.getTrasmissione().trim().isEmpty() &&
-                !macchinaNuova.getTrasmissione().equals(macchinaDb.getTrasmissione())) {
-
-            setClauses.add("trasmissione=?");
-            parameters.add(macchinaNuova.getTrasmissione());
-        }
-
-        if (macchinaNuova.getTipologia() != null &&
-                !macchinaNuova.getTipologia().trim().isEmpty() &&
-                !macchinaNuova.getTipologia().equals(macchinaDb.getTipologia())) {
-
-            setClauses.add("tipologia=?");
-            parameters.add(macchinaNuova.getTipologia());
-        }
-
-        if (macchinaNuova.getPrezzo() > 0 &&
-                macchinaNuova.getPrezzo() != macchinaDb.getPrezzo()) {
-
-            setClauses.add("prezzo=?");
-            parameters.add(macchinaNuova.getPrezzo());
-        }
-
-        if (macchinaNuova.getImageUrl() != null &&
-                !macchinaNuova.getImageUrl().trim().isEmpty() &&
-                !macchinaNuova.getImageUrl().equals(macchinaDb.getImageUrl())) {
-
-            setClauses.add("immagine_url=?");
-            parameters.add(macchinaNuova.getImageUrl());
-        }
-
-        if (setClauses.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder query = new StringBuilder("UPDATE macchine SET ");
-
-        query.append(String.join(", ", setClauses));
-
-        query.append(" WHERE auto_id=?");
-
-        parameters.add(macchinaNuova.getId());
-
-        return query.toString();
+        parameters.add(nuova.getId());
+        return "UPDATE macchine SET " + String.join(", ", setClauses) + " WHERE auto_id=?";
     }
 
     @Override

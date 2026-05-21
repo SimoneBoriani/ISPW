@@ -4,12 +4,13 @@ import model.macchina.Macchina;
 import model.utente.Utente;
 
 public class NoleggioAutoBean {
-    public Macchina macchina;
-    public Utente renter;
-    public int giorni;
+
+    private Macchina macchina;
+    private Utente renter;
+    private int giorni;
 
     public NoleggioAutoBean() {
-        //Costruttore
+        // Costruttore
     }
 
     public Macchina getMacchina() { return macchina; }

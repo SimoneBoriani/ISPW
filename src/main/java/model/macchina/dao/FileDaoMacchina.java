@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FileDaoMacchina extends DaoMacchina {
 
@@ -28,11 +29,17 @@ public class FileDaoMacchina extends DaoMacchina {
             for (String line : lines) {
                 if (line.trim().isEmpty()) continue;
                 String[] d = line.split(SEPARATOR);
-                Macchina m = new Macchina(
-                        Integer.parseInt(d[0]), d[1], d[2], Integer.parseInt(d[3]),
-                        d[4], d[5], Double.parseDouble(d[6]), d[7],
-                        Integer.parseInt(d[8]), d[9]
-                );
+                Macchina m = new Macchina();
+                m.setId(Integer.parseInt(d[0]));
+                m.setMarca(d[1]);
+                m.setModello(d[2]);
+                m.setAnno(Integer.parseInt(d[3]));
+                m.setTipologia(d[4]);
+                m.setAlimentazione(d[5]);
+                m.setPrezzo(Double.parseDouble(d[6]));
+                m.setTrasmissione(d[7]);
+                m.setPosti(Integer.parseInt(d[8]));
+                m.setImageUrl(d[9]);
                 m.setDisponibile(Boolean.parseBoolean(d[10]));
                 macchine.add(m);
             }
@@ -104,21 +111,25 @@ public class FileDaoMacchina extends DaoMacchina {
     @Override
     public void update(Macchina macchina) {
         List<Macchina> all = loadAll();
-        boolean updated = false;
 
-        for (Macchina m : all) {
-            if (m.getId() == macchina.getId()) {
-                if (macchina.getModello() != null && !macchina.getModello().isBlank()) m.setModello(macchina.getModello());
-                if (macchina.getMarca() != null && !macchina.getMarca().isBlank()) m.setMarca(macchina.getMarca());
-                if (macchina.getAlimentazione() != null && !macchina.getAlimentazione().isBlank()) m.setAlimentazione(macchina.getAlimentazione());
-                if (macchina.getTrasmissione() != null && !macchina.getTrasmissione().isBlank()) m.setTrasmissione(macchina.getTrasmissione());
-                if (macchina.getPrezzo() > 0) m.setPrezzo(macchina.getPrezzo());
-                m.setDisponibile(macchina.getDisponibile());
+        Optional<Macchina> optionalMacchina = all.stream()
+                .filter(m -> m.getId() == macchina.getId())
+                .findFirst();
 
-                updated = true;
-                break;
-            }
+        if (optionalMacchina.isPresent()) {
+            Macchina m = optionalMacchina.get();
+            aggiornaCampi(m, macchina);
+            saveAll(all);
         }
-        if (updated) saveAll(all);
+    }
+
+    private void aggiornaCampi(Macchina target, Macchina source) {
+        if (source.getModello() != null && !source.getModello().isBlank()) target.setModello(source.getModello());
+        if (source.getMarca() != null && !source.getMarca().isBlank()) target.setMarca(source.getMarca());
+        if (source.getAlimentazione() != null && !source.getAlimentazione().isBlank()) target.setAlimentazione(source.getAlimentazione());
+        if (source.getTrasmissione() != null && !source.getTrasmissione().isBlank()) target.setTrasmissione(source.getTrasmissione());
+        if (source.getPrezzo() > 0) target.setPrezzo(source.getPrezzo());
+
+        target.setDisponibile(source.getDisponibile());
     }
 }

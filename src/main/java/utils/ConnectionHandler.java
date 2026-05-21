@@ -1,7 +1,6 @@
 package utils;
 import exceptions.GenericSystemException;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,8 +21,6 @@ public class ConnectionHandler {
             connection =  DriverManager.getConnection(connectionUrl, user, pass);
         } catch (SQLException e) {
             throw new GenericSystemException(e.getMessage());
-        } catch (FileNotFoundException e) {
-            throw new GenericSystemException(e.getMessage());
         } catch (IOException e) {
             throw new GenericSystemException(e.getMessage());
         }
@@ -36,6 +33,7 @@ public class ConnectionHandler {
         return instance;
     }
 
+    
     public Connection getConnection() {
         return connection;
     }
