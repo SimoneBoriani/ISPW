@@ -188,24 +188,6 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
         }
     }
 
-
-    @Override
-    public boolean checkInfo(Utente utente, Macchina macchina) {
-        String queryUtente = "SELECT saldo FROM utenti WHERE id = ?";
-        Connection con = ConnectionHandler.getInstance().getConnection();
-        try (PreparedStatement psUtente = con.prepareStatement(queryUtente)) {
-            psUtente.setInt(1, utente.getIdUser());
-            try (ResultSet rs = psUtente.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDouble("saldo") >= macchina.getPrezzo();
-                }
-            }
-            return false;
-        } catch (SQLException e) {
-            throw new GenericSystemException("Errore controllo saldo", e);
-        }
-    }
-
     @Override
     public List<NoleggioAuto> getRented() {
         List<NoleggioAuto> rentals = new ArrayList<>();
