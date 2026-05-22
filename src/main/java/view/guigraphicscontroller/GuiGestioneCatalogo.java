@@ -173,7 +173,7 @@ public class GuiGestioneCatalogo {
                 popupStage.close();
 
             } catch (NumberFormatException ex) {
-                logger.error("Attenzione: Inserire valori numerici validi per Prezzo, Anno e Posti.");
+                 ;
             }
         });
 

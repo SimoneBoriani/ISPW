@@ -42,12 +42,18 @@ public final class ConsolePrinter {
 
     public static void printHeader(String title) {
         clear();
+
         String line = "═".repeat(WIDTH - 2);
+        String borderTop = CYAN + "╔" + line + "╗" + RESET;
+        String borderBottom = CYAN + "╚" + line + "╝" + RESET;
 
-        logFormatted("%s╔%s╗%s%n", CYAN, line, RESET);
-        logFormatted("%s║%s%s%s%s║%s%n", CYAN, BLUE + BOLD, center(title.toUpperCase(), WIDTH - 2), CYAN, RESET, RESET);
-        logFormatted("%s╚%s╝%s%n", CYAN, line, RESET);
+        String titleLine = CYAN + "║" + RESET + BLUE + BOLD +
+                center(title.toUpperCase(), WIDTH - 2) +
+                CYAN + "║" + RESET;
 
+        logFormatted("%s%n", borderTop);
+        logFormatted("%s%n", titleLine);
+        logFormatted("%s%n", borderBottom);
     }
 
     public static void printMenuOption(String key, String label) {
@@ -65,7 +71,7 @@ public final class ConsolePrinter {
             SYSTEM_CONSOLE.writer().print(message);
             SYSTEM_CONSOLE.flush();
         } else {
-            LOGGER.info(message.stripTrailing());
+            LOGGER.info(message::stripTrailing);
         }
     }
 

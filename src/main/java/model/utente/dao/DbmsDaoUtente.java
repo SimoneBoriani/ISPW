@@ -78,16 +78,18 @@ public class DbmsDaoUtente extends DaoUtente {
                     int autoPossedute = rs.getInt("autopossedute");
                     int saldo = rs.getInt("saldo");
 
-                    return new Utente(
-                            id,
-                            username,
-                            passwordDb,
-                            nome,
-                            cognome,
-                            autoPossedute,
-                            saldo,
-                            ruolo
-                    );
+                    Utente ricercato = new Utente();
+
+                    ricercato.setIdUser(id);
+                    ricercato.setUsername(username);
+                    ricercato.setUserPassword(passwordDb);
+                    ricercato.setNome(nome);
+                    ricercato.setCognome(cognome);
+                    ricercato.setAutoPossedute(autoPossedute);
+                    ricercato.setSaldo(saldo);
+                    ricercato.setRuolo(ruolo);
+
+                    return utente;
                 }
             }
         }

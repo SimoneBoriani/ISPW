@@ -28,8 +28,6 @@ import view.factory.ControllerFactory;
 
 import java.io.IOException;
 
-
-
 public class GuiNoleggioAuto {
 
     private final Logger logger= LogManager.getLogger(GuiNoleggioAuto.class);
@@ -65,7 +63,7 @@ public class GuiNoleggioAuto {
 
         Macchina autoSelezionata = controllerApplicativo.getAutoSelezionataDaSessione();
 
-            if (autoSelezionata != null) {
+        if (autoSelezionata != null) {
 
             modello.setText(autoSelezionata.getMarca() + " " + autoSelezionata.getModello());
             posti.setText(String.valueOf(autoSelezionata.getPosti()));
@@ -75,10 +73,10 @@ public class GuiNoleggioAuto {
             if (imgAuto != null) {
                 imgAuto.setImage(ImageUtils.loadCarImage(autoSelezionata.getImageUrl()));
             }
-            } else {
-                throw new GenericSystemException("Errore: Nessuna auto selezionata in sessione.");
-            }
+        } else {
+            throw new GenericSystemException("Errore: Nessuna auto selezionata in sessione.");
         }
+    }
 
     @FXML
     public void goHome(ActionEvent event) throws IOException {
@@ -146,10 +144,16 @@ public class GuiNoleggioAuto {
         Label lblPrezzoFinale = new Label("Totale: € 0.00");
         lblPrezzoFinale.setStyle("-fx-font-weight: bold; -fx-text-fill: #204080; -fx-font-size: 18px;");
 
+        Label lblErrore = new Label();
+        lblErrore.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        lblErrore.setVisible(false);
+        lblErrore.setWrapText(true);
+
         scontrinoBox.getChildren().addAll(lblScontrinoTitolo, lblAuto, lblDettagliPiano, lblPrezzoFinale);
 
-        txtGiorni.textProperty().addListener((obs, oldText, newText) ->
-                aggiornaScontrinoVisivo(newText, auto, lblDettagliPiano, lblPrezzoFinale)
+        txtGiorni.textProperty().addListener((obs, oldText, newText) ->{
+            aggiornaScontrinoVisivo(newText, auto, lblDettagliPiano, lblPrezzoFinale);
+            lblErrore.setVisible(false);}
         );
 
         Button btnConferma = new Button("CONFERMA");
@@ -158,16 +162,17 @@ public class GuiNoleggioAuto {
         btnConferma.getStyleClass().add("Button");
         btnAnnulla.getStyleClass().add("Button-Secondary");
 
-        btnConferma.setPrefWidth(140);
-        btnAnnulla.setPrefWidth(140);
+        double larghezzaBottone = 140;
+        btnConferma.setPrefWidth(larghezzaBottone);
+        btnAnnulla.setPrefWidth(larghezzaBottone);
 
-        btnConferma.setOnAction(e -> gestisciConferma(txtGiorni.getText(), acquistoAuto, popupStage));
+        btnConferma.setOnAction(e -> gestisciConferma(txtGiorni.getText(), acquistoAuto, popupStage, lblErrore));
         btnAnnulla.setOnAction(e -> popupStage.close());
 
         HBox bottoniBox = new HBox(15, btnConferma, btnAnnulla);
         bottoniBox.setAlignment(Pos.CENTER);
 
-        mainCard.getChildren().addAll(lblTitolo, new Label("Quanti giorni desideri noleggiare l'auto?"), txtGiorni, scontrinoBox, bottoniBox);
+        mainCard.getChildren().addAll(lblTitolo, new Label("Quanti giorni desideri noleggiare l'auto?"), txtGiorni, scontrinoBox, lblErrore, bottoniBox);
         root.getChildren().add(mainCard);
 
         Scene scene = new Scene(root, 400, 480);
@@ -208,10 +213,11 @@ public class GuiNoleggioAuto {
         lblPrezzo.setText(style);
     }
 
-    private void gestisciConferma(String testoGiorni, NoleggioAutoBean bean, Stage stage) {
+    private void gestisciConferma(String testoGiorni, NoleggioAutoBean bean, Stage stage, Label lblErrore) {
         try {
             if (testoGiorni == null || testoGiorni.trim().isEmpty()) {
-                if (logger != null) logger.error("Inserisci i giorni del noleggio.");
+                lblErrore.setText("Inserire i giorni del noleggio.");
+                lblErrore.setVisible(true);
                 return;
             }
 
@@ -222,10 +228,13 @@ public class GuiNoleggioAuto {
             stage.close();
 
         } catch (NumberFormatException ex) {
+            lblErrore.setText("Formato giorni non valido.");
+            lblErrore.setVisible(true);
             logger.error("Formato giorni non valido.");
-        } catch (Exception ex) {
-            logger.error("Errore durante il noleggio");
-            }
+        } catch (IllegalArgumentException | GenericSystemException ex) {
+            lblErrore.setText(ex.getMessage());
+            lblErrore.setVisible(true);
+            logger.error("Errore durante il noleggio: {}" , ex.getMessage());
         }
-
+    }
 }

@@ -1,3 +1,4 @@
-1,Aura,Lago,0,null,null,25.0,null,2004,no_image.png,true
-2,Andy,Palle,2,Ibrida,Automatica,5.0,Berlina,2004,no_image.png,false
-3,Andy,Cappato,0,null,null,2.0,null,2,no_image.png,false
+1,Lago,Aura,2004,null,null,25.0,null,0,no_image.png,true
+2,Palle,Andy,2004,Automatica,Berlina,5.0,Ibrida,2,no_image.png,false
+3,Cappato,Andy,2,null,null,2.0,null,0,no_image.png,false
+4,andy,lazio,4,laziale,sorcio,50.0,lagher,2026,no_image.png,false

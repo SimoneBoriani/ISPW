@@ -23,18 +23,6 @@ public class Utente {
         this.nome = nome;
         this.cognome = cognome;
     }
-    public Utente(int idUser, String username, String userPassword, String nome,String cognome,int autoPossedute,double saldo,String ruolo) {
-
-        this.idUser = idUser;
-        this.username = username;
-        this.userPassword = userPassword;
-        this.nome = nome;
-        this.cognome = cognome;
-        this.ruolo = ruolo;
-        this.autoPossedute = autoPossedute;
-        this.saldo = saldo;
-
-    }
 
     public void setIdUser(int idUser) {this.idUser = idUser;}
     public int getIdUser() {return idUser;}

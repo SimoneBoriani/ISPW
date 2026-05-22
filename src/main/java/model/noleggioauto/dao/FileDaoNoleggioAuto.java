@@ -7,6 +7,7 @@ import model.utente.Utente;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
@@ -182,16 +183,34 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
     }
 
     private Map<Integer, Utente> loadUtentiMap() throws IOException {
-        Map<Integer, Utente> map = new HashMap<>();
-        if (!Files.exists(Paths.get(CSV_USER))) return map;
 
-        for (String l : Files.readAllLines(Paths.get(CSV_USER))) {
-            if (l.trim().isEmpty()) continue;
+        Map<Integer, Utente> map = new HashMap<>();
+        Path path = Paths.get(CSV_USER);
+
+        if (!Files.exists(path)) return map;
+
+        for (String l : Files.readAllLines(path)) {
             String[] d = l.split(SEPARATOR);
-            map.put(Integer.parseInt(d[0]), new Utente(
-                    Integer.parseInt(d[0]), d[1], d[2], d[3], d[4],
-                    Integer.parseInt(d[5]), Double.parseDouble(d[6]), d[7]
-            ));
+
+            if (l.isBlank() || d.length < 8) {
+                continue;
+            }
+
+            try {
+                Utente utente = new Utente();
+                utente.setIdUser(Integer.parseInt(d[0]));
+                utente.setUsername(d[1]);
+                utente.setUserPassword(d[2]);
+                utente.setNome(d[3]);
+                utente.setCognome(d[4]);
+                utente.setAutoPossedute(Integer.parseInt(d[5]));
+                utente.setSaldo(Double.parseDouble(d[6]));
+                utente.setRuolo(d[7]);
+
+                map.put(utente.getIdUser(), utente);
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                throw new IOException("Errore nel formato della riga CSV: " + l, e);
+            }
         }
         return map;
     }

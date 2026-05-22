@@ -10,6 +10,15 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+// Posizione 0: ID Utente
+// Posizione 1: Username
+// Posizione 2: Password
+// Posizione 3: Nome
+// Posizione 4: Cognome
+// Posizione 5: Numero auto noleggiate attive
+// Posizione 6: Saldo
+// Posizione 7: Ruolo
+
 public class FileDaoUtente extends DaoUtente {
 
     private static final String CSV_PATH = "src/main/resources/csv/user.csv";
@@ -28,16 +37,18 @@ public class FileDaoUtente extends DaoUtente {
             for (String line : lines) {
                 if (line.trim().isEmpty()) continue;
                 String[] data = line.split(SEPARATOR);
-                utenti.add(new Utente(
-                        Integer.parseInt(data[0]),
-                        data[1],
-                        data[2],
-                        data[3],
-                        data[4],
-                        Integer.parseInt(data[5]),
-                        Double.parseDouble(data[6]),
-                        data[7]
-                ));
+
+                Utente utente = new Utente();
+                utente.setIdUser(Integer.parseInt(data[0]));
+                utente.setUsername(data[1]);
+                utente.setUserPassword(data[2]);
+                utente.setNome(data[3]);
+                utente.setCognome(data[4]);
+                utente.setAutoPossedute(Integer.parseInt(data[5]));
+                utente.setSaldo(Double.parseDouble(data[6]));
+                utente.setRuolo(data[7]);
+
+                utenti.add(utente);
             }
         } catch (IOException e) {
             throw new GenericSystemException("Errore nel caricamento del file utenti", e);
