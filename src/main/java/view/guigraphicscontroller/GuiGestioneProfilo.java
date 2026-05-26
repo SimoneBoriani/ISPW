@@ -54,14 +54,12 @@ public class GuiGestioneProfilo {
     @FXML
     public void btnSaldo(ActionEvent actionEvent) throws IOException {
 
-        String str="/view/Login.fxml";
+        String str = "/view/Login.fxml";
 
-        if(SessionSingleton.getInstance().getUtenteCorrente()!=null) {
+        if (SessionSingleton.getInstance().getUtenteCorrente() != null) {
 
             Stage popupStage = new Stage();
-
             popupStage.initModality(Modality.APPLICATION_MODAL);
-
             popupStage.setTitle("Aggiungi Saldo");
 
             TextField txtCodice = new TextField();
@@ -76,26 +74,50 @@ public class GuiGestioneProfilo {
             TextField txtSaldo = new TextField();
             txtSaldo.setPromptText("Saldo");
 
-            Button btnUpdate = new Button("Conferma");
+            Label lblStato = new Label();
+            lblStato.setWrapText(true);
+            lblStato.setAlignment(Pos.CENTER);
 
+            controller.statoOperazione.set("");
+            lblStato.textProperty().bind(controller.statoOperazione);
+            controller.statoOperazione.addListener((observable, oldValue, newValue) -> {
+                if ("FINE".equals(newValue)) {
+                    double nuovoSaldo = Double.parseDouble(txtSaldo.getText());
+                    SessionSingleton.getInstance().getUtenteCorrente().setSaldo(nuovoSaldo);
+
+                    try {
+                        StageHandler.getSingletonInstance().loadPage("/view/Profilo.fxml");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    popupStage.close();
+
+                } else if (newValue.contains("completato")) {
+                    lblStato.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                } else if (newValue.contains("Errore")) {
+                    lblStato.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                } else if (!newValue.isEmpty()) {
+                    lblStato.setStyle("-fx-text-fill: blue; -fx-font-weight: bold;");
+                }
+            });
+
+            Button btnUpdate = new Button("Conferma");
             btnUpdate.getStyleClass().add("Button");
 
             btnUpdate.setOnAction(e -> {
-
-                ProfileBean bean=new ProfileBean();
-
-
-                bean.setId(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
-                bean.setSaldo(Double.parseDouble(txtSaldo.getText()));
-                controller.updateProfile(bean);
-                String reload="/view/Profilo.fxml";
                 try {
-                    StageHandler.getSingletonInstance().loadPage(reload);
-                } catch (IOException ex) {
-                    throw new GenericSystemException("Errore:",ex);
-                }
-                popupStage.close();
+                    btnUpdate.setDisable(true);
+                    ProfileBean bean = new ProfileBean();
+                    bean.setId(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
+                    bean.setSaldo(Double.parseDouble(txtSaldo.getText()));
+                    controller.updateSaldo(bean);
+                } catch (NumberFormatException ex) {
 
+                    lblStato.textProperty().unbind();
+                    lblStato.setText("Errore: Inserisci un importo valido!");
+                    lblStato.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                    btnUpdate.setDisable(false);
+                }
             });
 
             VBox layoutPopup = new VBox(15);
@@ -108,17 +130,19 @@ public class GuiGestioneProfilo {
                     txtScadenza,
                     txtCvv,
                     txtSaldo,
-                    btnUpdate
+                    btnUpdate,
+                    lblStato
             );
 
-            Scene scene = new Scene(layoutPopup, 300, 350);
-
+            Scene scene = new Scene(layoutPopup, 300, 380);
             StageHandler.getSingletonInstance().loadCss(scene);
 
             popupStage.setScene(scene);
             popupStage.showAndWait();
 
-            }else StageHandler.getSingletonInstance().loadPage(str);
+        } else {
+            StageHandler.getSingletonInstance().loadPage(str);
+        }
     }
 
     @FXML

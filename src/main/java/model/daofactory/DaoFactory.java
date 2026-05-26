@@ -4,6 +4,7 @@ import exceptions.GenericSystemException;
 
 import model.noleggioauto.dao.DaoNoleggioAuto;
 import model.macchina.dao.DaoMacchina;
+import model.notifiche.dao.DaoNotifica;
 import model.utente.dao.DaoUtente;
 
 
@@ -18,6 +19,7 @@ public abstract class DaoFactory {
    public abstract DaoMacchina createMacchinaDao();
    public abstract DaoUtente createUtenteDao();
    public abstract DaoNoleggioAuto createNoleggioAutoDao();
+   public abstract DaoNotifica createNotificheDao();
 
    private static DaoFactory instance = null;
 

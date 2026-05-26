@@ -89,7 +89,7 @@ public class DbmsDaoUtente extends DaoUtente {
                     ricercato.setSaldo(saldo);
                     ricercato.setRuolo(ruolo);
 
-                    return utente;
+                    return ricercato;
                 }
             }
         }

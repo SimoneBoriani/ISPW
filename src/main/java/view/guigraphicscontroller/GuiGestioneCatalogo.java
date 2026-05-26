@@ -3,6 +3,7 @@ package view.guigraphicscontroller;
 import bean.CatalogoBean;
 import controller.GestioneCatalogoController;
 import exceptions.GenericSystemException;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -57,10 +58,24 @@ public class GuiGestioneCatalogo {
 
     @FXML
     public void initialize() {
+        modificaSegnalata();
         configuraColonne();
         caricaDati();
         configuraClickTabella();
     }
+
+    private void modificaSegnalata(){
+
+        Macchina modifica = gestioneCatalogoController.createAutoSegnalata();
+
+        Platform.runLater(() -> apriImpostazioniAuto(modifica));
+
+        SessionSingleton.getInstance().setTempIdNotifica(null);
+        SessionSingleton.getInstance().setTempMarca(null);
+        SessionSingleton.getInstance().setTempModello(null);
+
+    }
+
 
     private void configuraColonne() {
         colMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
@@ -98,6 +113,8 @@ public class GuiGestioneCatalogo {
     }
 
     private void apriImpostazioniAuto(Macchina auto) {
+
+        if (auto.getId() != 0) {
 
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -173,7 +190,7 @@ public class GuiGestioneCatalogo {
                 popupStage.close();
 
             } catch (NumberFormatException ex) {
-                 ;
+                logger.error("Attenzione: Inserire valori numerici validi per Prezzo, Anno e Posti.");
             }
         });
 
@@ -207,6 +224,7 @@ public class GuiGestioneCatalogo {
         StageHandler.getSingletonInstance().loadCss(scene);
         popupStage.setScene(scene);
         popupStage.showAndWait();
+    }
     }
 
     @FXML

@@ -4,6 +4,7 @@ import model.noleggioauto.dao.DaoNoleggioAuto;
 import model.macchina.dao.DaoMacchina;
 import model.macchina.dao.DemoDaoMacchina;
 import model.noleggioauto.dao.DemoDaoNoleggioAuto;
+import model.notifiche.dao.DaoNotifica;
 import model.utente.dao.DaoUtente;
 import model.utente.dao.DemoDaoUtente;
 
@@ -22,5 +23,10 @@ public class DemoDaoFactory extends DaoFactory {
     @Override
     public DaoNoleggioAuto createNoleggioAutoDao() {
         return new DemoDaoNoleggioAuto();
+    }
+
+    @Override
+    public DaoNotifica createNotificheDao() {
+        return null;
     }
 }

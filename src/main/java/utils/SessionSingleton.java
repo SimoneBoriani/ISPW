@@ -10,6 +10,10 @@ public class SessionSingleton {
     private Utente utenteCorrente;
     private Macchina autoSelezionata;
 
+    private String tempIdNotifica;
+    private String tempMarca;
+    private String tempModello;
+
     private SessionSingleton() {
     }
 
@@ -43,4 +47,13 @@ public class SessionSingleton {
     public boolean isUserLoggedIn() {
         return this.utenteCorrente != null;
     }
+
+    public void setTempIdNotifica(String tempIdNotifica) { this.tempIdNotifica = tempIdNotifica; }
+    public String getTempIdNotifica() { return tempIdNotifica; }
+
+    public void setTempMarca(String tempMarca) { this.tempMarca = tempMarca; }
+    public String getTempMarca() { return tempMarca; }
+
+    public void setTempModello(String tempModello) { this.tempModello = tempModello; }
+    public String getTempModello() { return tempModello; }
 }

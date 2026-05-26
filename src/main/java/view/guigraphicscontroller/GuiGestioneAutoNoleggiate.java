@@ -29,6 +29,7 @@ public class GuiGestioneAutoNoleggiate {
 
     private GestioneAutoNoleggiateController controller = ControllerFactory.getGraphicalSingletonFactory().createGestioneAutoNoleggiateController();
 
+
     @FXML
     private ListView<NoleggioAuto> carListView;
 

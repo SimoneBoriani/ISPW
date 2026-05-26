@@ -1,12 +1,18 @@
 package controller;
 
 import bean.NoleggioAutoBean;
+import bean.SegnalazioneBean;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 import model.utente.Utente;
 import model.duratacontrattuale.*;
+import view.factory.ControllerFactory;
 
 public class NoleggioController {
+
+    private final VisualizzaCatalogoController controllerApplicativo= ControllerFactory.getGraphicalSingletonFactory().createVisualizzaCatalogoController();
+    private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
+
 
     public double calcolaTotale(Macchina auto, int giorni) {
 
@@ -56,5 +62,18 @@ public class NoleggioController {
         else {
             throw new IllegalArgumentException("Il limite massimo di noleggio è 700 giorni.");
         }
+    }
+
+    public void segnalazione(SegnalazioneBean bean){
+        if(bean!=null){
+            String auto =bean.getMacchina().getId() + " " + bean.getMacchina().getMarca() + " " + bean.getMacchina().getModello();
+            notificheController.inviaMessaggioAdAdmin(String.valueOf(bean.getUtente().getIdUser()),auto,bean.getMsg());
+        } else throw new NullPointerException("Segnalazione non trovata");
+    }
+
+    public void notificaSistema(SegnalazioneBean bean){
+        if(bean!=null){
+            notificheController.generaNotificaSistema(String.valueOf(bean.getUtente().getIdUser()),bean.getMsg());
+        } else throw new NullPointerException("Segnalazione non trovata");
     }
 }

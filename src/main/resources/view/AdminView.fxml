@@ -10,60 +10,72 @@
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="450.0" spacing="20.0" style="-fx-background-color: #0E1A33; -fx-padding: 30;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiAdminViewController">
 
     <VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="390.0" spacing="25.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-radius: 20;">
+
         <padding>
             <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
         </padding>
 
-        <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="330.0">
-                <Label onMouseClicked="#logOut" styleClass="link-label" text="Log out" textFill="#ff1100">
-                    <font>
-                        <Font name="System Bold" size="13.0" />
-                    </font>
-                </Label>
+        <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="330.0" spacing="10">
+
+            <Label onMouseClicked="#apriPopupNotifiche" style="-fx-font-size: 18px; -fx-cursor: hand;" text="🔔" />
+
+            <Label fx:id="lblNotifiche" managed="false" style="-fx-background-color: red;                           -fx-text-fill: white;                           -fx-font-size: 11px;                           -fx-padding: 2 6 2 6;                           -fx-background-radius: 20;" text="0" visible="false" />
+
+            <Label onMouseClicked="#logOut" styleClass="link-label" text="Log out" textFill="#ff1100">
+                <font>
+                    <Font name="System Bold" size="13.0" />
+                </font>
+            </Label>
+
         </HBox>
 
         <VBox alignment="CENTER" spacing="10.0">
-                <Label text="PANNELLO ADMIN" textFill="#204080">
-                    <font>
-                        <Font name="System Bold" size="22.0" />
-                    </font>
-                </Label>
-                <Label text="Gestione Sistema KrustyNoDusty" textFill="#64748b">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
+            <Label text="PANNELLO ADMIN" textFill="#204080">
+                <font>
+                    <Font name="System Bold" size="22.0" />
+                </font>
+            </Label>
+
+            <Label text="Gestione Sistema KrustyNoDusty" textFill="#64748b">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+
             <VBox.margin>
                 <Insets bottom="10.0" />
             </VBox.margin>
         </VBox>
 
         <VBox alignment="CENTER" spacing="20.0">
-                <Button mnemonicParsing="false" onAction="#goToManage" prefHeight="45.0" prefWidth="280.0" styleClass="Button" text="Gestione Catalogo" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Button>
 
-                <Button mnemonicParsing="false" onAction="#goToStorico" prefHeight="45.0" prefWidth="280.0" styleClass="Button" text="Storico Noleggi" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Button>
+            <Button mnemonicParsing="false" onAction="#goToManage" prefHeight="45.0" prefWidth="280.0" styleClass="Button" text="Gestione Catalogo" textFill="WHITE">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Button>
 
-                <Button mnemonicParsing="false" onAction="#goToProfit" prefHeight="45.0" prefWidth="280.0" styleClass="Button" text="Visualizza Profitti" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Button>
+            <Button mnemonicParsing="false" onAction="#goToStorico" prefHeight="45.0" prefWidth="280.0" styleClass="Button" text="Storico Noleggi" textFill="WHITE">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Button>
+
+            <Button mnemonicParsing="false" onAction="#goToProfit" prefHeight="45.0" prefWidth="280.0" styleClass="Button" text="Storico Profitti" textFill="WHITE">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Button>
+
         </VBox>
 
         <VBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
-                <Label text="Accesso Amministratore Autorizzato" textFill="#cbd5e1">
-                    <font>
-                        <Font name="System Italic" size="11.0" />
-                    </font>
-                </Label>
+            <Label text="Accesso Amministratore Autorizzato" textFill="#cbd5e1">
+                <font>
+                    <Font name="System Italic" size="11.0" />
+                </font>
+            </Label>
         </VBox>
+
     </VBox>
 </VBox>

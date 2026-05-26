@@ -3,6 +3,7 @@ package controller;
 import bean.CatalogoBean;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
+import utils.SessionSingleton;
 import view.factory.ControllerFactory;
 
 import java.util.ArrayList;
@@ -87,5 +88,19 @@ public class GestioneCatalogoController {
             logger.info("Auto aggiunte al DB con successo!");
             autoDaAggiungereAlDB.clear();
         }
+    }
+
+    public Macchina createAutoSegnalata() {
+
+        CatalogoBean bean = new CatalogoBean();
+        bean.setId(Integer.parseInt(SessionSingleton.getInstance().getTempIdNotifica()));
+        if (bean.getId() != 0){
+            bean.setMarca(SessionSingleton.getInstance().getTempMarca());
+            bean.setModello(SessionSingleton.getInstance().getTempModello());
+
+            List<Macchina> list = visualizzaCatalogoController.research(bean);
+
+            return  list.get(0);
+        } else return null;
     }
 }

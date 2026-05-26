@@ -31,7 +31,8 @@
                         </Label>
 
                 </VBox>
-                <Button mnemonicParsing="false" onAction="#goHome" prefHeight="35.0" prefWidth="100.0" styleClass="Button-Secondary" text="Chiudi" />
+         <Button mnemonicParsing="false" onAction="#segnala" prefHeight="35.0" prefWidth="100.0" styleClass="Button-Secondary" text="Segnalazione" />
+         <Button mnemonicParsing="false" onAction="#goHome" prefHeight="35.0" prefWidth="100.0" styleClass="Button-Secondary" text="Chiudi" />
 
         </HBox>
 
@@ -56,28 +57,28 @@
 
                         <HBox spacing="10.0">
                             <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                                <Label text="TRASMISSIONE" textFill="#204080"><font><Font name="System Bold" size="12.0"/></font></Label>
+                                <Label text="TRASMISSIONE" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
                                 <Label fx:id="km" text="Automatico" textFill="#475569" />
                             </VBox>
                             <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                                <Label text="POSTI" textFill="#204080"><font><Font name="System Bold" size="12.0"/></font></Label>
+                                <Label text="POSTI" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
                                 <Label fx:id="posti" text="5" textFill="#475569" />
                             </VBox>
                         </HBox>
 
                         <HBox spacing="10.0">
                             <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                                <Label text="ALIMENTAZIONE" textFill="#204080"><font><Font name="System Bold" size="12.0"/></font></Label>
+                                <Label text="ALIMENTAZIONE" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
                                 <Label fx:id="alimentazione" text="Diesel" textFill="#475569" />
                             </VBox>
                             <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                                <Label text="ANNO" textFill="#204080"><font><Font name="System Bold" size="12.0"/></font></Label>
+                                <Label text="ANNO" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
                                 <Label text="2024" textFill="#475569" />
                             </VBox>
                         </HBox>
 
-                        <VBox prefWidth="370.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                            <Label text="TIPOLOGIA" textFill="#204080"><font><Font name="System Bold" size="12.0"/></font></Label>
+                        <VBox prefHeight="59.0" prefWidth="354.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
+                            <Label text="TIPOLOGIA" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
                             <Label text="N/D" textFill="#475569" />
                         </VBox>
 

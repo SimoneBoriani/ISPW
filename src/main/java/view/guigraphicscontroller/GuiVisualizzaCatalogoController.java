@@ -1,6 +1,8 @@
 package view.guigraphicscontroller;
 
 import bean.CatalogoBean;
+import bean.SegnalazioneBean;
+import controller.NotificheController;
 import exceptions.CarNotFoundException;
 import exceptions.GenericSystemException;
 import javafx.geometry.Insets;
@@ -10,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.notifiche.Notifica;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import utils.SessionSingleton;
@@ -31,6 +34,7 @@ import java.util.function.Consumer;
 public class GuiVisualizzaCatalogoController {
 
     private final VisualizzaCatalogoController visualizzaCatalogoController= ControllerFactory.getGraphicalSingletonFactory().createVisualizzaCatalogoController();
+    private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
 
     @FXML
     private Button btnAccedi;
@@ -39,7 +43,13 @@ public class GuiVisualizzaCatalogoController {
     private Button btnLogout;
 
     @FXML
+    private Label lblNotifiche;
+
+    @FXML
     private ListView<Macchina> carListView;
+
+    @FXML
+    private ContextMenu menuNotifiche;
 
     private static final Logger logger = LogManager.getLogger(GuiVisualizzaCatalogoController.class.getName());
 
@@ -48,6 +58,7 @@ public class GuiVisualizzaCatalogoController {
 
         configuraCatalogo();
         configuraBottoni();
+        controllaNotifiche();
 
     }
 
@@ -92,6 +103,8 @@ public class GuiVisualizzaCatalogoController {
         if (loggedIn) {
             btnAccedi.setVisible(false);
             btnAccedi.setManaged(false);
+            lblNotifiche.setVisible(true);
+            lblNotifiche.setManaged(true);
             if (btnLogout != null) {
                 btnLogout.setVisible(true);
                 btnLogout.setManaged(true);
@@ -99,17 +112,13 @@ public class GuiVisualizzaCatalogoController {
         } else {
             btnAccedi.setVisible(true);
             btnAccedi.setManaged(true);
+            lblNotifiche.setVisible(false);
+            lblNotifiche.setManaged(false);
             if (btnLogout != null) {
                 btnLogout.setVisible(false);
                 btnLogout.setManaged(false);
             }
         }
-    }
-
-    @FXML
-    public void btnAddCarOnAction(ActionEvent event) throws IOException {
-        String str="/view/AggiungiAuto.fxml";
-        StageHandler.getSingletonInstance().loadPage(str);
     }
 
     @FXML
@@ -247,5 +256,163 @@ public class GuiVisualizzaCatalogoController {
         popupStage.setScene(scene);
         popupStage.showAndWait();
 
+    }
+
+    @FXML
+    public void apriPopupNotifiche(MouseEvent event) {
+
+        if (!SessionSingleton.getInstance().isUserLoggedIn()) {
+            return;
+        }
+
+        if (menuNotifiche != null && menuNotifiche.isShowing()) {
+            menuNotifiche.hide();
+            return;
+        }
+
+        SegnalazioneBean bean = new SegnalazioneBean();
+
+        bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+
+        List<Notifica> listaNotifiche = notificheController.getStoricoNotifiche(bean);
+
+        menuNotifiche = new ContextMenu();
+
+        if (listaNotifiche == null || listaNotifiche.isEmpty()) {
+
+            MenuItem vuoto = new MenuItem("Nessuna notifica");
+
+            vuoto.setDisable(true);
+
+            menuNotifiche.getItems().add(vuoto);
+
+        } else {
+
+            for (Notifica n : listaNotifiche) {
+
+                VBox card = new VBox(12);
+
+                card.setPrefWidth(320);
+                card.setMinWidth(320);
+                card.setMaxWidth(320);
+
+                card.setPrefHeight(110);
+
+                card.setPadding(new Insets(15));
+
+                String tipo =
+                        n.getTipo() == Notifica.Tipo.SISTEMA
+                                ? "⚙ Sistema"
+                                : "✉ Messaggio";
+
+                Label lblTitolo = new Label(tipo);
+
+                lblTitolo.setStyle(
+                        "-fx-font-weight: bold;" +
+                                "-fx-font-size: 16px;" +
+                                "-fx-text-fill: black;"
+                );
+
+                Label lblTesto = new Label(n.getTesto());
+
+                lblTesto.setWrapText(true);
+
+                lblTesto.setStyle(
+                        "-fx-font-size: 14px;" +
+                                "-fx-text-fill: black;"
+                );
+
+              Label lblData = new Label(
+                        n.getDataCreazione()
+                                .toString()
+                                .replace("T", " ")
+                                .substring(0,16)
+                );
+
+                lblData.setStyle(
+                        "-fx-font-size: 11px;" +
+                                "-fx-text-fill: #666666;"
+                );
+
+                card.getChildren().addAll(
+                        lblTitolo,
+                        lblTesto,
+                        lblData
+                );
+
+                String baseStyle =
+                        "-fx-background-color: #fff7f7;" +
+                                "-fx-border-color: #ffcccc;" +
+                                "-fx-border-radius: 10;" +
+                                "-fx-background-radius: 10;" +
+                                "-fx-cursor: hand;";
+
+                  String hoverStyle =
+                        "-fx-background-color: #ffeaea;" +
+                                "-fx-border-color: #ffb3b3;" +
+                                "-fx-border-radius: 10;" +
+                                "-fx-background-radius: 10;" +
+                                "-fx-cursor: hand;";
+
+                card.setStyle(baseStyle);
+
+                card.setOnMouseEntered(e -> card.setStyle(hoverStyle));
+
+                card.setOnMouseExited(e -> card.setStyle(baseStyle));
+
+                if (!n.isLetta()){
+                    SegnalazioneBean user = new SegnalazioneBean();
+                    user.setId(n.getId());
+                    notificheController.apriNotifica(user);
+                }
+
+                CustomMenuItem item = new CustomMenuItem(card);
+                item.setHideOnClick(false);
+
+                menuNotifiche.getItems().add(item);
+            }
+        }
+
+        menuNotifiche.show(
+                ((javafx.scene.Node) event.getSource()),
+                event.getScreenX(),
+                event.getScreenY()
+        );
+        controllaNotifiche();
+    }
+
+    private void controllaNotifiche() {
+        try {
+            boolean loggedIn = SessionSingleton.getInstance().isUserLoggedIn();
+
+            if (loggedIn && lblNotifiche != null) {
+
+                if (SessionSingleton.getInstance().getUtenteCorrente() != null) {
+
+                    SegnalazioneBean bean = new SegnalazioneBean();
+                    bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+                    List<Notifica> daLeggere = notificheController.getNotificheDaLeggere(bean);
+
+                    if (daLeggere != null && !daLeggere.isEmpty()) {
+                        lblNotifiche.setText(String.valueOf(daLeggere.size()));
+                        lblNotifiche.setVisible(true);
+                        lblNotifiche.setManaged(true);
+                    } else {
+                        lblNotifiche.setVisible(false);
+                        lblNotifiche.setManaged(false);
+                    }
+                }
+            } else if (lblNotifiche != null) {
+                lblNotifiche.setVisible(false);
+                lblNotifiche.setManaged(false);
+            }
+        } catch (Exception e) {
+
+            logger.error("Errore nel caricamento delle notifiche: {} ",e.getMessage());
+            if (lblNotifiche != null) {
+                lblNotifiche.setVisible(false);
+                lblNotifiche.setManaged(false);
+            }
+        }
     }
 }

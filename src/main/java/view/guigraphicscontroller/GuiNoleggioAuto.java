@@ -1,6 +1,7 @@
 package view.guigraphicscontroller;
 
 import bean.NoleggioAutoBean;
+import bean.SegnalazioneBean;
 import controller.NoleggioController;
 import controller.VisualizzaCatalogoController;
 import exceptions.GenericSystemException;
@@ -9,9 +10,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -36,6 +35,7 @@ public class GuiNoleggioAuto {
     private final VisualizzaCatalogoController controllerApplicativo= ControllerFactory.getGraphicalSingletonFactory().createVisualizzaCatalogoController();
     private final NoleggioController noleggioController=ControllerFactory.getGraphicalSingletonFactory().createNoleggioController();
 
+
     @FXML
     private ImageView imgAuto;
 
@@ -57,6 +57,33 @@ public class GuiNoleggioAuto {
 
         loadInfo();
 
+    }
+
+    @FXML
+    public void segnala() {
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Segnalazione");
+        dialog.setHeaderText("Invia una segnalazione");
+        dialog.setContentText("Descrivi il problema (max 100 caratteri):");
+
+
+        TextField textField = dialog.getEditor();
+        textField.setTextFormatter(new TextFormatter<>(change ->
+                change.getControlNewText().length() <= 100 ? change : null
+        ));
+
+        dialog.showAndWait().ifPresent(testo -> {
+            if (testo != null && !testo.trim().isEmpty()) {
+
+                SegnalazioneBean bean = new SegnalazioneBean();
+                bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+                bean.setMacchina(SessionSingleton.getInstance().getAutoSelezionata());
+                bean.setMsg(testo);
+
+                noleggioController.segnalazione(bean);
+            }
+        });
     }
 
     private void loadInfo(){
@@ -167,6 +194,7 @@ public class GuiNoleggioAuto {
         btnAnnulla.setPrefWidth(larghezzaBottone);
 
         btnConferma.setOnAction(e -> gestisciConferma(txtGiorni.getText(), acquistoAuto, popupStage, lblErrore));
+
         btnAnnulla.setOnAction(e -> popupStage.close());
 
         HBox bottoniBox = new HBox(15, btnConferma, btnAnnulla);
@@ -225,6 +253,13 @@ public class GuiNoleggioAuto {
             if (bean.getGiorni() <= 0) throw new NumberFormatException();
 
             noleggioController.processaNoleggio(bean);
+
+            SegnalazioneBean bean1= new SegnalazioneBean();
+            bean1.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+            bean1.setMacchina(SessionSingleton.getInstance().getAutoSelezionata());
+            bean1.setMsg("Noleggio di " + bean1.getMacchina().getModello() + " " + bean1.getMacchina().getMarca() + " effettua con successo!");
+
+            noleggioController.notificaSistema(bean1);
             stage.close();
 
         } catch (NumberFormatException ex) {

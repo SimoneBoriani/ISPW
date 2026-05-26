@@ -31,6 +31,8 @@ public class ControllerFactory {
 
     public VisualizzaStoricoController createVisualizzaStoricoController(){return new VisualizzaStoricoController();}
 
+    public NotificheController createNotificheController(){return new NotificheController();}
+
     public static synchronized ControllerFactory getGraphicalSingletonFactory() throws GenericSystemException {
 
         if (instance == null) {

@@ -4,6 +4,8 @@ import model.noleggioauto.dao.DaoNoleggioAuto;
 import model.noleggioauto.dao.DbmsDaoNoleggioAutoDao;
 import model.macchina.dao.DaoMacchina;
 import model.macchina.dao.DbmsDaoMacchina;
+import model.notifiche.dao.DaoNotifica;
+import model.notifiche.dao.DbmsDaoNotifica;
 import model.utente.dao.DaoUtente;
 import model.utente.dao.DbmsDaoUtente;
 
@@ -19,4 +21,9 @@ public class DbmsDaoFactory extends DaoFactory {
 
     @Override
     public DaoNoleggioAuto createNoleggioAutoDao() {return new DbmsDaoNoleggioAutoDao();}
+
+    @Override
+    public DaoNotifica createNotificheDao() {
+        return new DbmsDaoNotifica();
+    }
 }

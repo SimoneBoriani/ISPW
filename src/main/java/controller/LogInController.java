@@ -6,11 +6,14 @@ import exceptions.GenericSystemException;
 import exceptions.IncorrectCredentialExeption;
 import model.daofactory.DaoFactory;
 import model.utente.Utente;
+import view.factory.ControllerFactory;
 
 import java.sql.SQLException;
 
 
 public class LogInController {
+
+    private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
 
     public void authenticate(ProfileBean loginBean){
 
@@ -72,6 +75,7 @@ public class LogInController {
 
         Utente nuovo = new Utente(-1, loginBean.getUsername(), loginBean.getPassword(), null, null);
         DaoFactory.getDaoSingletonFactory().createUtenteDao().insertUtente(nuovo);
-
+        utenteEsistente = researchUser(loginBean);
+        notificheController.generaNotificaSistema(String.valueOf(utenteEsistente.getIdUser()),"Benvenuto in Boro Rental !");
     }
 }
