@@ -1,0 +1,24 @@
+
+SUCCESSO---------------------------------------------------
+
+Numero Carta: 4242 4242 4242 4242
+
+Scadenza (MM/AA): Qualsiasi data nel futuro (es. 12/30)
+
+CVC/CVV: Qualsiasi numero a 3 cifre (es. 123)
+
+Nome/CAP: Qualsiasi valore.
+
+RIFIUTATO--------------------------------------------------
+
+Carta rifiutata (Generica): 4000 0000 0000 0002
+
+Carta rifiutata (Fondi insufficienti): 4000 0000 0000 9995
+
+Scadenza e CVV: Come sopra (qualsiasi data futura e CVC).
+
+ATTESA------------------------------------------------------
+
+Numero Carta: 4000 0000 0000 3020
+
+Scadenza e CVV: Qualsiasi data futura e CVC.

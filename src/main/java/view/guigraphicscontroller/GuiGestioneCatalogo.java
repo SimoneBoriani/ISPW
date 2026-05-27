@@ -2,6 +2,7 @@ package view.guigraphicscontroller;
 
 import bean.CatalogoBean;
 import controller.GestioneCatalogoController;
+import controller.NotificheController;
 import exceptions.GenericSystemException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -34,6 +35,7 @@ import java.util.function.IntConsumer;
 public class GuiGestioneCatalogo {
 
     private final GestioneCatalogoController gestioneCatalogoController = ControllerFactory.getGraphicalSingletonFactory().createGestioneCatalogoController();
+    private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
 
     @FXML
     private TableView<Macchina> tabellaAuto;
@@ -58,6 +60,7 @@ public class GuiGestioneCatalogo {
 
     @FXML
     public void initialize() {
+
         modificaSegnalata();
         configuraColonne();
         caricaDati();
@@ -66,14 +69,14 @@ public class GuiGestioneCatalogo {
 
     private void modificaSegnalata(){
 
-        Macchina modifica = gestioneCatalogoController.createAutoSegnalata();
+        if(SessionSingleton.getInstance().getTempIdNotifica() != null) {
 
-        Platform.runLater(() -> apriImpostazioniAuto(modifica));
-
-        SessionSingleton.getInstance().setTempIdNotifica(null);
-        SessionSingleton.getInstance().setTempMarca(null);
-        SessionSingleton.getInstance().setTempModello(null);
-
+            Macchina modifica = gestioneCatalogoController.createAutoSegnalata();
+            Platform.runLater(() -> apriImpostazioniAuto(modifica));
+            SessionSingleton.getInstance().setTempIdNotifica(null);
+            SessionSingleton.getInstance().setTempMarca(null);
+            SessionSingleton.getInstance().setTempModello(null);
+        }
     }
 
 
@@ -186,6 +189,7 @@ public class GuiGestioneCatalogo {
                 assegnaIntero(cbPosti.getValue(), bean::setPosti);
 
                 gestioneCatalogoController.modifyCar(bean);
+                notificheController.generaNotificaSistema("1","Auto agginta con successo:\n"+bean.getMarca()+" "+bean.getModello());
                 caricaDati();
                 popupStage.close();
 

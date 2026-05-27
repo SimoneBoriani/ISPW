@@ -8,8 +8,6 @@ import model.daofactory.DaoFactory;
 import model.utente.Utente;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import utils.SessionSingleton;
-
 
 public class GestioneProfiloController {
 
@@ -57,6 +55,5 @@ public class GestioneProfiloController {
                 Thread.currentThread().interrupt();
             }
         }).start();
-
     }
 }
