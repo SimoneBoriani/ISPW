@@ -45,9 +45,9 @@ public class DbmsDaoNotifica extends DaoNotifica {
     }
 
     @Override
-    public List<Notifica> getComunicazioniPerDestinatario(String destinatario) {
+    public List<Notifica> getComunicazioniPerDestinatario(String id) {
         String query = "SELECT * " + "FROM notifiche WHERE destinatario = ? ORDER BY data_creazione DESC";
-        return eseguiQuerySelect(query, destinatario);
+        return eseguiQuerySelect(query, id);
     }
 
     @Override

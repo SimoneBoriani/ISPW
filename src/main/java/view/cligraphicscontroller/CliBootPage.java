@@ -9,6 +9,7 @@ public class CliBootPage {
     private static final String CMD_2 = "2";
     private static final String CMD_3 = "3";
     private static final String CMD_4 = "4";
+    private static final String CMD_5 = "5";
     private static final String CMD_EXIT = "0";
 
     public void render() {
@@ -22,6 +23,7 @@ public class CliBootPage {
                 ConsolePrinter.printMenuOption(CMD_2, "Accedi al Sistema");
             } else {
                 ConsolePrinter.printMenuOption(CMD_2, "Log out");
+                ConsolePrinter.printMenuOption(CMD_5, "Notifiche");
             }
 
             ConsolePrinter.printMenuOption(CMD_3, "Gestione Profilo");
@@ -43,6 +45,7 @@ public class CliBootPage {
                 }
                 case CMD_3 -> navigateToProfile();
                 case CMD_4 -> navigateToRented();
+                case CMD_5 -> navigateToNotifiche();
                 case CMD_EXIT -> {
                     ConsolePrinter.printStatus("Arrivederci!", false);
                     running = false;
@@ -70,4 +73,6 @@ public class CliBootPage {
     private void navigateToRented() {
         new CliAutoNoleggiatePage().render();
     }
+
+    private void navigateToNotifiche() {new CliNotifichePage().render();}
 }

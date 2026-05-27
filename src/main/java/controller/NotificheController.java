@@ -20,7 +20,7 @@ public class NotificheController {
 
         Notifica messaggio = new Notifica(
                 idUtente,
-                "ADMIN",
+                "1",
                 testo,
                 Notifica.Tipo.MESSAGGIO
         );
@@ -41,7 +41,7 @@ public class NotificheController {
     }
 
     public List<Notifica> getStoricoNotifiche(SegnalazioneBean bean) {
-        return DaoFactory.getDaoSingletonFactory().createNotificheDao().getComunicazioniPerDestinatario(String.valueOf(bean.getUtente().getRuolo()));
+        return DaoFactory.getDaoSingletonFactory().createNotificheDao().getComunicazioniPerDestinatario(String.valueOf(bean.getUtente().getIdUser()));
     }
 
     public List<Notifica> getNotificheDaLeggere(SegnalazioneBean bean) {

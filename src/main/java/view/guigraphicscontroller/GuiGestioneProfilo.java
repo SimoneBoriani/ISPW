@@ -2,6 +2,7 @@ package view.guigraphicscontroller;
 
 import bean.ProfileBean;
 import controller.GestioneProfiloController;
+import controller.NotificheController;
 import exceptions.GenericSystemException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,13 +11,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.macchina.Macchina;
 import model.utente.Utente;
 import utils.SessionSingleton;
 import utils.StageHandler;
@@ -27,10 +26,7 @@ import java.io.IOException;
 public class GuiGestioneProfilo {
 
     private final GestioneProfiloController controller= ControllerFactory.getGraphicalSingletonFactory().createGestioneProfiloController();
-
-    @FXML
-    private ListView<Macchina> carListView;
-
+    private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
 
     @FXML
     private Label nomeUtenteLabel;
@@ -111,6 +107,8 @@ public class GuiGestioneProfilo {
                     bean.setId(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
                     bean.setSaldo(Double.parseDouble(txtSaldo.getText()));
                     controller.updateSaldo(bean);
+                    notificheController.generaNotificaSistema(String.valueOf(bean.getId()),"Saldo aggiunto con successo!");
+
                 } catch (NumberFormatException ex) {
 
                     lblStato.textProperty().unbind();
@@ -218,6 +216,7 @@ public class GuiGestioneProfilo {
 
             try {
                 controller.updateProfile(bean);
+                notificheController.generaNotificaSistema(String.valueOf(bean.getId()),"Informazioni personali aggiornate");
             } catch (Exception ex) {
                 throw new GenericSystemException("Errore aggiornamento parametri: ", ex);
             }
