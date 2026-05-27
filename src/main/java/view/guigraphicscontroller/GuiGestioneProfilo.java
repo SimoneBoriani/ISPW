@@ -27,11 +27,9 @@ import javafx.concurrent.Task;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import service.StripeService;
-import service.IdentityService; // Assicurati di avere questa classe o aggiorna il package
+import service.IdentityService;
 import utils.ConfigLoader;
 
-import java.awt.Desktop;
-import java.net.URI;
 import java.io.IOException;
 
 public class GuiGestioneProfilo {
@@ -50,16 +48,15 @@ public class GuiGestioneProfilo {
     @FXML
     private Label roleUtenteLabel;
 
+    private static final String BUTTON = "Button";
+    private static final String ORANGE="orange";
+
     @FXML
     public void initialize() {
         if (SessionSingleton.getInstance().getUtenteCorrente() != null) {
             personalInfo();
         }
     }
-
-    // ==========================================
-    // SEZIONE: RICARICA SALDO
-    // ==========================================
 
     @FXML
     public void btnSaldo(ActionEvent actionEvent) throws IOException {
@@ -90,7 +87,7 @@ public class GuiGestioneProfilo {
 
         Button btnProcedi = new Button("Procedi al pagamento");
         btnProcedi.setMaxWidth(200);
-        btnProcedi.getStyleClass().add("Button");
+        btnProcedi.getStyleClass().add(BUTTON);
 
         Button btnAnnulla = new Button("Chiudi");
         btnAnnulla.setOnAction(e -> popupStage.close());
@@ -161,7 +158,7 @@ public class GuiGestioneProfilo {
                 }
                 break;
             case "cancelled":
-                impostaMessaggioStato(lblStato, "⚠ Pagamento annullato", "orange");
+                impostaMessaggioStato(lblStato, "⚠ Pagamento annullato", ORANGE);
                 break;
             default:
                 impostaMessaggioStato(lblStato, "❌ Pagamento non riuscito (stato: " + tx.getPaymentStatus() + ")", "red");
@@ -200,7 +197,7 @@ public class GuiGestioneProfilo {
                 try {
                     StageHandler.getSingletonInstance().loadPage("/view/Profilo.fxml");
                 } catch (IOException ex) {
-                    //ex.printStackTrace();
+                    throw new GenericSystemException("Pagina non caricata:",ex);
                 }
             });
         }).start();
@@ -218,7 +215,7 @@ public class GuiGestioneProfilo {
 
         Button btnInizia = new Button("Inizia Verifica Online");
         btnInizia.setPrefWidth(220);
-        btnInizia.getStyleClass().add("Button");
+        btnInizia.getStyleClass().add(BUTTON);
 
         btnInizia.setOnAction(e -> avviaFlussoVerifica(btnInizia, spinner, lblStato, popupStage));
         mostraLayoutVerifica(popupStage, lblStato, spinner, btnInizia);
@@ -257,11 +254,11 @@ public class GuiGestioneProfilo {
                 }).start();
 
             } else if ("processing".equals(stato)) {
-                impostaMessaggioStato(lbl, "⏳ Verifica in corso. Ci vorrà qualche minuto.", "orange");
+                impostaMessaggioStato(lbl, "⏳ Verifica in corso. Ci vorrà qualche minuto.", ORANGE);
             } else if ("requires_input".equals(stato)) {
                 impostaMessaggioStato(lbl, "❌ Verifica fallita. Riprova con foto più nitide.", "red");
             } else {
-                impostaMessaggioStato(lbl, "⚠ Operazione annullata.", "orange");
+                impostaMessaggioStato(lbl, "⚠ Operazione annullata.", ORANGE);
             }
         });
 
@@ -378,7 +375,7 @@ public class GuiGestioneProfilo {
         txtCognome.setPromptText("Cognome");
 
         Button btnUpdate = new Button("Aggiorna");
-        btnUpdate.getStyleClass().add("Button");
+        btnUpdate.getStyleClass().add(BUTTON);
 
         btnUpdate.setOnAction(e -> {
             ProfileBean bean = new ProfileBean();

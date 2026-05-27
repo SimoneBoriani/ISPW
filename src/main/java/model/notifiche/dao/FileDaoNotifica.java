@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
 
 public class FileDaoNotifica extends DaoNotifica {
 
@@ -31,38 +31,47 @@ public class FileDaoNotifica extends DaoNotifica {
 
     private static void caricaDaFile() {
         Path path = Paths.get(FILE_PATH);
-        if (Files.exists(path)) {
+
+        if (!Files.exists(path)) {
             try {
-                List<String> righe = Files.readAllLines(path);
-                for (String riga : righe) {
-                    String[] dati = riga.split("\\|#\\|");
+                if (path.getParent() != null) Files.createDirectories(path.getParent());
+                Files.createFile(path);
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, "Impossibile creare il file: " + FILE_PATH, e);
+            }
+            return;
+        }
 
-                    if (dati.length >= 7) {
-                        int id = Integer.parseInt(dati[0]);
-                        String mittente = dati[1];
-                        String destinatario = dati[2];
-                        String testo = dati[3].replace("\\n", "\n");
-                        Notifica.Tipo tipo = Notifica.Tipo.valueOf(dati[4]);
-                        boolean letta = Boolean.parseBoolean(dati[5]);
-                        LocalDateTime dataCreazione = LocalDateTime.parse(dati[6]);
+        try {
+            for (String riga : Files.readAllLines(path)) {
+                String[] dati = riga.split("\\|#\\|");
 
-                        Notifica n = new Notifica(id, mittente, destinatario, testo, tipo, letta, dataCreazione);
-                        if (dati.length == 8 && !dati[7].equals("null")) {
-                            n.setAuto(dati[7]);
-                        }
+                if (dati.length < 7) continue;
 
-                        databaseNotifiche.add(n);
-                    }
+                Notifica n = new Notifica(
+                        Integer.parseInt(dati[0]),
+                        dati[1],
+                        dati[2],
+                        dati[3].replace("\\n", "\n"),
+                        Notifica.Tipo.valueOf(dati[4]),
+                        Boolean.parseBoolean(dati[5]),
+                        LocalDateTime.parse(dati[6])
+                );
+
+                if (dati.length >= 8 && !dati[7].equals("null")) {
+                    n.setAuto(dati[7]);
                 }
 
-                idCounter = databaseNotifiche.stream()
-                        .mapToInt(Notifica::getId)
-                        .max()
-                        .orElse(0) + 1;
-
-            } catch (IOException e) {
-                logger.log(Level.SEVERE, "Errore durante la lettura del file testuale", e);
+                databaseNotifiche.add(n);
             }
+
+            idCounter = databaseNotifiche.stream()
+                    .mapToInt(Notifica::getId)
+                    .max()
+                    .orElse(0) + 1;
+
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Errore durante la lettura del file testuale", e);
         }
     }
 
@@ -93,12 +102,16 @@ public class FileDaoNotifica extends DaoNotifica {
         }
     }
 
+    private static synchronized int getNextId() {
+        return idCounter++;
+    }
+
     @Override
     public void inserisci(Notifica notifica) {
         LocalDateTime data = notifica.getDataCreazione() != null ? notifica.getDataCreazione() : LocalDateTime.now();
 
         Notifica nuovaNotifica = new Notifica(
-                idCounter++,
+                getNextId(),
                 notifica.getMittente(),
                 notifica.getDestinatario(),
                 notifica.getTesto(),
@@ -117,7 +130,7 @@ public class FileDaoNotifica extends DaoNotifica {
         return databaseNotifiche.stream()
                 .filter(n -> n.getDestinatario().equals(id))
                 .sorted(Comparator.comparing(Notifica::getDataCreazione).reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -125,7 +138,7 @@ public class FileDaoNotifica extends DaoNotifica {
         return databaseNotifiche.stream()
                 .filter(n -> n.getDestinatario().equals(destinatario) && !n.isLetta())
                 .sorted(Comparator.comparing(Notifica::getDataCreazione).reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

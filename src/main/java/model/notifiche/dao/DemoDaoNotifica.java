@@ -7,19 +7,22 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class DemoDaoNotifica extends DaoNotifica {
 
     private static final List<Notifica> databaseNotifiche = new ArrayList<>();
     private static int idCounter = 1;
 
+    private static synchronized int getNextId() {
+        return idCounter++;
+    }
+
     @Override
     public void inserisci(Notifica notifica) {
         LocalDateTime data = notifica.getDataCreazione() != null ? notifica.getDataCreazione() : LocalDateTime.now();
 
         Notifica nuovaNotifica = new Notifica(
-                idCounter++,
+                getNextId(),
                 notifica.getMittente(),
                 notifica.getDestinatario(),
                 notifica.getTesto(),
@@ -37,7 +40,7 @@ public class DemoDaoNotifica extends DaoNotifica {
         return databaseNotifiche.stream()
                 .filter(n -> n.getDestinatario().equals(id))
                 .sorted(Comparator.comparing(Notifica::getDataCreazione).reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -45,7 +48,7 @@ public class DemoDaoNotifica extends DaoNotifica {
         return databaseNotifiche.stream()
                 .filter(n -> n.getDestinatario().equals(destinatario) && !n.isLetta())
                 .sorted(Comparator.comparing(Notifica::getDataCreazione).reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

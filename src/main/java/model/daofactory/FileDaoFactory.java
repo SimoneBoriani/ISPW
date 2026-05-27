@@ -5,6 +5,7 @@ import model.macchina.dao.FileDaoMacchina;
 import model.noleggioauto.dao.DaoNoleggioAuto;
 import model.noleggioauto.dao.FileDaoNoleggioAuto;
 import model.notifiche.dao.DaoNotifica;
+import model.notifiche.dao.FileDaoNotifica;
 import model.utente.dao.DaoUtente;
 import model.utente.dao.FileDaoUtente;
 
@@ -27,6 +28,6 @@ public class FileDaoFactory extends DaoFactory{
 
     @Override
     public DaoNotifica createNotificheDao() {
-        return null;
+        return new FileDaoNotifica();
     }
 }

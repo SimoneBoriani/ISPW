@@ -8,7 +8,7 @@ import java.util.Properties;
 public class ConfigLoader {
 
     private static final Properties properties = new Properties();
-    private static final String CONFIG_FILE_PATH = "src/main/resources/config.properties";
+    private static final String CONFIG_FILE_PATH = "src/main/resources/secrets.properties";
 
     static {
         try (FileInputStream input = new FileInputStream(CONFIG_FILE_PATH)) {
