@@ -1,5 +1,6 @@
 package view.guigraphicscontroller;
 
+import bean.NotificaBean;
 import bean.ProfileBean;
 import controller.GestioneProfiloController;
 import controller.NotificheController;
@@ -182,7 +183,12 @@ public class GuiGestioneProfilo {
         controller.updateSaldo(bean);
         SessionSingleton.getInstance().getUtenteCorrente().setSaldo(nuovoSaldo);
 
-        notificheController.generaNotificaSistema(String.valueOf(idUser), "Ricarica di " + importoRicaricato + "€ completata con successo!");
+        NotificaBean saldo = new NotificaBean();
+
+        saldo.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+        saldo.setMsg("Saldo aggiornato!");
+
+        notificheController.generaNotificaSistema(saldo);
     }
 
     private void ricaricaPaginaProfiloConRitardo(Stage popupStage) {
@@ -207,6 +213,15 @@ public class GuiGestioneProfilo {
     public void btnVerificaPatente(ActionEvent actionEvent) {
         if (SessionSingleton.getInstance().getUtenteCorrente() == null) return;
 
+        if (SessionSingleton.getInstance().getUtenteCorrente().getVerificato()) {
+            Stage popupGiaVerificato = creaPopup("Verifica non necessaria");
+            Label msg = new Label("La tua patente è già stata verificata con successo!");
+            msg.setStyle("-fx-text-fill: green; -fx-font-weight: bold; -fx-padding: 20;");
+            popupGiaVerificato.setScene(new Scene(msg));
+            popupGiaVerificato.showAndWait();
+            return;
+        }
+
         Stage popupStage = creaPopup("Verifica Documento");
         Label lblStato = new Label("La verifica è necessaria per noleggiare veicoli.");
         ProgressIndicator spinner = new ProgressIndicator();
@@ -224,20 +239,13 @@ public class GuiGestioneProfilo {
     private void avviaFlussoVerifica(Button btn, ProgressIndicator sp, Label lbl, Stage stage) {
         cambiaStatoCaricamentoUI(btn, sp, true);
         impostaMessaggioStato(lbl, "Apertura browser in corso...\nCompleta la verifica e torna qui.", "blue");
-
-        // Passiamo anche la porta di callback dal ConfigLoader!
-        IdentityService service = new IdentityService(
-                ConfigLoader.get("stripe.secret.key"),
-                ConfigLoader.getInt("stripe.success.port")
-        );
-
-        String userId = String.valueOf(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
+        ProfileBean bean = new ProfileBean();
+        bean.setId(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
 
         Task<String> task = new Task<>() {
             @Override
             protected String call() throws Exception {
-                // Questo metodo ora fa tutto: apre il browser e aspetta il risultato
-                return service.avviaVerificaPatente(userId);
+                return controller.avviaVerificaPatente(bean);
             }
         };
 
@@ -247,7 +255,8 @@ public class GuiGestioneProfilo {
 
             if ("verified".equals(stato)) {
                 impostaMessaggioStato(lbl, "✅ Patente verificata con successo!", "green");
-                 //Aggiungere se l'utente è stato verificato
+                controller.completaVerificaPatente(bean);
+
                 new Thread(() -> {
                     try { Thread.sleep(2000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
                     Platform.runLater(stage::close);
@@ -304,11 +313,6 @@ public class GuiGestioneProfilo {
         popupStage.showAndWait();
     }
 
-
-    // ==========================================
-    // METODI HELPER GENERICI E UI
-    // ==========================================
-
     private Stage creaPopup(String titolo) {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -322,23 +326,15 @@ public class GuiGestioneProfilo {
         label.setText(messaggio);
     }
 
-    // Overload per Ricarica Saldo (ha anche il TextField da bloccare)
     private void cambiaStatoCaricamentoUI(TextField txtImporto, Button btnProcedi, ProgressIndicator spinner, boolean inCaricamento) {
         txtImporto.setDisable(inCaricamento);
         btnProcedi.setDisable(inCaricamento);
         spinner.setVisible(inCaricamento);
     }
-
-    // Overload per Verifica Patente (ha solo il Button da bloccare)
     private void cambiaStatoCaricamentoUI(Button btnProcedi, ProgressIndicator spinner, boolean inCaricamento) {
         btnProcedi.setDisable(inCaricamento);
         spinner.setVisible(inCaricamento);
     }
-
-
-    // ==========================================
-    // GESTIONE BASE DEL PROFILO
-    // ==========================================
 
     @FXML
     public void btnPassword(ActionEvent actionEvent){
@@ -392,7 +388,13 @@ public class GuiGestioneProfilo {
 
             try {
                 controller.updateProfile(bean);
-                notificheController.generaNotificaSistema(String.valueOf(bean.getId()), "Informazioni personali aggiornate");
+
+                NotificaBean info = new NotificaBean();
+                info.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+                info.setMsg("Informazioni personali aggiornate");
+
+
+                notificheController.generaNotificaSistema(info);
             } catch (Exception ex) {
                 throw new GenericSystemException("Errore aggiornamento parametri: ", ex);
             }

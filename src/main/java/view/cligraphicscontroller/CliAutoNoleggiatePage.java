@@ -1,7 +1,9 @@
 package view.cligraphicscontroller;
 
+import bean.NotificaBean;
 import bean.ProfileBean;
 import controller.GestioneAutoNoleggiateController;
+import controller.NotificheController;
 import model.macchina.Macchina;
 import model.noleggioauto.NoleggioAuto;
 import utils.ConsolePrinter;
@@ -13,6 +15,7 @@ import java.util.List;
 public class CliAutoNoleggiatePage {
 
     private final GestioneAutoNoleggiateController controller = ControllerFactory.getGraphicalSingletonFactory().createGestioneAutoNoleggiateController();
+    private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
 
     public void render() {
         boolean back = false;
@@ -111,6 +114,12 @@ public class CliAutoNoleggiatePage {
                 case "1" -> {
                     try {
                         controller.endRent(noleggio.getIdNoleggio());
+
+                        NotificaBean nolo = new NotificaBean();
+                        nolo.setMacchina(noleggio.getMacchina());
+                        nolo.setMsg("Noleggio di "+nolo.getMacchina().getMarca()+" "+nolo.getMacchina().getModello()+" con successo!");
+                        notificheController.generaNotificaSistema(nolo);
+
                         ConsolePrinter.printStatus("Noleggio terminato con successo!", false);
                         closePopup = true;
                     } catch (Exception e) {

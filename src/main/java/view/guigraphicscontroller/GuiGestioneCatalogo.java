@@ -1,6 +1,7 @@
 package view.guigraphicscontroller;
 
 import bean.CatalogoBean;
+import bean.NotificaBean;
 import controller.GestioneCatalogoController;
 import controller.NotificheController;
 import exceptions.GenericSystemException;
@@ -189,7 +190,14 @@ public class GuiGestioneCatalogo {
                 assegnaIntero(cbPosti.getValue(), bean::setPosti);
 
                 gestioneCatalogoController.modifyCar(bean);
-                notificheController.generaNotificaSistema("1","Auto agginta con successo:\n"+bean.getMarca()+" "+bean.getModello());
+
+                NotificaBean modifica = new NotificaBean();
+
+                modifica.setMacchina(auto);
+                modifica.setMsg("Auto modifica con successo!");
+
+
+                notificheController.generaNotificaSistema(modifica);
                 caricaDati();
                 popupStage.close();
 

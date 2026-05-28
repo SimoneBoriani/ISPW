@@ -3,19 +3,19 @@ package bean;
 import model.macchina.Macchina;
 import model.utente.Utente;
 
-public class SegnalazioneBean {
+public class NotificaBean {
 
-    private int id;
+    private String id;
     private Utente utente;
     private Macchina macchina;
     private String msg;
 
-    public SegnalazioneBean(){
+    public NotificaBean(){
         //Costruttore
     }
 
-    public void setId(int id) {this.id = id;}
-    public int getId() {return id;}
+    public void setId(String id) {this.id = id;}
+    public String getId() {return id;}
 
     public void setUtente(Utente utente){this.utente=utente;}
     public Utente getUtente(){return this.utente;}

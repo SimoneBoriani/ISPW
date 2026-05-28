@@ -1,7 +1,9 @@
 package view.cligraphicscontroller;
 
 import bean.NoleggioAutoBean;
+import bean.NotificaBean;
 import controller.NoleggioController;
+import controller.NotificheController;
 import model.duratacontrattuale.PianoNoleggio;
 import model.macchina.Macchina;
 import utils.ConsolePrinter;
@@ -12,6 +14,7 @@ public class CliNoleggioPage {
 
     private static final String FORMAT= "%-15s : %s%n";
     private final NoleggioController noleggioController= ControllerFactory.getGraphicalSingletonFactory().createNoleggioController();
+    private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
 
     public void render(){
 
@@ -30,6 +33,7 @@ public class CliNoleggioPage {
         ConsolePrinter.logFormatted(FORMAT,"Tipologia:",SessionSingleton.getInstance().getAutoSelezionata().getTipologia());
 
         ConsolePrinter.printMenuOption("1","Procedi al noleggio");
+        ConsolePrinter.printMenuOption("2","Segnala problema");
         ConsolePrinter.printMenuOption("0","Torna indietro");
 
         String choice = ConsolePrinter.readLine("Selezione >").trim();
@@ -41,6 +45,41 @@ public class CliNoleggioPage {
                 bean.setMacchina(SessionSingleton.getInstance().getAutoSelezionata());
                 bean.setRenter(SessionSingleton.getInstance().getUtenteCorrente());
                 configuraNoleggio(bean);
+            }
+
+            case "2" -> {
+
+                ConsolePrinter.printHeader("Segnala un Problema");
+                ConsolePrinter.logFormatted("Descrivi il problema riscontrato (non superare i 100 caratteri).");
+                ConsolePrinter.printMenuOption("0","Torna indietro");
+
+                String messaggio = "";
+                boolean inputValido = false;
+
+                while (!inputValido) {
+                    messaggio = ConsolePrinter.readLine("Messaggio > ").trim();
+
+                    if (messaggio.equals("0")) {
+                        ConsolePrinter.logFormatted("Segnalazione annullata.");
+                        break;
+                    } else if (messaggio.isEmpty()) {
+                        ConsolePrinter.logFormatted("Errore: Il messaggio non può essere vuoto. Riprova.");
+                    } else if (messaggio.length() > 100) {
+                        ConsolePrinter.logFormatted("Errore: Il messaggio supera i 100 caratteri (lunghezza attuale: " + messaggio.length() + "). Riprova.");
+                    } else {
+                        inputValido = true;
+                    }
+                }
+
+                if (inputValido) {
+
+                    NotificaBean segnalazione = new NotificaBean();
+                    segnalazione.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+                    segnalazione.setMacchina(SessionSingleton.getInstance().getAutoSelezionata());
+                    segnalazione.setMsg(messaggio);
+                    notificheController.inviaMessaggioAdAdmin(segnalazione);
+
+                }
             }
 
             case "0" ->back=true;
@@ -123,7 +162,13 @@ public class CliNoleggioPage {
 
         try {
 
+            NotificaBean noleggio = new NotificaBean();
+            noleggio.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+            noleggio.setMsg("Auto noleggiata con successo:"+bean.getMacchina().getModello()+" "+bean.getMacchina().getMarca());
+
             noleggioController.processaNoleggio(bean);
+            notificheController.generaNotificaSistema(noleggio);
+
             ConsolePrinter.printStatus("Noleggio completato con successo!", false);
             ConsolePrinter.readLine("Premi ENTER per tornare...");
 

@@ -7,7 +7,7 @@ public class Utente {
     private String userPassword;
     private String nome;
     private String cognome;
-    private int autoPossedute;
+    private boolean verificato;
     private double saldo;
     private String ruolo;
 
@@ -39,8 +39,8 @@ public class Utente {
     public String getCognome() {return cognome;}
     public void setCognome(String cognome) {this.cognome = cognome;}
 
-    public int getAutoPossedute() {return autoPossedute;}
-    public void setAutoPossedute(int autoPossedute) {this.autoPossedute = autoPossedute;}
+    public Boolean getVerificato() {return verificato;}
+    public void setVerificato(Boolean verificato) {this.verificato = verificato;}
 
     public double getSaldo(){return saldo;}
     public void setSaldo(double saldo){this.saldo = saldo;}

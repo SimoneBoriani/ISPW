@@ -6,6 +6,7 @@ public class ProfileBean {
     String username;
     String password;
     double saldo;
+    boolean verificato;
     String nome;
     String cognome;
     String ruolo;
@@ -39,4 +40,7 @@ public class ProfileBean {
 
     public String getRuolo() {return ruolo;}
     public void setRuolo(String ruolo) {this.ruolo = ruolo;}
+
+    public boolean getVerificato(){return verificato;}
+    public void setVerificato(boolean verificato) {this.verificato = verificato;}
 }

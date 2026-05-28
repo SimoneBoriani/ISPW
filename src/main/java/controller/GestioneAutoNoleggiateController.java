@@ -1,7 +1,7 @@
 package controller;
 
 import bean.ProfileBean;
-import bean.SegnalazioneBean;
+import bean.NotificaBean;
 import model.daofactory.DaoFactory;
 import model.utente.Utente;
 import model.noleggioauto.NoleggioAuto;
@@ -26,7 +26,7 @@ public class GestioneAutoNoleggiateController {
         DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().terminaNoleggio(id,"Chiusura Anticipata");
     }
 
-    public void segnalazione(SegnalazioneBean bean){
+    public void segnalazione(NotificaBean bean){
         if(bean!=null){
          //   notificheController.inviaMessaggioAdAdmin(String.valueOf(bean.getUtente().getIdUser()),bean.getUtente().getNome());
         } else throw new NullPointerException("Segnalazione non trovata");

@@ -1,7 +1,7 @@
 package view.guigraphicscontroller;
 
 import bean.CatalogoBean;
-import bean.SegnalazioneBean;
+import bean.NotificaBean;
 import controller.NotificheController;
 import exceptions.CarNotFoundException;
 import exceptions.GenericSystemException;
@@ -273,7 +273,7 @@ public class GuiVisualizzaCatalogoController {
             return;
         }
 
-        SegnalazioneBean bean = new SegnalazioneBean();
+        NotificaBean bean = new NotificaBean();
         bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
         List<Notifica> listaNotifiche = notificheController.getStoricoNotifiche(bean);
 
@@ -337,8 +337,8 @@ public class GuiVisualizzaCatalogoController {
     }
 
     private void eliminaNotifica(Notifica n, VBox card, VBox contenitorePadre) {
-        SegnalazioneBean elimina = new SegnalazioneBean();
-        elimina.setId(n.getId());
+        NotificaBean elimina = new NotificaBean();
+        elimina.setId(String.valueOf(n.getId()));
         notificheController.eliminaNotifica(elimina);
 
         contenitorePadre.getChildren().remove(card);
@@ -363,8 +363,8 @@ public class GuiVisualizzaCatalogoController {
 
     private void segnaComeLettaSeNecessario(Notifica n) {
         if (!n.isLetta()) {
-            SegnalazioneBean user = new SegnalazioneBean();
-            user.setId(n.getId());
+            NotificaBean user = new NotificaBean();
+            user.setId(String.valueOf(n.getId()));
             notificheController.apriNotifica(user);
         }
     }
@@ -403,7 +403,7 @@ public class GuiVisualizzaCatalogoController {
 
                 if (SessionSingleton.getInstance().getUtenteCorrente() != null) {
 
-                    SegnalazioneBean bean = new SegnalazioneBean();
+                    NotificaBean bean = new NotificaBean();
                     bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
                     List<Notifica> daLeggere = notificheController.getNotificheDaLeggere(bean);
 

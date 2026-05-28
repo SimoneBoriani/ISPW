@@ -79,6 +79,11 @@ public class DemoDaoUtente extends DaoUtente {
                 });
     }
 
+    @Override
+    public void aggiornaStatoPatente(int idUser, boolean stato) {
+
+    }
+
     private boolean isNotBlank(String str) {
         return str != null && !str.isBlank();
     }

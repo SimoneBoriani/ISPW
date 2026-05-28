@@ -1,6 +1,6 @@
 package controller;
 
-import bean.SegnalazioneBean;
+import bean.NotificaBean;
 import model.daofactory.DaoFactory;
 import model.notifiche.Notifica;
 
@@ -9,50 +9,60 @@ import java.util.List;
 public class NotificheController {
 
     public NotificheController() {
-    //Costruttore
+        //Costruttore
     }
 
-    public void inviaMessaggioAdAdmin(String idUtente,String auto ,String testo) {
+    public void inviaMessaggioAdAdmin(NotificaBean bean) {
 
-        if (testo == null || testo.trim().isEmpty()) {
-            throw new IllegalArgumentException("Il testo del messaggio non può essere vuoto.");
+        if (bean == null || bean.getUtente() == null) {
+            throw new IllegalArgumentException("NotificaBean e Utente non possono essere null");
         }
 
         Notifica messaggio = new Notifica(
-                idUtente,
+                String.valueOf(bean.getUtente().getIdUser()),
                 "1",
-                testo,
+                bean.getMsg(),
                 Notifica.Tipo.MESSAGGIO
         );
-
-        messaggio.setAuto(auto);
-
+        messaggio.setAuto(bean.getMacchina().getId()+" "+bean.getMacchina().getModello()+" "+bean.getMacchina().getMarca());
         DaoFactory.getDaoSingletonFactory().createNotificheDao().inserisci(messaggio);
     }
 
-    public void generaNotificaSistema(String idUtenteDestinatario, String testo) {
+    public void generaNotificaSistema(NotificaBean bean) {
+
+        if (bean == null || bean.getUtente() == null) {
+            throw new IllegalArgumentException("NotificaBean e Utente non possono essere null");
+        }
+
         Notifica notifica = new Notifica(
                 "SISTEMA",
-                idUtenteDestinatario,
-                testo,
+                String.valueOf(bean.getUtente().getIdUser()),
+                bean.getMsg(),
                 Notifica.Tipo.SISTEMA
         );
-        DaoFactory.getDaoSingletonFactory().createNotificheDao().inserisci(notifica);
+
+        try {
+            DaoFactory.getDaoSingletonFactory().createNotificheDao().inserisci(notifica);
+        } catch (Exception e) {
+
+            System.err.println("Errore durante il salvataggio della notifica: " + e.getMessage());
+            throw new RuntimeException("Impossibile salvare la notifica di sistema", e);
+        }
     }
 
-    public List<Notifica> getStoricoNotifiche(SegnalazioneBean bean) {
+    public List<Notifica> getStoricoNotifiche(NotificaBean bean) {
         return DaoFactory.getDaoSingletonFactory().createNotificheDao().getComunicazioniPerDestinatario(String.valueOf(bean.getUtente().getIdUser()));
     }
 
-    public List<Notifica> getNotificheDaLeggere(SegnalazioneBean bean) {
+    public List<Notifica> getNotificheDaLeggere(NotificaBean bean) {
         return DaoFactory.getDaoSingletonFactory().createNotificheDao().getNonLette(String.valueOf(bean.getUtente().getIdUser()));
     }
 
-    public void apriNotifica(SegnalazioneBean bean) {
-        DaoFactory.getDaoSingletonFactory().createNotificheDao().segnaComeLetta(bean.getId());
+    public void apriNotifica(NotificaBean bean) {
+        DaoFactory.getDaoSingletonFactory().createNotificheDao().segnaComeLetta(Integer.parseInt((bean.getId())));
     }
 
-    public void eliminaNotifica(SegnalazioneBean bean) {
-        DaoFactory.getDaoSingletonFactory().createNotificheDao().eliminaNotifica(bean.getId());
+    public void eliminaNotifica(NotificaBean bean) {
+        DaoFactory.getDaoSingletonFactory().createNotificheDao().eliminaNotifica(Integer.parseInt(bean.getId()));
     }
 }

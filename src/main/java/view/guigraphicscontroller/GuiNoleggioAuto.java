@@ -1,9 +1,8 @@
 package view.guigraphicscontroller;
 
 import bean.NoleggioAutoBean;
-import bean.SegnalazioneBean;
+import bean.NotificaBean;
 import controller.NoleggioController;
-import controller.VisualizzaCatalogoController;
 import exceptions.GenericSystemException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,7 +31,6 @@ public class GuiNoleggioAuto {
     private final Logger logger= LogManager.getLogger(GuiNoleggioAuto.class);
     private static String style="Totale: 0,00 €";
 
-    private final VisualizzaCatalogoController controllerApplicativo= ControllerFactory.getGraphicalSingletonFactory().createVisualizzaCatalogoController();
     private final NoleggioController noleggioController=ControllerFactory.getGraphicalSingletonFactory().createNoleggioController();
 
 
@@ -76,7 +74,7 @@ public class GuiNoleggioAuto {
         dialog.showAndWait().ifPresent(testo -> {
             if (testo != null && !testo.trim().isEmpty()) {
 
-                SegnalazioneBean bean = new SegnalazioneBean();
+                NotificaBean bean = new NotificaBean();
                 bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
                 bean.setMacchina(SessionSingleton.getInstance().getAutoSelezionata());
                 bean.setMsg(testo);
@@ -88,7 +86,7 @@ public class GuiNoleggioAuto {
 
     private void loadInfo(){
 
-        Macchina autoSelezionata = controllerApplicativo.getAutoSelezionataDaSessione();
+        Macchina autoSelezionata = noleggioController.getAuto();
 
         if (autoSelezionata != null) {
 
@@ -108,7 +106,7 @@ public class GuiNoleggioAuto {
     @FXML
     public void goHome(ActionEvent event) throws IOException {
         String str = "/view/CatalogoView.fxml";
-        controllerApplicativo.pulisciSelezioneSessione();
+        noleggioController.clear();
         StageHandler.getSingletonInstance().loadPage(str);
     }
 
@@ -254,7 +252,7 @@ public class GuiNoleggioAuto {
 
             noleggioController.processaNoleggio(bean);
 
-            SegnalazioneBean bean1= new SegnalazioneBean();
+            NotificaBean bean1= new NotificaBean();
             bean1.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
             bean1.setMacchina(SessionSingleton.getInstance().getAutoSelezionata());
             bean1.setMsg("Noleggio di " + bean1.getMacchina().getModello() + " " + bean1.getMacchina().getMarca() + " effettua con successo!");

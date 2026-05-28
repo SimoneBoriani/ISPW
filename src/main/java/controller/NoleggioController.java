@@ -1,7 +1,7 @@
 package controller;
 
 import bean.NoleggioAutoBean;
-import bean.SegnalazioneBean;
+import bean.NotificaBean;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 import model.utente.Utente;
@@ -19,6 +19,14 @@ public class NoleggioController {
         PianoNoleggio pianoScelto = determinaPiano(giorni);
         return pianoScelto.calcolaPrezzo(auto.getPrezzo(), giorni);
 
+    }
+
+    public Macchina getAuto(){
+        return controllerApplicativo.getAutoSelezionataDaSessione();
+    }
+
+    public void clear(){
+        controllerApplicativo.pulisciSelezioneSessione();
     }
 
     public void processaNoleggio(NoleggioAutoBean bean) {
@@ -64,16 +72,15 @@ public class NoleggioController {
         }
     }
 
-    public void segnalazione(SegnalazioneBean bean){
+    public void segnalazione(NotificaBean bean){
         if(bean!=null){
-            String auto =bean.getMacchina().getId() + " " + bean.getMacchina().getMarca() + " " + bean.getMacchina().getModello();
-            notificheController.inviaMessaggioAdAdmin(String.valueOf(bean.getUtente().getIdUser()),auto,bean.getMsg());
+            notificheController.inviaMessaggioAdAdmin(bean);
         } else throw new NullPointerException("Segnalazione non trovata");
     }
 
-    public void notificaSistema(SegnalazioneBean bean){
+    public void notificaSistema(NotificaBean bean){
         if(bean!=null){
-            notificheController.generaNotificaSistema(String.valueOf(bean.getUtente().getIdUser()),bean.getMsg());
+            notificheController.generaNotificaSistema(bean);
         } else throw new NullPointerException("Segnalazione non trovata");
     }
 }

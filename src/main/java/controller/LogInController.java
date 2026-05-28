@@ -1,5 +1,6 @@
 package controller;
 
+import bean.NotificaBean;
 import utils.SessionSingleton;
 import bean.ProfileBean;
 import exceptions.GenericSystemException;
@@ -75,7 +76,12 @@ public class LogInController {
 
         Utente nuovo = new Utente(-1, loginBean.getUsername(), loginBean.getPassword(), null, null);
         DaoFactory.getDaoSingletonFactory().createUtenteDao().insertUtente(nuovo);
-        utenteEsistente = researchUser(loginBean);
-        notificheController.generaNotificaSistema(String.valueOf(utenteEsistente.getIdUser()),"Benvenuto in Boro Rental !");
+
+        NotificaBean bean = new NotificaBean();
+
+        bean.setUtente(researchUser(loginBean));
+        bean.setMsg("Benvenuto in Boro Rental !");
+
+        notificheController.generaNotificaSistema(bean);
     }
 }

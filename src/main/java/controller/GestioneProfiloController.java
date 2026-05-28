@@ -1,18 +1,17 @@
 package controller;
 
 import bean.ProfileBean;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import model.daofactory.DaoFactory;
 import model.utente.Utente;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import service.IdentityService;
+import utils.ConfigLoader;
+import utils.SessionSingleton;
 
 public class GestioneProfiloController {
 
     private static final Logger log = LogManager.getLogger(GestioneProfiloController.class);
-    public final StringProperty statoOperazione = new SimpleStringProperty("");
 
     public void updateProfile(ProfileBean profileBean){
 
@@ -30,13 +29,7 @@ public class GestioneProfiloController {
 
     public void updateSaldo(ProfileBean bean){
 
-        new Thread(() -> {
-
-            try {
                 log.info("Inizio deposito per ID: {}",bean.getId());
-
-                Platform.runLater(() -> statoOperazione.set("Elaborazione deposito in corso... attendere 5 secondi."));
-                Thread.sleep(5000);
 
                 Utente utente = new Utente();
 
@@ -44,16 +37,22 @@ public class GestioneProfiloController {
                 utente.setSaldo(bean.getSaldo());
 
                 DaoFactory.getDaoSingletonFactory().createUtenteDao().update(utente);
+    }
 
-                Platform.runLater(() -> statoOperazione.set("Deposito completato e salvato con successo dopo 5 secondi."));
-                Thread.sleep(1500);
+    public String avviaVerificaPatente(ProfileBean bean) throws Exception {
 
-                Platform.runLater(() -> statoOperazione.set("FINE"));
+        IdentityService service = new IdentityService(
+                ConfigLoader.get("stripe.secret.key"),
+                ConfigLoader.getInt("stripe.success.port")
+        );
 
-            } catch (InterruptedException e) {
-                Platform.runLater(() -> statoOperazione.set("Errore durante l'elaborazione."));
-                Thread.currentThread().interrupt();
-            }
-        }).start();
+        String userId = String.valueOf(bean.getId());
+        return service.avviaVerificaPatente(userId);
+    }
+
+
+    public void completaVerificaPatente(ProfileBean bean) {
+        DaoFactory.getDaoSingletonFactory().createUtenteDao().aggiornaStatoPatente(bean.getId(), true);
+        SessionSingleton.getInstance().getUtenteCorrente().setVerificato(true);
     }
 }

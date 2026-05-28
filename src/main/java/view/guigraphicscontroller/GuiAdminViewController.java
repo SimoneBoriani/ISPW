@@ -1,6 +1,6 @@
 package view.guigraphicscontroller;
 
-import bean.SegnalazioneBean;
+import bean.NotificaBean;
 import controller.NotificheController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -62,7 +62,7 @@ public class GuiAdminViewController {
             return;
         }
 
-        SegnalazioneBean bean = new SegnalazioneBean();
+        NotificaBean bean = new NotificaBean();
         bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
 
         List<Notifica> listaNotifiche = notificheController.getStoricoNotifiche(bean);
@@ -79,8 +79,8 @@ public class GuiAdminViewController {
 
             for (Notifica n : listaNotifiche) {
 
-                SegnalazioneBean admin = new SegnalazioneBean();
-                admin.setId(n.getId());
+                NotificaBean admin = new NotificaBean();
+                admin.setId(String.valueOf(n.getId()));
 
                 HBox card = new HBox(10);
                 card.setPadding(new Insets(10));
@@ -129,8 +129,8 @@ public class GuiAdminViewController {
 
                 Button btnElimina = new Button("🗑 Elimina");
                 btnElimina.setOnAction(e -> {
-                    SegnalazioneBean elimina = new SegnalazioneBean();
-                    elimina.setId(n.getId());
+                    NotificaBean elimina = new NotificaBean();
+                    elimina.setId(String.valueOf(n.getId()));
                     notificheController.eliminaNotifica(elimina);
                     contenitore.getChildren().remove(card);
                     controllaNotifiche();
@@ -163,7 +163,7 @@ public class GuiAdminViewController {
         try {
             if (SessionSingleton.getInstance().isUserLoggedIn() && lblNotifiche != null && SessionSingleton.getInstance().getUtenteCorrente() != null) {
 
-                SegnalazioneBean bean = new SegnalazioneBean();
+                NotificaBean bean = new NotificaBean();
                 bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
 
                 List<Notifica> daLeggere = notificheController.getNotificheDaLeggere(bean);

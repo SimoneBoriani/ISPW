@@ -10,5 +10,6 @@ public abstract class DaoUtente {
     public abstract Utente researchUser(Utente utente) throws SQLException;
     public abstract boolean authenticateUser(Utente utente);
     public abstract void update(Utente utente);
+    public abstract void aggiornaStatoPatente(int idUser, boolean stato);
 
 }

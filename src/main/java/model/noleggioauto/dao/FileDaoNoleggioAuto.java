@@ -203,7 +203,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
                 utente.setUserPassword(d[2]);
                 utente.setNome(d[3]);
                 utente.setCognome(d[4]);
-                utente.setAutoPossedute(Integer.parseInt(d[5]));
+                utente.setVerificato(Boolean.valueOf(d[5]));
                 utente.setSaldo(Double.parseDouble(d[6]));
                 utente.setRuolo(d[7]);
 

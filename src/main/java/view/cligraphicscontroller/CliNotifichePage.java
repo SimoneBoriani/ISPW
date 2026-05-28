@@ -1,6 +1,6 @@
 package view.cligraphicscontroller;
 
-import bean.SegnalazioneBean;
+import bean.NotificaBean;
 import controller.NotificheController;
 import model.notifiche.Notifica;
 import utils.ConsolePrinter;
@@ -18,7 +18,7 @@ public class CliNotifichePage {
 
         while (running) {
             ConsolePrinter.printHeader("Notifiche");
-            SegnalazioneBean bean = new SegnalazioneBean();
+            NotificaBean bean = new NotificaBean();
             bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
 
             List<Notifica> listaNotifiche = notificheController.getStoricoNotifiche(bean);
@@ -29,8 +29,8 @@ public class CliNotifichePage {
                 for (Notifica n : listaNotifiche) {
                     stampaBoxNotifica(n);
                     if (!n.isLetta()) {
-                        SegnalazioneBean user = new SegnalazioneBean();
-                        user.setId(n.getId());
+                        NotificaBean user = new NotificaBean();
+                        user.setId(String.valueOf(n.getId()));
                         notificheController.apriNotifica(user);
                     }
                 }
@@ -41,7 +41,7 @@ public class CliNotifichePage {
             ConsolePrinter.printMenuOption("0", "Torna indietro");
             ConsolePrinter.logFormatted("=========================================%n");
 
-            String scelta = ConsolePrinter.readLine("Scelta:");
+            String scelta = ConsolePrinter.readLine("Scelta:").toUpperCase();
 
             switch (scelta) {
                 case "D":
@@ -83,8 +83,8 @@ public class CliNotifichePage {
         try {
             int idNotifica = Integer.parseInt(idInput);
 
-            SegnalazioneBean eliminaBean = new SegnalazioneBean();
-            eliminaBean.setId(idNotifica);
+            NotificaBean eliminaBean = new NotificaBean();
+            eliminaBean.setId(String.valueOf(idNotifica));
 
             notificheController.eliminaNotifica(eliminaBean);
 

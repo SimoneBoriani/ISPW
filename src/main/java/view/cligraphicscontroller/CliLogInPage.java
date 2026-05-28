@@ -1,7 +1,9 @@
 package view.cligraphicscontroller;
 
+import bean.NotificaBean;
 import bean.ProfileBean;
 import controller.LogInController;
+import controller.NotificheController;
 import exceptions.IncorrectCredentialExeption;
 import utils.ConsolePrinter;
 import utils.SessionSingleton;
@@ -10,6 +12,7 @@ import view.factory.ControllerFactory;
 public class CliLogInPage {
 
     private final LogInController logInController = ControllerFactory.getGraphicalSingletonFactory().createLoginController();
+    private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
     private static final String MSG = "Premi INVIO per riprovare...";
 
     public void render() {
@@ -145,6 +148,12 @@ public class CliLogInPage {
         }
 
         logInController.insert(credenziali);
+
+        NotificaBean reg = new NotificaBean();
+        reg.setUtente(logInController.researchUser(credenziali));
+        reg.setMsg("Benvenuto in Boro Rental!");
+        notificheController.generaNotificaSistema(reg);
+
         ConsolePrinter.printStatus("Registrazione effettuata con successo!", false);
         ConsolePrinter.readLine("\nPremi INVIO per tornare all'area login...");
         return true;

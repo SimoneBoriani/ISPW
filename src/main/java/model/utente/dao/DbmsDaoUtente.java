@@ -75,7 +75,7 @@ public class DbmsDaoUtente extends DaoUtente {
                     String passwordDb = rs.getString("password");
                     String cognome = rs.getString("cognome");
                     String ruolo = rs.getString("ruolo");
-                    int autoPossedute = rs.getInt("autopossedute");
+                    boolean verificato = rs.getBoolean("patente_verificata");
                     int saldo = rs.getInt("saldo");
 
                     Utente ricercato = new Utente();
@@ -85,7 +85,7 @@ public class DbmsDaoUtente extends DaoUtente {
                     ricercato.setUserPassword(passwordDb);
                     ricercato.setNome(nome);
                     ricercato.setCognome(cognome);
-                    ricercato.setAutoPossedute(autoPossedute);
+                    ricercato.setVerificato(verificato);
                     ricercato.setSaldo(saldo);
                     ricercato.setRuolo(ruolo);
 
@@ -132,6 +132,24 @@ public class DbmsDaoUtente extends DaoUtente {
         }
     }
 
+    @Override
+    public void aggiornaStatoPatente(int idUser, boolean stato) {
+
+        String sql = "UPDATE utenti SET patente_verificata = ? WHERE id = ?";
+
+        Connection session = ConnectionHandler.getInstance().getConnection();
+
+        try (PreparedStatement ps = session.prepareStatement(sql)) {
+
+            ps.setBoolean(1, stato);
+            ps.setInt(2, idUser);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new GenericSystemException(e);
+        }
+    }
+
     private String costruisciQueryUpdate(Utente utente, List<Object> parametri) {
         List<String> setClauses = new ArrayList<>();
 
@@ -150,10 +168,6 @@ public class DbmsDaoUtente extends DaoUtente {
         if (utente.getCognome() != null && !utente.getCognome().trim().isEmpty()) {
             setClauses.add("cognome = ?");
             parametri.add(utente.getCognome());
-        }
-        if (utente.getAutoPossedute() > 0) {
-            setClauses.add("autopossedute = ?");
-            parametri.add(utente.getAutoPossedute());
         }
 
         if (utente.getSaldo() != 0.0) {

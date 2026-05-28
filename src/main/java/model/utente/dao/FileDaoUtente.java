@@ -44,7 +44,7 @@ public class FileDaoUtente extends DaoUtente {
                 utente.setUserPassword(data[2]);
                 utente.setNome(data[3]);
                 utente.setCognome(data[4]);
-                utente.setAutoPossedute(Integer.parseInt(data[5]));
+                utente.setVerificato(Boolean.valueOf(data[5]));
                 utente.setSaldo(Double.parseDouble(data[6]));
                 utente.setRuolo(data[7]);
 
@@ -65,7 +65,7 @@ public class FileDaoUtente extends DaoUtente {
                         u.getUserPassword(),
                         u.getNome() != null ? u.getNome() : "",
                         u.getCognome() != null ? u.getCognome() : "",
-                        String.valueOf(u.getAutoPossedute()),
+                        String.valueOf(u.getVerificato()),
                         String.valueOf(u.getSaldo()),
                         u.getRuolo()
                 ));
@@ -117,15 +117,20 @@ public class FileDaoUtente extends DaoUtente {
         }
     }
 
+    @Override
+    public void aggiornaStatoPatente(int idUser, boolean stato) {
+
+    }
+
     private void applyUpdates(Utente source, Utente target) {
 
         updateString(source.getUsername(), target::setUsername);
         updateString(source.getUserPassword(), target::setUserPassword);
         updateString(source.getNome(), target::setNome);
         updateString(source.getCognome(), target::setCognome);
-        if (source.getAutoPossedute() > 0) {
-            target.setAutoPossedute(source.getAutoPossedute());
-        }
+//        if (source.getAutoPossedute() > 0) {
+//            target.setAutoPossedute(source.getAutoPossedute());
+//        }
         if (source.getSaldo() != 0.0) {
             target.setSaldo(target.getSaldo() + source.getSaldo());
         }
