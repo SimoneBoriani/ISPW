@@ -172,6 +172,7 @@ public class GuiGestioneProfilo {
     }
 
     private void aggiornaSaldoEGeneraNotifica(double importoRicaricato) {
+
         int idUser = SessionSingleton.getInstance().getUtenteCorrente().getIdUser();
 
         ProfileBean bean = new ProfileBean();

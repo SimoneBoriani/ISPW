@@ -19,7 +19,7 @@ class TestGestioneCatalogo {
     private final GestioneCatalogoController gestioneCatalogoController = ControllerFactory.getGraphicalSingletonFactory().createGestioneCatalogoController();
 
     @BeforeAll
-    static void setupDemoMode() throws Exception {
+    static void setupDemoMode(){
         AperturaFileTEST.open();
     }
 
@@ -40,7 +40,6 @@ class TestGestioneCatalogo {
             gestioneCatalogoController.validaEAggiungiAuto(bean);
         }, "L'inserimento di un'auto corretta non deve generare eccezioni");
 
-        // Assicuriamoci che il salvataggio in RAM confermi l'inserimento
         gestioneCatalogoController.confermaSalvataggio();
 
         List<Macchina> autoPresenti = gestioneCatalogoController.getCars();
@@ -53,7 +52,6 @@ class TestGestioneCatalogo {
     @Test
     void test_Aggiunta_Auto_Marca_Mancante() {
         CatalogoBean bean = new CatalogoBean();
-        // Lasciamo la marca vuota per far scattare l'errore!
         bean.setMarca("");
         bean.setModello("Punto");
         bean.setAnno(2010);
@@ -73,7 +71,7 @@ class TestGestioneCatalogo {
         bean.setMarca("Fiat");
         bean.setModello("Punto");
         bean.setAnno(2010);
-        bean.setPrezzo(-10.0); // ERRORE: prezzo negativo
+        bean.setPrezzo(-10.0);
         bean.setPosti(5);
 
         Exception ex = assertThrows(IllegalArgumentException.class, () -> {
@@ -90,7 +88,7 @@ class TestGestioneCatalogo {
         bean.setModello("Punto");
         bean.setAnno(2010);
         bean.setPrezzo(20.0);
-        bean.setPosti(0); // ERRORE: posti zero o negativi
+        bean.setPosti(0);
 
         Exception ex = assertThrows(IllegalArgumentException.class, () -> {
             gestioneCatalogoController.validaEAggiungiAuto(bean);
@@ -104,7 +102,7 @@ class TestGestioneCatalogo {
         CatalogoBean bean = new CatalogoBean();
         bean.setMarca("Fiat");
         bean.setModello("Punto");
-        bean.setAnno(1800); // ERRORE: anno troppo vecchio (il controller controlla <= 1900)
+        bean.setAnno(1800);
         bean.setPrezzo(20.0);
         bean.setPosti(5);
 

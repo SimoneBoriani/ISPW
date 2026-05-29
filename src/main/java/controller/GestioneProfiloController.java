@@ -1,6 +1,7 @@
 package controller;
 
 import bean.ProfileBean;
+import com.stripe.exception.StripeException;
 import model.daofactory.DaoFactory;
 import model.utente.Utente;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +9,10 @@ import org.apache.logging.log4j.Logger;
 import service.IdentityService;
 import utils.ConfigLoader;
 import utils.SessionSingleton;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class GestioneProfiloController {
 
@@ -39,7 +44,7 @@ public class GestioneProfiloController {
                 DaoFactory.getDaoSingletonFactory().createUtenteDao().update(utente);
     }
 
-    public String avviaVerificaPatente(ProfileBean bean) throws Exception {
+    public String avviaVerificaPatente(ProfileBean bean) throws StripeException, IOException, ExecutionException, InterruptedException, TimeoutException {
 
         IdentityService service = new IdentityService(
                 ConfigLoader.get("stripe.secret.key"),

@@ -1,11 +1,16 @@
 package controller;
 
 import bean.PaymentTransactionBean;
+import com.stripe.exception.StripeException;
 import model.daofactory.DaoFactory;
 import model.utente.Utente;
 import model.utente.dao.DaoUtente;
 import service.StripeService;
 import utils.SessionSingleton;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class RicaricaController {
 
@@ -16,7 +21,7 @@ public class RicaricaController {
         this.stripe = stripe;
     }
 
-    public boolean ricaricaSaldo(double importo) throws Exception {
+    public boolean ricaricaSaldo(double importo) throws StripeException, IOException, ExecutionException, InterruptedException, TimeoutException {
 
         Utente utenteCorrente = SessionSingleton.getInstance().getUtenteCorrente();
         String username = utenteCorrente.getUsername();
