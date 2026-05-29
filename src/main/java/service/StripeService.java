@@ -1,14 +1,18 @@
 package service;
 
 import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import bean.PaymentTransactionBean;
 import exceptions.PaymentFailedException;
 
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class StripeService {
 
@@ -19,17 +23,7 @@ public class StripeService {
         this.callbackPort = callbackPort;
     }
 
-    /**
-     * Avvia il flusso di ricarica:
-     * 1. Crea Checkout Session su Stripe
-     * 2. Salva transazione PENDING su DB (chiamato dal controller)
-     * 3. Apre browser
-     * 4. Aspetta callback
-     * 5. Verifica stato pagamento
-     *
-     * @return PaymentTransactionBean con stato finale (paid/expired/failed)
-     */
-    public PaymentTransactionBean avviaRicarica(String username, double importo) throws Exception {
+    public PaymentTransactionBean avviaRicarica(String username, double importo) throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
 
         if (importo <= 0) {
             throw new PaymentFailedException("L'importo deve essere maggiore di zero.");
@@ -74,7 +68,7 @@ public class StripeService {
             }
 
             Session check = Session.retrieve(returnedSessionId);
-            tx.setPaymentStatus(check.getPaymentStatus()); // "paid", "unpaid", etc.
+            tx.setPaymentStatus(check.getPaymentStatus());
             return tx;
 
         } finally {

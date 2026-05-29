@@ -47,42 +47,10 @@ public class CliNoleggioPage {
                 configuraNoleggio(bean);
             }
 
-            case "2" -> {
-
-                ConsolePrinter.printHeader("Segnala un Problema");
-                ConsolePrinter.logFormatted("Descrivi il problema riscontrato (non superare i 100 caratteri).");
-                ConsolePrinter.printMenuOption("0","Torna indietro");
-
-                String messaggio = "";
-                boolean inputValido = false;
-
-                while (!inputValido) {
-                    messaggio = ConsolePrinter.readLine("Messaggio > ").trim();
-
-                    if (messaggio.equals("0")) {
-                        ConsolePrinter.logFormatted("Segnalazione annullata.");
-                        break;
-                    } else if (messaggio.isEmpty()) {
-                        ConsolePrinter.logFormatted("Errore: Il messaggio non può essere vuoto. Riprova.");
-                    } else if (messaggio.length() > 100) {
-                        ConsolePrinter.logFormatted("Errore: Il messaggio supera i 100 caratteri (lunghezza attuale: " + messaggio.length() + "). Riprova.");
-                    } else {
-                        inputValido = true;
-                    }
-                }
-
-                if (inputValido) {
-
-                    NotificaBean segnalazione = new NotificaBean();
-                    segnalazione.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
-                    segnalazione.setMacchina(SessionSingleton.getInstance().getAutoSelezionata());
-                    segnalazione.setMsg(messaggio);
-                    notificheController.inviaMessaggioAdAdmin(segnalazione);
-
-                }
-            }
+            case "2" -> new CliSegnalazioniPage().render();
 
             case "0" ->back=true;
+
             default -> {/*Ricarica pagina*/}
         }
         }

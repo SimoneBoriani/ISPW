@@ -1,11 +1,15 @@
 package service;
 
 import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
 import com.stripe.model.identity.VerificationSession;
 import com.stripe.param.identity.VerificationSessionCreateParams;
 
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class IdentityService {
 
@@ -15,7 +19,7 @@ public class IdentityService {
         Stripe.apiKey = stripeSecretKey;
         this.callbackPort = callbackPort;
     }
-    public String avviaVerificaPatente(String idUser) throws Exception {
+    public String avviaVerificaPatente(String idUser) throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
 
         LocalCallbackServer server = new LocalCallbackServer(callbackPort);
         var future = server.start();

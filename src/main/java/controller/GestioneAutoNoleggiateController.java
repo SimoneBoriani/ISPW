@@ -28,8 +28,7 @@ public class GestioneAutoNoleggiateController {
 
     public void segnalazione(NotificaBean bean){
         if(bean!=null){
-         //   notificheController.inviaMessaggioAdAdmin(String.valueOf(bean.getUtente().getIdUser()),bean.getUtente().getNome());
+         notificheController.inviaMessaggioAdAdmin(bean);
         } else throw new NullPointerException("Segnalazione non trovata");
     }
-
 }

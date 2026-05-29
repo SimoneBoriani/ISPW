@@ -21,8 +21,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.macchina.Macchina;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
 import utils.SessionSingleton;
 import utils.StageHandler;
 import view.factory.ControllerFactory;
@@ -30,8 +28,6 @@ import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 
 public class GuiGestioneCatalogo {
 
@@ -51,27 +47,23 @@ public class GuiGestioneCatalogo {
     private TableColumn<Macchina, String> colAlimentazione;
 
     @FXML
-    private TableColumn<Macchina, Integer> colPrezzo;
+    private TableColumn<Macchina, Double> colPrezzo;
 
     @FXML
     private TableColumn<Macchina, Integer> colPosti;
 
-    private static final String BTN="Button";
-    private final Logger logger = (Logger) LogManager.getLogger(GuiGestioneCatalogo.class);
+    private static final String BTN = "Button";
 
     @FXML
     public void initialize() {
-
         modificaSegnalata();
         configuraColonne();
         caricaDati();
         configuraClickTabella();
     }
 
-    private void modificaSegnalata(){
-
-        if(SessionSingleton.getInstance().getTempIdNotifica() != null) {
-
+    private void modificaSegnalata() {
+        if (SessionSingleton.getInstance().getTempIdNotifica() != null) {
             Macchina modifica = gestioneCatalogoController.createAutoSegnalata();
             Platform.runLater(() -> apriImpostazioniAuto(modifica));
             SessionSingleton.getInstance().setTempIdNotifica(null);
@@ -79,7 +71,6 @@ public class GuiGestioneCatalogo {
             SessionSingleton.getInstance().setTempModello(null);
         }
     }
-
 
     private void configuraColonne() {
         colMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
@@ -117,44 +108,42 @@ public class GuiGestioneCatalogo {
     }
 
     private void apriImpostazioniAuto(Macchina auto) {
-
-        if (auto.getId() != 0) {
+        if (auto.getId() == 0) return;
 
         Stage popupStage = new Stage();
+
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle("Impostazioni: " + auto.getMarca() + " " + auto.getModello());
 
-        TextField txtMarca = new TextField(auto.getMarca() != null ? auto.getMarca() : "");
-        TextField txtModello = new TextField(auto.getModello() != null ? auto.getModello() : "");
-        TextField txtAnno = new TextField(String.valueOf(auto.getAnno()));
-        TextField txtPrezzo = new TextField(String.valueOf(auto.getPrezzo()));
-        TextField txtUrl = new TextField(auto.getImageUrl() != null ? auto.getImageUrl() : "no_image.png");
+        TextField txtMarca = creaTextField(auto.getMarca(), "");
+        TextField txtModello = creaTextField(auto.getModello(), "");
+        TextField txtAnno = creaTextField(String.valueOf(auto.getAnno()), "");
+        TextField txtPrezzo = creaTextField(String.valueOf(auto.getPrezzo()), "");
+        TextField txtUrl = creaTextField(auto.getImageUrl(), "no_image.png");
 
         ComboBox<String> cbPosti = new ComboBox<>();
         cbPosti.getItems().addAll("2", "4", "5", "7", "8", "9");
         cbPosti.setValue(String.valueOf(auto.getPosti()));
+        cbPosti.setMaxWidth(Double.MAX_VALUE);
 
         ComboBox<String> cbAlimentazione = new ComboBox<>();
         cbAlimentazione.getItems().addAll("Benzina", "Diesel", "Ibrida", "Elettrica", "GPL", "Metano");
         cbAlimentazione.setValue(auto.getAlimentazione());
+        cbAlimentazione.setMaxWidth(Double.MAX_VALUE);
 
         ComboBox<String> cbCambio = new ComboBox<>();
         cbCambio.getItems().addAll("Manuale", "Automatica");
         cbCambio.setValue(auto.getTrasmissione());
+        cbCambio.setMaxWidth(Double.MAX_VALUE);
 
         ComboBox<String> cbTipo = new ComboBox<>();
         cbTipo.getItems().addAll("Berlina", "Suv", "Utilitaria", "Sportiva", "Supercar", "Station Wagon");
         cbTipo.setValue(auto.getTipologia());
-
-        txtMarca.setMaxWidth(Double.MAX_VALUE);
-        txtModello.setMaxWidth(Double.MAX_VALUE);
-        txtAnno.setMaxWidth(Double.MAX_VALUE);
-        txtPrezzo.setMaxWidth(Double.MAX_VALUE);
-        txtUrl.setMaxWidth(Double.MAX_VALUE);
-        cbPosti.setMaxWidth(Double.MAX_VALUE);
-        cbAlimentazione.setMaxWidth(Double.MAX_VALUE);
-        cbCambio.setMaxWidth(Double.MAX_VALUE);
         cbTipo.setMaxWidth(Double.MAX_VALUE);
+
+        Label lblErrore = new Label("");
+        lblErrore.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        lblErrore.setWrapText(true);
 
         Button btnUpdate = new Button("Salva Modifiche");
         btnUpdate.getStyleClass().add(BTN);
@@ -170,39 +159,36 @@ public class GuiGestioneCatalogo {
         buttonBox.setAlignment(Pos.CENTER);
 
         btnUpdate.setOnAction(e -> {
-            CatalogoBean bean = new CatalogoBean();
-            bean.setId(auto.getId());
-
-            assegnaStringa(txtModello.getText(), bean::setModello);
-            assegnaStringa(txtMarca.getText(), bean::setMarca);
-            assegnaStringa(cbAlimentazione.getValue(), bean::setAlimentazione);
-            assegnaStringa(cbCambio.getValue(), bean::setTrasmissione);
-            assegnaStringa(cbTipo.getValue(), bean::setTipologia);
-            assegnaStringa(txtUrl.getText(), bean::setFoto);
-
+            lblErrore.setText("");
             try {
+                CatalogoBean bean = new CatalogoBean();
+                bean.setId(auto.getId());
 
-                if (txtPrezzo.getText() != null || txtPrezzo.getText().isEmpty()) {
-                    bean.setPrezzo(Double.parseDouble(txtPrezzo.getText()));
-                }
+                assegnaStringa(txtMarca.getText(), bean::setMarca);
+                assegnaStringa(txtModello.getText(), bean::setModello);
+                assegnaStringa(cbAlimentazione.getValue(), bean::setAlimentazione);
+                assegnaStringa(cbCambio.getValue(), bean::setTrasmissione);
+                assegnaStringa(cbTipo.getValue(), bean::setTipologia);
+                assegnaStringa(txtUrl.getText(), bean::setFoto);
 
-                assegnaIntero(txtAnno.getText(), bean::setAnno);
-                assegnaIntero(cbPosti.getValue(), bean::setPosti);
+                bean.setPrezzo(txtPrezzo.getText().isEmpty() ? 0 : Double.parseDouble(txtPrezzo.getText()));
+                bean.setAnno(txtAnno.getText().isEmpty() ? 0 : Integer.parseInt(txtAnno.getText()));
+                bean.setPosti(cbPosti.getValue() == null ? 0 : Integer.parseInt(cbPosti.getValue()));
 
-                gestioneCatalogoController.modifyCar(bean);
+                gestioneCatalogoController.validaEModificaAuto(bean);
 
                 NotificaBean modifica = new NotificaBean();
-
                 modifica.setMacchina(auto);
-                modifica.setMsg("Auto modifica con successo!");
-
+                modifica.setMsg("Auto modificata con successo!");
 
                 notificheController.generaNotificaSistema(modifica);
                 caricaDati();
                 popupStage.close();
 
             } catch (NumberFormatException ex) {
-                logger.error("Attenzione: Inserire valori numerici validi per Prezzo, Anno e Posti.");
+                lblErrore.setText("I campi Prezzo, Anno e Posti devono contenere solo numeri.");
+            } catch (IllegalArgumentException ex) {
+                lblErrore.setText(ex.getMessage());
             }
         });
 
@@ -214,29 +200,29 @@ public class GuiGestioneCatalogo {
             popupStage.close();
         });
 
-        VBox layoutPopup = new VBox(15);
+        VBox layoutPopup = new VBox(15, new Label("Modifica dati auto:"), lblErrore, txtMarca, txtModello, txtAnno, txtPrezzo, txtUrl, cbPosti, cbAlimentazione, cbCambio, cbTipo, buttonBox);
         layoutPopup.setPadding(new Insets(20));
         layoutPopup.setAlignment(Pos.CENTER);
 
-        layoutPopup.getChildren().addAll(
-                new Label("Modifica dati auto:"),
-                txtMarca,
-                txtModello,
-                txtAnno,
-                txtPrezzo,
-                txtUrl,
-                cbPosti,
-                cbAlimentazione,
-                cbCambio,
-                cbTipo,
-                buttonBox
-        );
-
-        Scene scene = new Scene(layoutPopup, 350, 520);
+        Scene scene = new Scene(layoutPopup, 350, 560);
         StageHandler.getSingletonInstance().loadCss(scene);
         popupStage.setScene(scene);
         popupStage.showAndWait();
     }
+
+    private TextField creaTextField(String valore, String valoreDiDefault) {
+        String testoIniziale = (valore != null && !valore.trim().isEmpty()) ? valore : valoreDiDefault;
+        TextField tf = new TextField(testoIniziale);
+        tf.setMaxWidth(Double.MAX_VALUE);
+        return tf;
+    }
+
+    private void assegnaStringa(String valore, java.util.function.Consumer<String> setter) {
+        if (valore != null && !valore.trim().isEmpty()) {
+            setter.accept(valore.trim());
+        } else {
+            setter.accept("");
+        }
     }
 
     @FXML
@@ -257,7 +243,6 @@ public class GuiGestioneCatalogo {
     }
 
     private void aggiungiAuto() {
-
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle("Aggiungi Auto");
@@ -293,7 +278,6 @@ public class GuiGestioneCatalogo {
         cbTipo.setPromptText("Tipologia");
         cbTipo.getItems().addAll("Berlina", "Suv", "Utilitaria", "Sportiva", "Supercar");
 
-
         txtMarca.setMaxWidth(Double.MAX_VALUE);
         txtModello.setMaxWidth(Double.MAX_VALUE);
         txtAnno.setMaxWidth(Double.MAX_VALUE);
@@ -304,32 +288,45 @@ public class GuiGestioneCatalogo {
         cbCambio.setMaxWidth(Double.MAX_VALUE);
         cbTipo.setMaxWidth(Double.MAX_VALUE);
 
+
+        Label lblErrore = new Label("");
+        lblErrore.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        lblErrore.setWrapText(true);
+
         Button btnAdd = new Button("Aggiungi");
         btnAdd.getStyleClass().add(BTN);
         btnAdd.setMaxWidth(Double.MAX_VALUE);
 
         btnAdd.setOnAction(e -> {
-            CatalogoBean bean = new CatalogoBean();
-
-            assegnaStringa(txtModello.getText(), bean::setModello);
-            assegnaStringa(txtMarca.getText(), bean::setMarca);
-            assegnaStringa(cbAlimentazione.getValue(), bean::setAlimentazione);
-            assegnaStringa(cbCambio.getValue(), bean::setTrasmissione);
-            assegnaStringa(cbTipo.getValue(), bean::setTipologia);
-            assegnaStringa(txtUrl.getText(), bean::setFoto);
-
+            lblErrore.setText("");
             try {
-                assegnaIntero(txtPrezzo.getText(), bean::setPrezzo);
-                assegnaIntero(txtAnno.getText(), bean::setAnno);
-                assegnaIntero(cbPosti.getValue(), bean::setPosti);
-            } catch (NumberFormatException ex) {
-                logger.error("Attenzione: Inserire valori numerici validi per Prezzo, Anno e Posti.");
-                return;
-            }
+                CatalogoBean bean = new CatalogoBean();
 
-            gestioneCatalogoController.salvaAutoRam(bean);
-            caricaDati();
-            popupStage.close();
+                assegnaStringa(txtMarca.getText(), bean::setMarca);
+                assegnaStringa(txtModello.getText(), bean::setModello);
+                assegnaStringa(cbAlimentazione.getValue(), bean::setAlimentazione);
+                assegnaStringa(cbCambio.getValue(), bean::setTrasmissione);
+                assegnaStringa(cbTipo.getValue(), bean::setTipologia);
+                assegnaStringa(txtUrl.getText(), bean::setFoto);
+
+                bean.setPrezzo(txtPrezzo.getText().isEmpty() ? 0 : Double.parseDouble(txtPrezzo.getText()));
+                bean.setAnno(txtAnno.getText().isEmpty() ? 0 : Integer.parseInt(txtAnno.getText()));
+                bean.setPosti(cbPosti.getValue() == null ? 0 : Integer.parseInt(cbPosti.getValue()));
+
+                gestioneCatalogoController.validaEAggiungiAuto(bean);
+
+                caricaDati();
+                popupStage.close();
+
+            } catch (NumberFormatException ex) {
+                lblErrore.setText("Formato errato: inserisci solo numeri validi nei campi Prezzo, Anno e Posti.");
+
+            } catch (IllegalArgumentException ex) {
+                lblErrore.setText("Attenzione: " + ex.getMessage());
+
+            } catch (Exception ex) {
+                lblErrore.setText("Si è verificato un errore di sistema durante il salvataggio.");
+            }
         });
 
         VBox layoutPopup = new VBox(15);
@@ -338,6 +335,7 @@ public class GuiGestioneCatalogo {
 
         layoutPopup.getChildren().addAll(
                 new Label("Aggiungi nuova auto:"),
+                lblErrore,
                 txtMarca,
                 txtModello,
                 txtAnno,
@@ -350,21 +348,10 @@ public class GuiGestioneCatalogo {
                 btnAdd
         );
 
-        Scene scene = new Scene(layoutPopup, 300, 500);
+        Scene scene = new Scene(layoutPopup, 350, 580);
         StageHandler.getSingletonInstance().loadCss(scene);
+        popupStage.setResizable(false);
         popupStage.setScene(scene);
         popupStage.showAndWait();
-    }
-
-    private void assegnaStringa(String valore, Consumer<String> setter) {
-        if (valore != null && !valore.trim().isEmpty()) {
-            setter.accept(valore.trim());
-        }
-    }
-
-    private void assegnaIntero(String valore, IntConsumer setter) throws NumberFormatException {
-        if (valore != null && !valore.trim().isEmpty()) {
-            setter.accept(Integer.parseInt(valore.trim()));
-        }
     }
 }

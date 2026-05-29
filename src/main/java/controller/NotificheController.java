@@ -1,6 +1,7 @@
 package controller;
 
 import bean.NotificaBean;
+import exceptions.NotificationErrorException;
 import model.daofactory.DaoFactory;
 import model.notifiche.Notifica;
 
@@ -44,9 +45,7 @@ public class NotificheController {
         try {
             DaoFactory.getDaoSingletonFactory().createNotificheDao().inserisci(notifica);
         } catch (Exception e) {
-
-            System.err.println("Errore durante il salvataggio della notifica: " + e.getMessage());
-            throw new RuntimeException("Impossibile salvare la notifica di sistema", e);
+            throw new NotificationErrorException("Impossibile salvare la notifica di sistema:", e);
         }
     }
 

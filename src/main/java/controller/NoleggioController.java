@@ -2,6 +2,7 @@ package controller;
 
 import bean.NoleggioAutoBean;
 import bean.NotificaBean;
+import exceptions.DocsNotValidException;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
 import model.utente.Utente;
@@ -39,6 +40,9 @@ public class NoleggioController {
             throw new IllegalArgumentException("Giorni non devono essere negativi.");
         }
 
+        if (Boolean.FALSE.equals(utente.getVerificato()) || utente.getVerificato() == null) {
+            throw new DocsNotValidException("Impossibile noleggiare: Patente non verificata.");
+        }
 
         double totale = calcolaTotale(auto, giorni);
 

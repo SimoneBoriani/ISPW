@@ -9,9 +9,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -49,6 +47,7 @@ public class GuiGestioneAutoNoleggiate {
     private void apriOpzioni(NoleggioAuto noleggio) {
 
         Macchina macchina = noleggio.getMacchina();
+        SessionSingleton.getInstance().setAutoSelezionata(macchina);
 
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -72,6 +71,9 @@ public class GuiGestioneAutoNoleggiate {
         btnTermina.getStyleClass().add("Button");
         btnTermina.setMinWidth(200);
 
+        Button btnSegnala = new Button("Segnalazione");
+        btnSegnala.getStyleClass().add("Button-Secondary");
+
         btnTermina.setOnAction(e -> {
             try {
                 controller.endRent(noleggio.getIdNoleggio());
@@ -83,7 +85,12 @@ public class GuiGestioneAutoNoleggiate {
             }
         });
 
-        layout.getChildren().addAll(lblTitolo, lblSpesa, lblInfo, btnTermina);
+        layout.getChildren().addAll(
+                lblTitolo,
+                lblSpesa,
+                lblInfo,
+                btnTermina,
+                btnSegnala);
 
         Scene scene = new Scene(layout, 350, 250);
 

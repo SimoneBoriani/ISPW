@@ -3,6 +3,7 @@ package view.guigraphicscontroller;
 import bean.NoleggioAutoBean;
 import bean.NotificaBean;
 import controller.NoleggioController;
+import exceptions.DocsNotValidException;
 import exceptions.GenericSystemException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,8 +18,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.duratacontrattuale.PianoNoleggio;
 import model.macchina.Macchina;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import utils.SessionSingleton;
 import utils.StageHandler;
 import utils.ImageUtils;
@@ -28,7 +27,6 @@ import java.io.IOException;
 
 public class GuiNoleggioAuto {
 
-    private final Logger logger= LogManager.getLogger(GuiNoleggioAuto.class);
     private static String style="Totale: 0,00 €";
 
     private final NoleggioController noleggioController=ControllerFactory.getGraphicalSingletonFactory().createNoleggioController();
@@ -263,11 +261,9 @@ public class GuiNoleggioAuto {
         } catch (NumberFormatException ex) {
             lblErrore.setText("Formato giorni non valido.");
             lblErrore.setVisible(true);
-            logger.error("Formato giorni non valido.");
-        } catch (IllegalArgumentException | GenericSystemException ex) {
+        } catch (IllegalArgumentException | DocsNotValidException ex) {
             lblErrore.setText(ex.getMessage());
             lblErrore.setVisible(true);
-            logger.error("Errore durante il noleggio: {}" , ex.getMessage());
         }
     }
 }

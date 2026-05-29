@@ -28,7 +28,6 @@ import javafx.concurrent.Task;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import service.StripeService;
-import service.IdentityService;
 import utils.ConfigLoader;
 
 import java.io.IOException;
@@ -174,19 +173,18 @@ public class GuiGestioneProfilo {
 
     private void aggiornaSaldoEGeneraNotifica(double importoRicaricato) {
         int idUser = SessionSingleton.getInstance().getUtenteCorrente().getIdUser();
-        double nuovoSaldo = SessionSingleton.getInstance().getUtenteCorrente().getSaldo() + importoRicaricato;
 
         ProfileBean bean = new ProfileBean();
         bean.setId(idUser);
-        bean.setSaldo(nuovoSaldo);
+        bean.setSaldo(importoRicaricato);
 
         controller.updateSaldo(bean);
-        SessionSingleton.getInstance().getUtenteCorrente().setSaldo(nuovoSaldo);
+        SessionSingleton.getInstance().getUtenteCorrente().setSaldo(importoRicaricato);
 
         NotificaBean saldo = new NotificaBean();
 
         saldo.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
-        saldo.setMsg("Saldo aggiornato!");
+        saldo.setMsg("Importo di "+importoRicaricato+"€ depositato con successo!");
 
         notificheController.generaNotificaSistema(saldo);
     }
@@ -213,7 +211,8 @@ public class GuiGestioneProfilo {
     public void btnVerificaPatente(ActionEvent actionEvent) {
         if (SessionSingleton.getInstance().getUtenteCorrente() == null) return;
 
-        if (SessionSingleton.getInstance().getUtenteCorrente().getVerificato()) {
+        Boolean verificato=SessionSingleton.getInstance().getUtenteCorrente().getVerificato();
+        if (Boolean.TRUE.equals(verificato)) {
             Stage popupGiaVerificato = creaPopup("Verifica non necessaria");
             Label msg = new Label("La tua patente è già stata verificata con successo!");
             msg.setStyle("-fx-text-fill: green; -fx-font-weight: bold; -fx-padding: 20;");
