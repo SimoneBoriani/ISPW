@@ -27,9 +27,12 @@ public class FileDaoMacchina extends DaoMacchina {
 
             List<String> lines = Files.readAllLines(Paths.get(CSV_PATH));
             for (String line : lines) {
+
                 if (line.trim().isEmpty()) continue;
                 String[] d = line.split(SEPARATOR);
+
                 Macchina m = new Macchina();
+
                 m.setId(Integer.parseInt(d[0]));
                 m.setMarca(d[1]);
                 m.setModello(d[2]);
@@ -41,6 +44,7 @@ public class FileDaoMacchina extends DaoMacchina {
                 m.setPosti(Integer.parseInt(d[8]));
                 m.setImageUrl(d[9]);
                 m.setDisponibile(Boolean.parseBoolean(d[10]));
+
                 macchine.add(m);
             }
         } catch (IOException e) {

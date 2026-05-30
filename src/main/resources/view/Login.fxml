@@ -33,7 +33,7 @@
         </HBox>
 
         <StackPane prefHeight="96.0" prefWidth="300.0" styleClass="logoImageView">
-            <ImageView fitHeight="123.0" fitWidth="178.0" pickOnBounds="true" preserveRatio="true" smooth="true">
+            <ImageView fitHeight="200.0" fitWidth="244.0" pickOnBounds="true" preserveRatio="true" smooth="true">
                 <Image url="@../images/logo.png" />
             </ImageView>
         </StackPane>
@@ -49,15 +49,27 @@
                 <RowConstraints minHeight="10.0" prefHeight="35.0" />
                 <RowConstraints minHeight="10.0" prefHeight="20.0" />
             </rowConstraints>
-
-                <Label alignment="CENTER" prefWidth="300.0" text="Username" textFill="#204080">
-                    <font><Font name="System Bold" size="12.0" /></font>
-                </Label>
+         <AnchorPane>
+            <children>
+      
+                      <Label alignment="CENTER" prefWidth="300.0" text="Username" textFill="#204080" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                          <font>
+                     <Font name="System Bold" size="12.0" />
+                  </font>
+                      </Label>
+            </children>
+         </AnchorPane>
                 <TextField fx:id="txtUsername" alignment="CENTER" promptText="username" GridPane.rowIndex="1" />
-
-                <Label alignment="CENTER" prefWidth="300.0" text="Password" textFill="#204080" GridPane.rowIndex="2">
-                    <font><Font name="System Bold" size="12.0" /></font>
-                </Label>
+         <AnchorPane GridPane.rowIndex="2">
+            <children>
+      
+                      <Label alignment="CENTER" prefWidth="300.0" text="Password" textFill="#204080" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                          <font>
+                     <Font name="System Bold" size="12.0" />
+                  </font>
+                      </Label>
+            </children>
+         </AnchorPane>
 
                 <StackPane GridPane.rowIndex="3">
 
@@ -68,7 +80,7 @@
          <AnchorPane prefHeight="78.0" prefWidth="300.0" GridPane.rowIndex="4">
             <children>
       
-                  <CheckBox fx:id="checkMostraPassword" layoutX="195.0" layoutY="2.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" text="Mostra password" textFill="#64748b" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="0.0">
+                  <CheckBox fx:id="checkMostraPassword" layoutX="178.0" layoutY="2.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" prefHeight="16.0" prefWidth="122.0" text="Mostra password" textFill="#64748b" AnchorPane.leftAnchor="178.0" AnchorPane.rightAnchor="0.0">
                       <font>
                           <Font size="11.0" />
                       </font>

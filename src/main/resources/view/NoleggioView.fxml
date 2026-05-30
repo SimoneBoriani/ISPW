@@ -17,78 +17,101 @@
 
         <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="910.0">
 
-                <VBox HBox.hgrow="ALWAYS">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label fx:id="modello" text="MODELLO MARCA" textFill="#204080">
+                    <font>
+                        <Font name="System Bold" size="28.0" />
+                    </font>
+                </Label>
+                <Label fx:id="prezzo" text="Prezzo al giorno: € 00.00" textFill="#64748b">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+            </VBox>
 
-                        <Label fx:id="modello" text="MODELLO MARCA" textFill="#204080">
-                            <font>
-                                <Font name="System Bold" size="28.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="prezzo" text="Prezzo al giorno: € 00.00" textFill="#64748b">
-                            <font>
-                                <Font size="16.0" />
-                            </font>
-                        </Label>
-
-                </VBox>
-         <Button mnemonicParsing="false" onAction="#segnala" prefHeight="35.0" prefWidth="100.0" styleClass="Button-Secondary" text="Segnalazione" />
-         <Button mnemonicParsing="false" onAction="#goHome" prefHeight="35.0" prefWidth="100.0" styleClass="Button-Secondary" text="Chiudi" />
+            <Button mnemonicParsing="false" onAction="#segnala" prefHeight="35.0" prefWidth="100.0" styleClass="Button-Secondary" text="Segnalazione" />
+            <Button mnemonicParsing="false" onAction="#goHome" prefHeight="35.0" prefWidth="100.0" styleClass="Button-Secondary" text="Chiudi">
+                <HBox.margin>
+                    <Insets left="10.0" />
+                </HBox.margin>
+            </Button>
 
         </HBox>
 
         <HBox alignment="CENTER" prefHeight="450.0" prefWidth="910.0" spacing="50.0">
 
-                <VBox alignment="CENTER" prefHeight="400.0" prefWidth="450.0" style="-fx-background-color: #f8fafc; -fx-background-radius: 20;">
+            <VBox alignment="CENTER" prefHeight="400.0" prefWidth="450.0" style="-fx-background-color: #f8fafc; -fx-background-radius: 20;">
+                <ImageView fx:id="imgAuto" fitHeight="350.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
+            </VBox>
 
-                        <ImageView fx:id="imgAuto" fitHeight="350.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
+            <VBox prefHeight="400.0" prefWidth="400.0" spacing="15.0">
 
-                </VBox>
+                <Label text="SPECIFICHE TECNICHE" textFill="#204080">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </Label>
 
-                <VBox prefHeight="400.0" prefWidth="400.0" spacing="15.0">
-
-                        <Label text="SPECIFICHE TECNICHE" textFill="#204080">
+                <HBox spacing="10.0">
+                    <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
+                        <Label text="TRASMISSIONE" textFill="#204080">
                             <font>
-                                <Font name="System Bold" size="18.0" />
+                                <Font name="System Bold" size="12.0" />
                             </font>
-                            <VBox.margin>
-                                <Insets bottom="10.0" />
-                            </VBox.margin>
                         </Label>
+                        <Label fx:id="trasmissione" text="Automatico" textFill="#475569" />
+                    </VBox>
+                    <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
+                        <Label text="POSTI" textFill="#204080">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="posti" text="5" textFill="#475569" />
+                    </VBox>
+                </HBox>
 
-                        <HBox spacing="10.0">
-                            <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                                <Label text="TRASMISSIONE" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
-                                <Label fx:id="km" text="Automatico" textFill="#475569" />
-                            </VBox>
-                            <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                                <Label text="POSTI" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
-                                <Label fx:id="posti" text="5" textFill="#475569" />
-                            </VBox>
-                        </HBox>
+                <HBox spacing="10.0">
+                    <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
+                        <Label text="ALIMENTAZIONE" textFill="#204080">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="alimentazione" text="Diesel" textFill="#475569" />
+                    </VBox>
+                    <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
+                        <Label text="ANNO" textFill="#204080">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="anno" text="2024" textFill="#475569" />
+                    </VBox>
+                </HBox>
 
-                        <HBox spacing="10.0">
-                            <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                                <Label text="ALIMENTAZIONE" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
-                                <Label fx:id="alimentazione" text="Diesel" textFill="#475569" />
-                            </VBox>
-                            <VBox prefWidth="180.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                                <Label text="ANNO" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
-                                <Label text="2024" textFill="#475569" />
-                            </VBox>
-                        </HBox>
-
-                        <VBox prefHeight="59.0" prefWidth="354.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
-                            <Label text="TIPOLOGIA" textFill="#204080"><font><Font name="System Bold" size="12.0" /></font></Label>
-                            <Label text="N/D" textFill="#475569" />
-                        </VBox>
-
-                        <VBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
-                            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#shop" prefHeight="50.0" styleClass="Button" text="PROCEDI AL NOLEGGIO" textFill="WHITE">
-                                <font><Font name="System Bold" size="16.0" /></font>
-                            </Button>
-                        </VBox>
-
+                <VBox prefHeight="59.0" prefWidth="354.0" spacing="5.0" style="-fx-background-color: #f0f4ff; -fx-padding: 10; -fx-background-radius: 10;">
+                    <Label text="TIPOLOGIA" textFill="#204080">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="tipologia" text="N/D" textFill="#475569" />
                 </VBox>
+
+                <VBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
+                    <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#shop" prefHeight="50.0" styleClass="Button" text="PROCEDI AL NOLEGGIO" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                </VBox>
+
+            </VBox>
 
         </HBox>
     </VBox>

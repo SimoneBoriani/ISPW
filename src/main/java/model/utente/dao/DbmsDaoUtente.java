@@ -12,7 +12,7 @@ import java.util.List;
 public class DbmsDaoUtente extends DaoUtente {
 
     @Override
-    public void insertUtente(Utente utente){
+    public void insertUtente(Utente utente) {
 
         if (utente.getUsername() == null || utente.getUsername().trim().isEmpty()) {
             throw new NullPointerException("L'username non può essere nullo o vuoto.");
@@ -22,9 +22,23 @@ public class DbmsDaoUtente extends DaoUtente {
             throw new NullPointerException("La password non può essere nulla o vuota.");
         }
 
-        String sql = "INSERT INTO utenti (username,password,nome,cognome) VALUES (?,?,?,?)";
-
         Connection session = ConnectionHandler.getInstance().getConnection();
+
+        String countSql = "SELECT COUNT(*) FROM utenti";
+        boolean isFirstUser = false;
+
+        try (PreparedStatement countStmt = session.prepareStatement(countSql);
+             ResultSet countRs = countStmt.executeQuery()) {
+            if (countRs.next()) {
+                isFirstUser = (countRs.getInt(1) == 0);
+            }
+        } catch (SQLException e) {
+            throw new GenericSystemException("Errore durante il controllo degli utenti", e);
+        }
+
+        String ruolo = isFirstUser ? "ADMIN" : "USER";
+
+        String sql = "INSERT INTO utenti (username, password, nome, cognome, ruolo) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = session.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -43,11 +57,13 @@ public class DbmsDaoUtente extends DaoUtente {
                 statement.setNull(4, Types.VARCHAR);
             }
 
+            statement.setString(5, ruolo);
+
             statement.executeUpdate();
 
             try (ResultSet rs = statement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    rs.getInt(1);
+                    utente.setIdUser(rs.getInt(1));
                 }
             }
 
@@ -76,7 +92,7 @@ public class DbmsDaoUtente extends DaoUtente {
                     String cognome = rs.getString("cognome");
                     String ruolo = rs.getString("ruolo");
                     boolean verificato = rs.getBoolean("patente_verificata");
-                    int saldo = rs.getInt("saldo");
+                    double saldo = rs.getInt("saldo");
 
                     Utente ricercato = new Utente();
 

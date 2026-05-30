@@ -37,12 +37,9 @@ public class RicaricaController {
 
             Utente utenteDaAggiornare = new Utente();
             utenteDaAggiornare.setIdUser(idUser);
-
-            double nuovoSaldo = utenteCorrente.getSaldo() + tx.getAmount();
-            utenteDaAggiornare.setSaldo(nuovoSaldo);
+            utenteDaAggiornare.setSaldo(tx.getAmount());
 
             daoUtente.update(utenteDaAggiornare);
-            utenteCorrente.setSaldo(nuovoSaldo);
 
             return true;
         }

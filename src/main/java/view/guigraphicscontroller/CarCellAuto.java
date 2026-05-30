@@ -14,11 +14,24 @@ import java.io.IOException;
 
 public class CarCellAuto extends ListCell<Macchina> {
 
-    @FXML private HBox rootAnchor;
-    @FXML private Label lblModello;
-    @FXML private Label lblPrezzo;
-    @FXML private Label lblDettagli;
-    @FXML private ImageView imgAuto;
+    @FXML
+    private HBox rootAnchor;
+
+    @FXML
+    private Label lblModello;
+
+    @FXML
+    private Label lblPrezzo;
+
+    @FXML
+    private Label lblDettagli;
+
+    @FXML
+    private Label lblNoleggio;
+
+    @FXML
+    private ImageView imgAuto;
+
 
     private FXMLLoader loader;
 
@@ -47,6 +60,8 @@ public class CarCellAuto extends ListCell<Macchina> {
             lblModello.setText(macchina.getMarca() + " " + macchina.getModello());
             lblPrezzo.setText(macchina.getPrezzo() + " €");
             lblDettagli.setText(macchina.getAnno() + " • " + macchina.getAlimentazione());
+            lblNoleggio.setVisible(false);
+            lblNoleggio.setManaged(false);
 
             setGraphic(rootAnchor);
             setText(null);

@@ -47,6 +47,15 @@ public class GuiNoleggioAuto {
     @FXML
     private Label prezzo;
 
+    @FXML
+    private Label trasmissione;
+
+    @FXML
+    private Label anno;
+
+    @FXML
+    private Label tipologia;
+
 
     @FXML
     public void initialize() {
@@ -82,23 +91,37 @@ public class GuiNoleggioAuto {
         });
     }
 
-    private void loadInfo(){
+    private void loadInfo() {
+        Macchina auto = noleggioController.getAuto();
 
-        Macchina autoSelezionata = noleggioController.getAuto();
-
-        if (autoSelezionata != null) {
-
-            modello.setText(autoSelezionata.getMarca() + " " + autoSelezionata.getModello());
-            posti.setText(String.valueOf(autoSelezionata.getPosti()));
-            alimentazione.setText(autoSelezionata.getAlimentazione());
-            prezzo.setText(autoSelezionata.getPrezzo() + " €");
-
-            if (imgAuto != null) {
-                imgAuto.setImage(ImageUtils.loadCarImage(autoSelezionata.getImageUrl()));
-            }
-        } else {
+        if (auto == null) {
             throw new GenericSystemException("Errore: Nessuna auto selezionata in sessione.");
         }
+
+        String marca = auto.getMarca();
+        String mod =auto.getModello();
+
+        modello.setText(marca + " " + mod);
+        prezzo.setText(auto.getPrezzo() > 0 ? "Prezzo al giorno: " + auto.getPrezzo() + " €" : "Prezzo al giorno: N/D");
+
+        posti.setText(checkInt(auto.getPosti()));
+        anno.setText(checkInt(auto.getAnno()));
+
+        alimentazione.setText(checkStr(auto.getAlimentazione(), "N/D"));
+        trasmissione.setText(checkStr(auto.getTrasmissione(), "N/D"));
+        tipologia.setText(checkStr(auto.getTipologia(), "N/D"));
+
+        if (imgAuto != null && checkStr(auto.getImageUrl(), null) != null) {
+            imgAuto.setImage(ImageUtils.loadCarImage(auto.getImageUrl()));
+        }
+    }
+
+    private String checkStr(String value, String defaultValue) {
+        return (value != null && !value.trim().isEmpty()) ? value : defaultValue;
+    }
+
+    private String checkInt(int value) {
+        return value > 0 ? String.valueOf(value) : "N/D";
     }
 
     @FXML

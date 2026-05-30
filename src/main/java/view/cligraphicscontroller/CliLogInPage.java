@@ -118,6 +118,7 @@ public class CliLogInPage {
     }
 
     private boolean eseguiTentativoRegistrazione(String user) {
+
         String pass = new String(ConsolePrinter.readPassword("Password:"));
         String confPass = new String(ConsolePrinter.readPassword("Conferma Password:"));
 
@@ -148,11 +149,6 @@ public class CliLogInPage {
         }
 
         logInController.insert(credenziali);
-
-        NotificaBean reg = new NotificaBean();
-        reg.setUtente(logInController.researchUser(credenziali));
-        reg.setMsg("Benvenuto in Boro Rental!");
-        notificheController.generaNotificaSistema(reg);
 
         ConsolePrinter.printStatus("Registrazione effettuata con successo!", false);
         ConsolePrinter.readLine("\nPremi INVIO per tornare all'area login...");

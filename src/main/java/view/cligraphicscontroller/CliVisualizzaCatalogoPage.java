@@ -33,7 +33,7 @@ public class CliVisualizzaCatalogoPage {
 
             switch (choice) {
                 case "R" -> apriRicerca();
-                case "REF" -> { /*Riavvia*/}
+                case "REF" -> { /*Ricarica*/}
                 case "0" -> back = true;
                 default -> gestisciSelezioneAuto(choice);
             }

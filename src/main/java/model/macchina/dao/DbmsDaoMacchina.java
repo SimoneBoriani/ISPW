@@ -96,22 +96,14 @@ public class DbmsDaoMacchina extends DaoMacchina {
     @Override
     public List<Macchina> getCars() {
         List<Macchina> listaMacchine = new ArrayList<>();
-        String sql = "SELECT *" + "FROM macchine WHERE disponibile = true";
+        String sql = "SELECT * " + "FROM macchine WHERE disponibile = true";
 
         try (Connection conn = ConnectionHandler.getInstance().getConnection();
              Statement statement = conn.createStatement();
              ResultSet rs = statement.executeQuery(sql)) {
 
             while (rs.next()) {
-                Macchina m = new Macchina();
-                m.setId(rs.getInt(AUTO_ID));
-                m.setMarca(rs.getString(MARCA));
-                m.setModello(rs.getString(MODELLO));
-                m.setPrezzo(rs.getInt(PREZZO));
-                m.setImageUrl(rs.getString(IMMAGINE_URL));
-                m.setAnno(rs.getInt(ANNO));
-                m.setAlimentazione(rs.getString(ALIMENTAZIONE));
-                m.setTrasmissione(rs.getString(TRASMISSIONE));
+                Macchina m = mapResultSetToMacchina(rs);
                 listaMacchine.add(m);
             }
         } catch (SQLException e) {

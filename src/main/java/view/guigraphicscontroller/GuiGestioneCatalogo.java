@@ -63,6 +63,7 @@ public class GuiGestioneCatalogo {
     }
 
     private void modificaSegnalata() {
+
         if (SessionSingleton.getInstance().getTempIdNotifica() != null) {
             Macchina modifica = gestioneCatalogoController.createAutoSegnalata();
             Platform.runLater(() -> apriImpostazioniAuto(modifica));
@@ -178,10 +179,13 @@ public class GuiGestioneCatalogo {
                 gestioneCatalogoController.validaEModificaAuto(bean);
 
                 NotificaBean modifica = new NotificaBean();
+
                 modifica.setMacchina(auto);
+                modifica.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
                 modifica.setMsg("Auto modificata con successo!");
 
                 notificheController.generaNotificaSistema(modifica);
+
                 caricaDati();
                 popupStage.close();
 
@@ -353,5 +357,6 @@ public class GuiGestioneCatalogo {
         popupStage.setResizable(false);
         popupStage.setScene(scene);
         popupStage.showAndWait();
+
     }
 }

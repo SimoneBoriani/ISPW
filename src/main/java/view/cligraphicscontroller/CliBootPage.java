@@ -18,23 +18,25 @@ public class CliBootPage {
             ConsolePrinter.printHeader("Boro Rental");
 
             ConsolePrinter.printMenuOption(CMD_1, "Visualizza Catalogo");
-
+            ConsolePrinter.printMenuOption(CMD_2, "Gestione Profilo");
+            ConsolePrinter.printMenuOption(CMD_3, "Auto noleggiate");
             if (SessionSingleton.getInstance().getUtenteCorrente() == null) {
-                ConsolePrinter.printMenuOption(CMD_2, "Accedi al Sistema");
+                ConsolePrinter.printMenuOption(CMD_4, "Accedi al Sistema");
             } else {
-                ConsolePrinter.printMenuOption(CMD_2, "Log out");
+                ConsolePrinter.printMenuOption(CMD_4, "Log out");
                 ConsolePrinter.printMenuOption(CMD_5, "Notifiche");
             }
 
-            ConsolePrinter.printMenuOption(CMD_3, "Gestione Profilo");
-            ConsolePrinter.printMenuOption(CMD_4, "Auto noleggiate");
+
             ConsolePrinter.printMenuOption(CMD_EXIT, "Esci");
 
             String choice = ConsolePrinter.readLine("Selezione > ").trim();
 
             switch (choice) {
                 case CMD_1 -> navigateToCatalogo();
-                case CMD_2 -> {
+                case CMD_2 -> navigateToProfile();
+                case CMD_3 -> navigateToRented();
+                case CMD_4 -> {
                     if (SessionSingleton.getInstance().getUtenteCorrente() == null) {
                         navigateToLogin();
                     } else {
@@ -43,8 +45,6 @@ public class CliBootPage {
                         ConsolePrinter.readLine("Premi INVIO per continuare...");
                     }
                 }
-                case CMD_3 -> navigateToProfile();
-                case CMD_4 -> navigateToRented();
                 case CMD_5 -> navigateToNotifiche();
                 case CMD_EXIT -> {
                     ConsolePrinter.printStatus("Arrivederci!", false);

@@ -37,21 +37,47 @@ public class GuiGestioneProfilo {
     private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
     private final RicaricaController ricaricaController = ControllerFactory.getGraphicalSingletonFactory().createRicaricaController();
 
-    @FXML private Label nomeUtenteLabel;
-    @FXML private Label cognomeUtenteLabel;
-    @FXML private Label usernameUtenteLabel;
-    @FXML private Label saldoUtenteLabel;
-    @FXML private Label roleUtenteLabel;
+    @FXML
+    private Label nomeUtenteLabel;
+
+    @FXML
+    private Label cognomeUtenteLabel;
+
+    @FXML
+    private Label usernameUtenteLabel;
+
+    @FXML
+    private Label saldoUtenteLabel;
+
+    @FXML
+    private Label roleUtenteLabel;
+
+    @FXML
+    private Label lblPatente;
 
     private static final String BUTTON = "Button";
     private static final String ORANGE = "orange";
 
     @FXML
     public void initialize() {
+
         if (SessionSingleton.getInstance().getUtenteCorrente() != null) {
             personalInfo();
+            patente();
         }
     }
+
+    private void patente(){
+
+        boolean esito = SessionSingleton.getInstance().getUtenteCorrente().getVerificato();
+
+        if(Boolean.TRUE.equals(esito)) {
+            lblPatente.setText("Patente Verificata");
+        }
+    }
+
+
+
 
     @FXML
     public void btnSaldo(ActionEvent actionEvent) throws IOException {
@@ -160,6 +186,12 @@ public class GuiGestioneProfilo {
             saldoNotifica.setMsg("Importo depositato con successo!");
             notificheController.generaNotificaSistema(saldoNotifica);
 
+            try {
+                StageHandler.getSingletonInstance().loadPage("/view/Profilo.fxml");
+            } catch (IOException e) {
+                throw new GenericSystemException("Pagina non trovata :",e);
+            }
+
             txtImporto.setText("");
 
             if (saldoUtenteLabel == null) {
@@ -179,6 +211,7 @@ public class GuiGestioneProfilo {
         Boolean verificato = SessionSingleton.getInstance().getUtenteCorrente().getVerificato();
 
         if (Boolean.TRUE.equals(verificato)) {
+
             Stage popupGiaVerificato = creaPopup("Verifica non necessaria");
             Label msg = new Label("La tua patente è già stata verificata con successo!");
             msg.setStyle("-fx-text-fill: green; -fx-font-weight: bold; -fx-padding: 20;");
