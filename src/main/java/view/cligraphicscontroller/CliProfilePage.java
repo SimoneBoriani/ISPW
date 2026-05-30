@@ -16,17 +16,29 @@ public class CliProfilePage {
 
     private static final String FORMAT="  %-15s : %s%n";
     private static final String INVIOL="Premi INVIO per tornare al profilo...";
+
     private final GestioneProfiloController gestioneProfiloController = ControllerFactory.getGraphicalSingletonFactory().createGestioneProfiloController();
     private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
+    private final RicaricaController ricaricaController = ControllerFactory.getGraphicalSingletonFactory().createRicaricaController();
 
     public void render() {
+        boolean back = false;
 
+        while (!back) {
+            stampaDatiAccount();
+            stampaMenu();
+
+            String scelta = ConsolePrinter.readLine("Scelta > ").trim();
+            back = gestisciScelta(scelta);
+        }
+    }
+
+    private void stampaDatiAccount() {
         ConsolePrinter.printHeader("IL TUO PROFILO");
-
         Utente utenteLoggato = SessionSingleton.getInstance().getUtenteCorrente();
+        ConsolePrinter.logFormatted("%n  Dati Account:%n");
 
         if (utenteLoggato == null) {
-            ConsolePrinter.logFormatted("%n  Dati Account:%n");
             ConsolePrinter.logFormatted(FORMAT, "USERNAME", "Guest");
             ConsolePrinter.logFormatted(FORMAT, "NOME", "N/D");
             ConsolePrinter.logFormatted(FORMAT, "COGNOME", "N/D");
@@ -35,8 +47,6 @@ public class CliProfilePage {
             ConsolePrinter.logFormatted(FORMAT, "PATENTE", "Non Verificata");
         } else {
             String statoPatente = Boolean.TRUE.equals(utenteLoggato.getVerificato()) ? "VERIFICATA \u2714" : "Non Verificata \u274C";
-
-            ConsolePrinter.logFormatted("%n  Dati Account:%n");
             ConsolePrinter.logFormatted(FORMAT, "USERNAME", utenteLoggato.getUsername());
             ConsolePrinter.logFormatted(FORMAT, "NOME", utenteLoggato.getNome());
             ConsolePrinter.logFormatted(FORMAT, "COGNOME", utenteLoggato.getCognome());
@@ -44,52 +54,37 @@ public class CliProfilePage {
             ConsolePrinter.logFormatted(FORMAT, "RUOLO", utenteLoggato.getRuolo());
             ConsolePrinter.logFormatted(FORMAT, "PATENTE", statoPatente);
         }
+    }
 
-        while (true) {
-            ConsolePrinter.logFormatted("%n");
-            ConsolePrinter.printMenuOption("1","Aggiungi saldo (Checkout Stripe)");
-            ConsolePrinter.printMenuOption("2","Aggiorna informazioni personali");
-            ConsolePrinter.printMenuOption("3","Aggiorna Password");
-            ConsolePrinter.printMenuOption("4","Verifica Patente (Identity Stripe)");
-            ConsolePrinter.printMenuOption("0","Torna indietro");
+    private void stampaMenu() {
+        ConsolePrinter.logFormatted("%n");
+        ConsolePrinter.printMenuOption("1", "Aggiungi saldo (Checkout Stripe)");
+        ConsolePrinter.printMenuOption("2", "Aggiorna informazioni personali");
+        ConsolePrinter.printMenuOption("3", "Aggiorna Password");
+        ConsolePrinter.printMenuOption("4", "Verifica Patente (Identity Stripe)");
+        ConsolePrinter.printMenuOption("0", "Torna indietro");
+    }
 
-            String scelta = ConsolePrinter.readLine("Scelta > ").trim();
-
-            switch (scelta) {
-                case "1" -> {
-                    if (SessionSingleton.getInstance().isUserLoggedIn()) {
-                        addSaldo();
-                        render();
-                        return;
-                    } else guest();
-                }
-
-                case "2" -> {
-                    if (SessionSingleton.getInstance().isUserLoggedIn()) {
-                        updateInfo();
-                        render();
-                        return;
-                    } else guest();
-                }
-
-                case "3" -> {
-                    ConsolePrinter.logFormatted("Modulo da implementare");
-                    ConsolePrinter.readLine("Premi ENTER per continuare ...");
-                }
-
-                case "4" -> {
-                    if (SessionSingleton.getInstance().isUserLoggedIn()) {
-                        verificaPatente();
-                        render();
-                        return;
-                    } else guest();
-                }
-
-                case "0" -> {
-                    return;
-                }
-                default -> ConsolePrinter.printStatus("Scelta non valida!", true);
+    private boolean gestisciScelta(String scelta) {
+        switch (scelta) {
+            case "1" -> eseguiSeLoggato(this::addSaldo);
+            case "2" -> eseguiSeLoggato(this::updateInfo);
+            case "3" -> {
+                ConsolePrinter.logFormatted("Modulo da implementare");
+                ConsolePrinter.readLine("Premi ENTER per continuare ...");
             }
+            case "4" -> eseguiSeLoggato(this::verificaPatente);
+            case "0" -> { return true; }
+            default  -> ConsolePrinter.printStatus("Scelta non valida!", true);
+        }
+        return false;
+    }
+
+    private void eseguiSeLoggato(Runnable azione) {
+        if (SessionSingleton.getInstance().isUserLoggedIn()) {
+            azione.run();
+        } else {
+            guest();
         }
     }
 
@@ -114,7 +109,8 @@ public class CliProfilePage {
                     ConfigLoader.get("stripe.secret.key"),
                     ConfigLoader.getInt("stripe.success.port")
             );
-            RicaricaController ricaricaController = new RicaricaController(stripeService);
+
+             ricaricaController.setStripe(stripeService);
 
             boolean ricaricaRiuscita = ricaricaController.ricaricaSaldo(importo);
 
@@ -134,6 +130,7 @@ public class CliProfilePage {
             ConsolePrinter.printStatus("Errore: Inserisci un valore numerico valido.", true);
         } catch (Exception e) {
             ConsolePrinter.printStatus("Errore durante la ricarica: " + e.getMessage(), true);
+            Thread.currentThread().interrupt();
         }
 
         ConsolePrinter.readLine(INVIOL);
@@ -170,7 +167,10 @@ public class CliProfilePage {
             }
 
         } catch (Exception e) {
+
             ConsolePrinter.printStatus("Errore durante il collegamento a Stripe: " + e.getMessage(), true);
+            Thread.currentThread().interrupt();
+
         }
 
         ConsolePrinter.readLine(INVIOL);

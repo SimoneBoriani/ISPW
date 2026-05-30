@@ -81,7 +81,10 @@ public class DemoDaoUtente extends DaoUtente {
 
     @Override
     public void aggiornaStatoPatente(int idUser, boolean stato) {
-
+        users.stream()
+                .filter(u -> u.getIdUser() == idUser)
+                .findFirst()
+                .ifPresent(u -> u.setVerificato(stato));
     }
 
     private boolean isNotBlank(String str) {

@@ -15,7 +15,7 @@ import java.util.List;
 // Posizione 2: Password
 // Posizione 3: Nome
 // Posizione 4: Cognome
-// Posizione 5: Numero auto noleggiate attive
+// Posizione 5: Patente verificata
 // Posizione 6: Saldo
 // Posizione 7: Ruolo
 
@@ -77,7 +77,6 @@ public class FileDaoUtente extends DaoUtente {
 
     @Override
     public void insertUtente(Utente utente) {
-
         List<Utente> utenti = loadAll();
         int nextId = utenti.stream().mapToInt(Utente::getIdUser).max().orElse(0) + 1;
         utente.setIdUser(nextId);
@@ -104,12 +103,10 @@ public class FileDaoUtente extends DaoUtente {
     @Override
     public void update(Utente utente) {
         List<Utente> utenti = loadAll();
-
         Utente target = utenti.stream()
                 .filter(u -> u.getIdUser() == utente.getIdUser())
                 .findFirst()
                 .orElse(null);
-
         if (target != null) {
             applyUpdates(utente, target);
             saveAll(utenti);
@@ -119,27 +116,31 @@ public class FileDaoUtente extends DaoUtente {
 
     @Override
     public void aggiornaStatoPatente(int idUser, boolean stato) {
+        List<Utente> utenti = loadAll();
+        Utente target = utenti.stream()
+                .filter(u -> u.getIdUser() == idUser)
+                .findFirst()
+                .orElse(null);
 
+        if (target != null) {
+            target.setVerificato(stato);
+            saveAll(utenti);
+        }
     }
 
     private void applyUpdates(Utente source, Utente target) {
-
         updateString(source.getUsername(), target::setUsername);
         updateString(source.getUserPassword(), target::setUserPassword);
         updateString(source.getNome(), target::setNome);
         updateString(source.getCognome(), target::setCognome);
-//        if (source.getAutoPossedute() > 0) {
-//            target.setAutoPossedute(source.getAutoPossedute());
-//        }
+
         if (source.getSaldo() != 0.0) {
             target.setSaldo(target.getSaldo() + source.getSaldo());
         }
     }
 
     private void updateString(String value, java.util.function.Consumer<String> setter) {
-        if (value != null && !value.trim().isEmpty()) {
-            setter.accept(value.trim());
-        }
+        if (value != null && !value.trim().isEmpty()) setter.accept(value.trim());
     }
 
     private void sincronizzaSessione(Utente utente) {

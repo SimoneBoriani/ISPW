@@ -14,10 +14,14 @@ import java.util.concurrent.TimeoutException;
 
 public class RicaricaController {
 
-    private final StripeService stripe;
+    private StripeService stripe;
     private final DaoUtente daoUtente = DaoFactory.getDaoSingletonFactory().createUtenteDao();
 
-    public RicaricaController(StripeService stripe) {
+    public RicaricaController() {
+        //Costruttore
+    }
+
+    public void setStripe(StripeService stripe) {
         this.stripe = stripe;
     }
 

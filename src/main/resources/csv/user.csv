@@ -1,5 +1,5 @@
-1,admin,pass,,,0,0.0,ADMIN
-2,user,us,Simone,Boriani,0,661.75,USER
-3,aura,lago,,,0,0.0,USER
-4,auras,aura,Simone,Boriani,0,75.0,USER
-5,ao,so,,,0,0.0,USER
+1,admin,pass,,,false,0.0,ADMIN
+2,user,us,Simone,Boriani,true,536.75,USER
+3,aura,lago,,,false,0.0,USER
+4,auras,aura,Simone,Boriani,false,75.0,USER
+5,ao,so,,,false,0.0,USER

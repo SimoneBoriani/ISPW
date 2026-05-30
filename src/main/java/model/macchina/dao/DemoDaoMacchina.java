@@ -10,16 +10,21 @@ import java.util.function.IntConsumer;
 public class DemoDaoMacchina extends DaoMacchina {
 
     private static final List<Macchina> demoCars = new ArrayList<>();
-    private int counter=1;
+    private static int counter = 1;
+
+    private static synchronized int getNextId() {
+        return counter++;
+    }
+
 
     @Override
     public void insert(List<Macchina> macchina) {
 
-        for (Macchina m : demoCars) {
-            counter++;
+        for (Macchina m : macchina) {
             m.setId(counter);
+            demoCars.add(m);
+            getNextId();
         }
-        demoCars.addAll(macchina);
     }
 
     @Override

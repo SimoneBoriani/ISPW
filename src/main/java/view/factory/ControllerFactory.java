@@ -33,6 +33,8 @@ public class ControllerFactory {
 
     public NotificheController createNotificheController(){return new NotificheController();}
 
+    public  RicaricaController createRicaricaController(){return new RicaricaController();}
+
     public static synchronized ControllerFactory getGraphicalSingletonFactory() throws GenericSystemException {
 
         if (instance == null) {

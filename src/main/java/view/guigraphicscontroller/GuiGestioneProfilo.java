@@ -4,7 +4,10 @@ import bean.NotificaBean;
 import bean.ProfileBean;
 import controller.GestioneProfiloController;
 import controller.NotificheController;
+import controller.RicaricaController;
 import exceptions.GenericSystemException;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -12,23 +15,19 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.utente.Utente;
+import service.StripeService;
+import utils.ConfigLoader;
 import utils.SessionSingleton;
 import utils.StageHandler;
 import view.factory.ControllerFactory;
-
-import bean.PaymentTransactionBean;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.HBox;
-import service.StripeService;
-import utils.ConfigLoader;
 
 import java.io.IOException;
 
@@ -36,20 +35,16 @@ public class GuiGestioneProfilo {
 
     private final GestioneProfiloController controller = ControllerFactory.getGraphicalSingletonFactory().createGestioneProfiloController();
     private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
+    private final RicaricaController ricaricaController = ControllerFactory.getGraphicalSingletonFactory().createRicaricaController();
 
-    @FXML
-    private Label nomeUtenteLabel;
-    @FXML
-    private Label cognomeUtenteLabel;
-    @FXML
-    private Label usernameUtenteLabel;
-    @FXML
-    private Label saldoUtenteLabel;
-    @FXML
-    private Label roleUtenteLabel;
+    @FXML private Label nomeUtenteLabel;
+    @FXML private Label cognomeUtenteLabel;
+    @FXML private Label usernameUtenteLabel;
+    @FXML private Label saldoUtenteLabel;
+    @FXML private Label roleUtenteLabel;
 
     private static final String BUTTON = "Button";
-    private static final String ORANGE="orange";
+    private static final String ORANGE = "orange";
 
     @FXML
     public void initialize() {
@@ -92,7 +87,7 @@ public class GuiGestioneProfilo {
         Button btnAnnulla = new Button("Chiudi");
         btnAnnulla.setOnAction(e -> popupStage.close());
 
-        btnProcedi.setOnAction(e -> elaboraPagamento(txtImporto, btnProcedi, spinner, lblStato, popupStage));
+        btnProcedi.setOnAction(e -> elaboraPagamento(txtImporto, btnProcedi, spinner, lblStato));
 
         VBox layoutPopup = new VBox(15);
         layoutPopup.setPadding(new Insets(20));
@@ -112,7 +107,7 @@ public class GuiGestioneProfilo {
         popupStage.showAndWait();
     }
 
-    private void elaboraPagamento(TextField txtImporto, Button btnProcedi, ProgressIndicator spinner, Label lblStato, Stage popupStage) {
+    private void elaboraPagamento(TextField txtImporto, Button btnProcedi, ProgressIndicator spinner, Label lblStato) {
         String importoStr = txtImporto.getText().replace(",", ".");
         double importo;
 
@@ -127,42 +122,49 @@ public class GuiGestioneProfilo {
         cambiaStatoCaricamentoUI(txtImporto, btnProcedi, spinner, true);
         impostaMessaggioStato(lblStato, "Apertura Stripe Checkout nel browser...\nCompleta il pagamento e torna qui.", "blue");
 
-        String username = SessionSingleton.getInstance().getUtenteCorrente().getUsername();
-        StripeService stripe = new StripeService(ConfigLoader.get("stripe.secret.key"), ConfigLoader.getInt("stripe.success.port"));
+        StripeService stripe = new StripeService(
+                ConfigLoader.get("stripe.secret.key"),
+                ConfigLoader.getInt("stripe.success.port")
+        );
 
-        Task<PaymentTransactionBean> task = new Task<>() {
+        ricaricaController.setStripe(stripe);
+
+        Task<Boolean> task = new Task<>() {
             @Override
-            protected PaymentTransactionBean call() throws Exception {
-                return stripe.avviaRicarica(username, importo);
+            protected Boolean call() throws Exception {
+                return ricaricaController.ricaricaSaldo(importo);
             }
         };
 
-        task.setOnSucceeded(ev -> gestisciSuccessoTask(task.getValue(), txtImporto, btnProcedi, spinner, lblStato, popupStage));
-        task.setOnFailed(ev -> gestisciErroreTask(task.getException(), txtImporto, btnProcedi, spinner, lblStato));
+        task.setOnSucceeded(ev -> gestisciSuccessoTask(task.getValue(), txtImporto, btnProcedi, spinner, lblStato));
+
+        task.setOnFailed(ev -> {
+            Throwable err = task.getException();
+            gestisciErroreTask(err, txtImporto, btnProcedi, spinner, lblStato);
+            if (err instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+        });
 
         new Thread(task).start();
     }
 
-    private void gestisciSuccessoTask(PaymentTransactionBean tx, TextField txtImporto, Button btnProcedi, ProgressIndicator spinner, Label lblStato, Stage popupStage) {
+    private void gestisciSuccessoTask(Boolean successo, TextField txtImporto, Button btnProcedi, ProgressIndicator spinner, Label lblStato) {
         cambiaStatoCaricamentoUI(txtImporto, btnProcedi, spinner, false);
 
-        switch (tx.getPaymentStatus()) {
-            case "paid":
-                try {
-                    aggiornaSaldoEGeneraNotifica(tx.getAmount());
-                    impostaMessaggioStato(lblStato, "✅ Ricarica di " + tx.getAmount() + "€ completata!", "green");
-                    ricaricaPaginaProfiloConRitardo(popupStage);
-                } catch (Exception ex) {
-                    impostaMessaggioStato(lblStato, "Errore aggiornamento saldo: " + ex.getMessage(), "red");
-                    cambiaStatoCaricamentoUI(txtImporto, btnProcedi, spinner, false);
-                }
-                break;
-            case "cancelled":
-                impostaMessaggioStato(lblStato, "⚠ Pagamento annullato", ORANGE);
-                break;
-            default:
-                impostaMessaggioStato(lblStato, "❌ Pagamento non riuscito (stato: " + tx.getPaymentStatus() + ")", "red");
-                break;
+        if (Boolean.TRUE.equals(successo)) {
+            impostaMessaggioStato(lblStato, "✅ Ricarica completata con successo!", "green");
+
+            NotificaBean saldoNotifica = new NotificaBean();
+            saldoNotifica.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+            saldoNotifica.setMsg("Importo depositato con successo!");
+            notificheController.generaNotificaSistema(saldoNotifica);
+
+            txtImporto.setText("");
+
+            if (saldoUtenteLabel == null) {
+                impostaMessaggioStato(lblStato, "⚠️ Pagamento annullato o non completato.", ORANGE);
+            }
         }
     }
 
@@ -171,48 +173,11 @@ public class GuiGestioneProfilo {
         impostaMessaggioStato(lblStato, "❌ Errore: " + (err != null ? err.getMessage() : "sconosciuto"), "red");
     }
 
-    private void aggiornaSaldoEGeneraNotifica(double importoRicaricato) {
-
-        int idUser = SessionSingleton.getInstance().getUtenteCorrente().getIdUser();
-
-        ProfileBean bean = new ProfileBean();
-        bean.setId(idUser);
-        bean.setSaldo(importoRicaricato);
-
-        controller.updateSaldo(bean);
-        SessionSingleton.getInstance().getUtenteCorrente().setSaldo(importoRicaricato);
-
-        NotificaBean saldo = new NotificaBean();
-
-        saldo.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
-        saldo.setMsg("Importo di "+importoRicaricato+"€ depositato con successo!");
-
-        notificheController.generaNotificaSistema(saldo);
-    }
-
-    private void ricaricaPaginaProfiloConRitardo(Stage popupStage) {
-        new Thread(() -> {
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            Platform.runLater(() -> {
-                popupStage.close();
-                try {
-                    StageHandler.getSingletonInstance().loadPage("/view/Profilo.fxml");
-                } catch (IOException ex) {
-                    throw new GenericSystemException("Pagina non caricata:",ex);
-                }
-            });
-        }).start();
-    }
-
     @FXML
     public void btnVerificaPatente(ActionEvent actionEvent) {
         if (SessionSingleton.getInstance().getUtenteCorrente() == null) return;
+        Boolean verificato = SessionSingleton.getInstance().getUtenteCorrente().getVerificato();
 
-        Boolean verificato=SessionSingleton.getInstance().getUtenteCorrente().getVerificato();
         if (Boolean.TRUE.equals(verificato)) {
             Stage popupGiaVerificato = creaPopup("Verifica non necessaria");
             Label msg = new Label("La tua patente è già stata verificata con successo!");
@@ -223,6 +188,7 @@ public class GuiGestioneProfilo {
         }
 
         Stage popupStage = creaPopup("Verifica Documento");
+
         Label lblStato = new Label("La verifica è necessaria per noleggiare veicoli.");
         ProgressIndicator spinner = new ProgressIndicator();
         spinner.setVisible(false);
@@ -233,12 +199,14 @@ public class GuiGestioneProfilo {
         btnInizia.getStyleClass().add(BUTTON);
 
         btnInizia.setOnAction(e -> avviaFlussoVerifica(btnInizia, spinner, lblStato, popupStage));
+
         mostraLayoutVerifica(popupStage, lblStato, spinner, btnInizia);
     }
 
     private void avviaFlussoVerifica(Button btn, ProgressIndicator sp, Label lbl, Stage stage) {
         cambiaStatoCaricamentoUI(btn, sp, true);
         impostaMessaggioStato(lbl, "Apertura browser in corso...\nCompleta la verifica e torna qui.", "blue");
+
         ProfileBean bean = new ProfileBean();
         bean.setId(SessionSingleton.getInstance().getUtenteCorrente().getIdUser());
 
@@ -252,16 +220,18 @@ public class GuiGestioneProfilo {
         task.setOnSucceeded(ev -> {
             cambiaStatoCaricamentoUI(btn, sp, false);
             String stato = task.getValue();
-
             if ("verified".equals(stato)) {
                 impostaMessaggioStato(lbl, "✅ Patente verificata con successo!", "green");
                 controller.completaVerificaPatente(bean);
 
                 new Thread(() -> {
-                    try { Thread.sleep(2000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
                     Platform.runLater(stage::close);
                 }).start();
-
             } else if ("processing".equals(stato)) {
                 impostaMessaggioStato(lbl, "⏳ Verifica in corso. Ci vorrà qualche minuto.", ORANGE);
             } else if ("requires_input".equals(stato)) {
@@ -273,7 +243,11 @@ public class GuiGestioneProfilo {
 
         task.setOnFailed(ev -> {
             cambiaStatoCaricamentoUI(btn, sp, false);
-            impostaMessaggioStato(lbl, "Errore di connessione: " + task.getException().getMessage(), "red");
+            Throwable err = task.getException();
+            impostaMessaggioStato(lbl, "Errore di connessione: " + err.getMessage(), "red");
+            if (err instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
         });
 
         new Thread(task).start();
@@ -308,7 +282,6 @@ public class GuiGestioneProfilo {
         if (StageHandler.getSingletonInstance() != null) {
             StageHandler.getSingletonInstance().loadCss(scene);
         }
-
         popupStage.setScene(scene);
         popupStage.showAndWait();
     }
@@ -331,6 +304,7 @@ public class GuiGestioneProfilo {
         btnProcedi.setDisable(inCaricamento);
         spinner.setVisible(inCaricamento);
     }
+
     private void cambiaStatoCaricamentoUI(Button btnProcedi, ProgressIndicator spinner, boolean inCaricamento) {
         btnProcedi.setDisable(inCaricamento);
         spinner.setVisible(inCaricamento);
@@ -343,18 +317,21 @@ public class GuiGestioneProfilo {
 
     public void personalInfo() {
         Utente utenteCorrente = SessionSingleton.getInstance().getUtenteCorrente();
-
         if (utenteCorrente != null) {
+
             nomeUtenteLabel.setText(utenteCorrente.getNome() != null ? utenteCorrente.getNome() : "");
             cognomeUtenteLabel.setText(utenteCorrente.getCognome() != null ? utenteCorrente.getCognome() : "");
             usernameUtenteLabel.setText(utenteCorrente.getUsername() != null ? utenteCorrente.getUsername() : "");
-            saldoUtenteLabel.setText(String.valueOf(utenteCorrente.getSaldo()));
+            saldoUtenteLabel.setText(String.valueOf(utenteCorrente.getSaldo()) + " €");
             roleUtenteLabel.setText(utenteCorrente.getRuolo() != null ? utenteCorrente.getRuolo() : "USER");
+
         } else {
+
             nomeUtenteLabel.setText("");
             cognomeUtenteLabel.setText("");
             usernameUtenteLabel.setText("");
-            saldoUtenteLabel.setText("");
+            saldoUtenteLabel.setText("0.0 €");
+
         }
     }
 
@@ -391,14 +368,14 @@ public class GuiGestioneProfilo {
 
                 NotificaBean info = new NotificaBean();
                 info.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
-                info.setMsg("Informazioni personali aggiornate");
-
+                info.setMsg("Informazioni personali aggiornate con successo!");
 
                 notificheController.generaNotificaSistema(info);
+
+                personalInfo();
             } catch (Exception ex) {
                 throw new GenericSystemException("Errore aggiornamento parametri: ", ex);
             }
-
             popupStage.close();
         });
 
@@ -408,9 +385,7 @@ public class GuiGestioneProfilo {
 
         layoutPopup.getChildren().addAll(
                 new Label("Aggiorna Dati Personali:"),
-                txtUsername,
-                txtNome,
-                txtCognome,
+                txtUsername, txtNome, txtCognome,
                 btnUpdate
         );
 
@@ -421,10 +396,8 @@ public class GuiGestioneProfilo {
     }
 
     @FXML
-    public void btnUpdate(ActionEvent event) throws IOException {
+    public void btnUpdate(ActionEvent event){
         updateProfile();
-        String reload = "/view/Profilo.fxml";
-        StageHandler.getSingletonInstance().loadPage(reload);
     }
 
     @FXML
