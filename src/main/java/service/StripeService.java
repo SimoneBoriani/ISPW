@@ -43,10 +43,10 @@ public class StripeService {
                                     .setPriceData(
                                             SessionCreateParams.LineItem.PriceData.builder()
                                                     .setCurrency("eur")
-                                                    .setUnitAmount((long)(importo * 100)) // Stripe vuole CENTESIMI
+                                                    .setUnitAmount((long)(importo * 100))
                                                     .setProductData(
                                                             SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                    .setName("Ricarica saldo KrustyNoDusty")
+                                                                    .setName("Ricarica saldo BoroRental")
                                                                     .build())
                                                     .build())
                                     .build())

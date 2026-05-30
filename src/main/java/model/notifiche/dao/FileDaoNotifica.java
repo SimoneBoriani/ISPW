@@ -14,13 +14,13 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 public class FileDaoNotifica extends DaoNotifica {
 
     private static final Logger logger = Logger.getLogger(FileDaoNotifica.class.getName());
 
-    private static final String FILE_PATH = "notifiche_data.csv";
-    private static final String DELIMITER = "|#|";
+    private static final String FILE_PATH = "src/main/resources/csv/notifiche_data.csv";
+    // Usiamo la virgola come richiesto per uniformare i CSV
+    private static final String DELIMITER = ",";
 
     private static List<Notifica> databaseNotifiche = new ArrayList<>();
     private static int idCounter = 1;
@@ -32,37 +32,11 @@ public class FileDaoNotifica extends DaoNotifica {
     private static void caricaDaFile() {
         Path path = Paths.get(FILE_PATH);
 
-        if (!Files.exists(path)) {
-            try {
-                if (path.getParent() != null) Files.createDirectories(path.getParent());
-                Files.createFile(path);
-            } catch (IOException e) {
-                logger.log(Level.SEVERE, "Impossibile creare il file: " + FILE_PATH, e);
-            }
-            return;
-        }
+        if (creaFileSeMancante(path)) return;
 
         try {
             for (String riga : Files.readAllLines(path)) {
-                String[] dati = riga.split("\\|#\\|");
-
-                if (dati.length < 7) continue;
-
-                Notifica n = new Notifica(
-                        Integer.parseInt(dati[0]),
-                        dati[1],
-                        dati[2],
-                        dati[3].replace("\\n", "\n"),
-                        Notifica.Tipo.valueOf(dati[4]),
-                        Boolean.parseBoolean(dati[5]),
-                        LocalDateTime.parse(dati[6])
-                );
-
-                if (dati.length >= 8 && !dati[7].equals("null")) {
-                    n.setAuto(dati[7]);
-                }
-
-                databaseNotifiche.add(n);
+                processaSingolaRiga(riga);
             }
 
             idCounter = databaseNotifiche.stream()
@@ -75,22 +49,66 @@ public class FileDaoNotifica extends DaoNotifica {
         }
     }
 
+    private static boolean creaFileSeMancante(Path path) {
+        if (!Files.exists(path)) {
+            try {
+                if (path.getParent() != null) {
+                    Files.createDirectories(path.getParent());
+                }
+                Files.createFile(path);
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, "Impossibile creare il file: " + FILE_PATH, e);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static void processaSingolaRiga(String riga) {
+        if (riga == null || riga.trim().isEmpty()) return;
+
+        String[] dati = riga.split(DELIMITER);
+        if (dati.length < 7) return;
+
+        String testoDecodificato = dati[3].replace("\\n", "\n").replace("[VIRGOLA]", ",");
+
+        Notifica n = new Notifica(
+                Integer.parseInt(dati[0]),
+                dati[1],
+                dati[2],
+                testoDecodificato,
+                Notifica.Tipo.valueOf(dati[4]),
+                Boolean.parseBoolean(dati[5]),
+                LocalDateTime.parse(dati[6])
+        );
+
+        if (dati.length >= 8 && !dati[7].equals("null")) {
+            n.setAuto(dati[7]);
+        }
+
+        databaseNotifiche.add(n);
+    }
+
     private static void salvaSuFile() {
         Path path = Paths.get(FILE_PATH);
         List<String> righe = new ArrayList<>();
 
         for (Notifica n : databaseNotifiche) {
-            String testoSicuro = n.getTesto() != null ? n.getTesto().replace("\n", "\\n") : "";
+            String testoSicuro = n.getTesto() != null ?
+                    n.getTesto().replace("\n", "\\n").replace(",", "[VIRGOLA]") : "";
+
             String autoVal = n.getAuto() != null ? n.getAuto() : "null";
 
-            String riga = n.getId() + DELIMITER +
-                    n.getMittente() + DELIMITER +
-                    n.getDestinatario() + DELIMITER +
-                    testoSicuro + DELIMITER +
-                    n.getTipo().name() + DELIMITER +
-                    n.isLetta() + DELIMITER +
-                    n.getDataCreazione().toString() + DELIMITER +
-                    autoVal;
+            String riga = String.join(DELIMITER,
+                    String.valueOf(n.getId()),
+                    n.getMittente(),
+                    n.getDestinatario(),
+                    testoSicuro,
+                    n.getTipo().name(),
+                    String.valueOf(n.isLetta()),
+                    n.getDataCreazione().toString(),
+                    autoVal
+            );
 
             righe.add(riga);
         }

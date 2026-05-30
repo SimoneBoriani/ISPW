@@ -25,6 +25,7 @@ public class VisualizzaCatalogoController {
         autoFiltro.setAlimentazione(filtri.getAlimentazione());
         autoFiltro.setTrasmissione(filtri.getTrasmissione());
         autoFiltro.setPrezzo(filtri.getPrezzo());
+        autoFiltro.setTipologia(filtri.getTipologia());
 
         return DaoFactory.getDaoSingletonFactory().createMacchinaDao().research(autoFiltro);
     }

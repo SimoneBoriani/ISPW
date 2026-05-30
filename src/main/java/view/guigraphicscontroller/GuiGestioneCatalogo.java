@@ -204,12 +204,36 @@ public class GuiGestioneCatalogo {
             popupStage.close();
         });
 
-        VBox layoutPopup = new VBox(15, new Label("Modifica dati auto:"), lblErrore, txtMarca, txtModello, txtAnno, txtPrezzo, txtUrl, cbPosti, cbAlimentazione, cbCambio, cbTipo, buttonBox);
+        VBox layoutPopup = new VBox(15);
         layoutPopup.setPadding(new Insets(20));
-        layoutPopup.setAlignment(Pos.CENTER);
+        layoutPopup.setAlignment(Pos.TOP_CENTER);
 
-        Scene scene = new Scene(layoutPopup, 350, 560);
+        Label lblTitolo = new Label("Modifica dati auto:");
+        lblTitolo.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #204080;");
+
+        layoutPopup.getChildren().addAll(
+                lblTitolo,
+                lblErrore,
+                creaBoxInput("Marca:", txtMarca),
+                creaBoxInput("Modello:", txtModello),
+                creaBoxInput("Anno di produzione:", txtAnno),
+                creaBoxInput("Prezzo (€):", txtPrezzo),
+                creaBoxInput("Nome File Immagine:", txtUrl),
+                creaBoxInput("Numero Posti:", cbPosti),
+                creaBoxInput("Alimentazione:", cbAlimentazione),
+                creaBoxInput("Trasmissione:", cbCambio),
+                creaBoxInput("Tipologia:", cbTipo),
+                buttonBox
+        );
+
+        ScrollPane scrollPane = new ScrollPane(layoutPopup);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background-color: transparent;");
+
+        Scene scene = new Scene(scrollPane, 380, 600);
         StageHandler.getSingletonInstance().loadCss(scene);
+
+        popupStage.setResizable(false);
         popupStage.setScene(scene);
         popupStage.showAndWait();
     }
@@ -219,6 +243,14 @@ public class GuiGestioneCatalogo {
         TextField tf = new TextField(testoIniziale);
         tf.setMaxWidth(Double.MAX_VALUE);
         return tf;
+    }
+
+    private VBox creaBoxInput(String testoLabel, Control campoInput) {
+        Label label = new Label(testoLabel);
+        label.setStyle("-fx-font-weight: bold; -fx-text-fill: #204080; -fx-font-size: 12px;");
+        VBox box = new VBox(5, label, campoInput);
+        box.setAlignment(Pos.CENTER_LEFT);
+        return box;
     }
 
     private void assegnaStringa(String valore, java.util.function.Consumer<String> setter) {
@@ -252,34 +284,34 @@ public class GuiGestioneCatalogo {
         popupStage.setTitle("Aggiungi Auto");
 
         TextField txtMarca = new TextField();
-        txtMarca.setPromptText("Marca");
+        txtMarca.setPromptText("Es. Fiat");
 
         TextField txtModello = new TextField();
-        txtModello.setPromptText("Modello");
+        txtModello.setPromptText("Es. Panda");
 
         TextField txtAnno = new TextField();
-        txtAnno.setPromptText("Anno");
+        txtAnno.setPromptText("Es. 2023");
 
         TextField txtPrezzo = new TextField();
-        txtPrezzo.setPromptText("Prezzo");
+        txtPrezzo.setPromptText("Es. 25.50");
 
         TextField txtUrl = new TextField();
-        txtUrl.setPromptText("URL FOTO");
+        txtUrl.setPromptText("Es. auto.png");
 
         ComboBox<String> cbPosti = new ComboBox<>();
-        cbPosti.setPromptText("Posti");
+        cbPosti.setPromptText("Seleziona posti");
         cbPosti.getItems().addAll("2", "4", "5", "7", "8");
 
         ComboBox<String> cbAlimentazione = new ComboBox<>();
-        cbAlimentazione.setPromptText("Alimentazione");
+        cbAlimentazione.setPromptText("Seleziona alimentazione");
         cbAlimentazione.getItems().addAll("Benzina", "Diesel", "Ibrida", "Elettrica", "GPL");
 
         ComboBox<String> cbCambio = new ComboBox<>();
-        cbCambio.setPromptText("Trasmissione");
+        cbCambio.setPromptText("Seleziona trasmissione");
         cbCambio.getItems().addAll("Manuale", "Automatica");
 
         ComboBox<String> cbTipo = new ComboBox<>();
-        cbTipo.setPromptText("Tipologia");
+        cbTipo.setPromptText("Seleziona tipologia");
         cbTipo.getItems().addAll("Berlina", "Suv", "Utilitaria", "Sportiva", "Supercar");
 
         txtMarca.setMaxWidth(Double.MAX_VALUE);
@@ -297,7 +329,7 @@ public class GuiGestioneCatalogo {
         lblErrore.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
         lblErrore.setWrapText(true);
 
-        Button btnAdd = new Button("Aggiungi");
+        Button btnAdd = new Button("Aggiungi Auto in RAM");
         btnAdd.getStyleClass().add(BTN);
         btnAdd.setMaxWidth(Double.MAX_VALUE);
 
@@ -335,28 +367,35 @@ public class GuiGestioneCatalogo {
 
         VBox layoutPopup = new VBox(15);
         layoutPopup.setPadding(new Insets(20));
-        layoutPopup.setAlignment(Pos.CENTER);
+        layoutPopup.setAlignment(Pos.TOP_CENTER);
+
+        Label lblTitolo = new Label("Aggiungi nuova auto:");
+        lblTitolo.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #204080;");
 
         layoutPopup.getChildren().addAll(
-                new Label("Aggiungi nuova auto:"),
+                lblTitolo,
                 lblErrore,
-                txtMarca,
-                txtModello,
-                txtAnno,
-                txtPrezzo,
-                txtUrl,
-                cbPosti,
-                cbAlimentazione,
-                cbCambio,
-                cbTipo,
+                creaBoxInput("Marca:", txtMarca),
+                creaBoxInput("Modello:", txtModello),
+                creaBoxInput("Anno di produzione:", txtAnno),
+                creaBoxInput("Prezzo (€):", txtPrezzo),
+                creaBoxInput("Nome File Immagine:", txtUrl),
+                creaBoxInput("Numero Posti:", cbPosti),
+                creaBoxInput("Alimentazione:", cbAlimentazione),
+                creaBoxInput("Trasmissione:", cbCambio),
+                creaBoxInput("Tipologia:", cbTipo),
                 btnAdd
         );
 
-        Scene scene = new Scene(layoutPopup, 350, 580);
+        ScrollPane scrollPane = new ScrollPane(layoutPopup);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background-color: transparent;");
+
+        Scene scene = new Scene(scrollPane, 380, 600);
         StageHandler.getSingletonInstance().loadCss(scene);
+
         popupStage.setResizable(false);
         popupStage.setScene(scene);
         popupStage.showAndWait();
-
     }
 }

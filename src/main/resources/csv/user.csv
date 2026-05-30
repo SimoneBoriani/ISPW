@@ -1,6 +1,3 @@
 1,admin,pass,,,false,0.0,ADMIN
-2,user,us,Simone,Boriani,true,536.75,USER
-3,aura,lago,,,false,0.0,USER
-4,auras,aura,Simone,Boriani,false,75.0,USER
-5,ao,so,,,false,0.0,USER
-6,lag,a,,,false,0.0,USER
+2,user,user,Simone,Boriani,true,493.0,USER
+3,user1,user1,Simone,Boriani,true,450.0,USER

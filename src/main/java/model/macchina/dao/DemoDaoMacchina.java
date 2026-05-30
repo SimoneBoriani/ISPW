@@ -29,13 +29,14 @@ public class DemoDaoMacchina extends DaoMacchina {
 
     @Override
     public List<Macchina> research(Macchina filtriAuto) throws CarNotFoundException {
-        String model = filtriAuto.getModello();
-        String alimentation = filtriAuto.getAlimentazione();
+
+        if (filtriAuto != null && filtriAuto.getId() > 0) {
+            return ricercaPerId(filtriAuto.getId());
+        }
 
         List<Macchina> results = demoCars.stream()
                 .filter(Macchina::getDisponibile)
-                .filter(m -> (model == null || model.trim().isEmpty() || m.getModello().toLowerCase().contains(model.toLowerCase())))
-                .filter(m -> (alimentation == null || alimentation.trim().isEmpty() || m.getAlimentazione().equalsIgnoreCase(alimentation)))
+                .filter(m -> soddisfaFiltri(m, filtriAuto))
                 .toList();
 
         if (results.isEmpty()) {
@@ -43,6 +44,40 @@ public class DemoDaoMacchina extends DaoMacchina {
         }
 
         return results;
+    }
+
+    private List<Macchina> ricercaPerId(int id) throws CarNotFoundException {
+        List<Macchina> foundById = demoCars.stream()
+                .filter(m -> m.getId() == id)
+                .toList();
+
+        if (foundById.isEmpty()) {
+            throw new CarNotFoundException("Nessuna auto trovata con ID " + id);
+        }
+        return foundById;
+    }
+
+    private boolean soddisfaFiltri(Macchina m, Macchina filtri) {
+        if (filtri == null) return true;
+
+        if (!matchTesto(filtri.getModello(), m.getModello(), true)) return false;
+        if (!matchTesto(filtri.getMarca(), m.getMarca(), true)) return false;
+        if (!matchTesto(filtri.getAlimentazione(), m.getAlimentazione(), false)) return false;
+        if (!matchTesto(filtri.getTipologia(), m.getTipologia(), false)) return false;
+
+        if (!matchTesto(filtri.getTrasmissione(), m.getTrasmissione(), false)) return false;
+
+        return filtri.getPrezzo() <= 0 || m.getPrezzo() <= filtri.getPrezzo();
+    }
+
+    private boolean matchTesto(String filtro, String valoreAuto, boolean usaContains) {
+        if (filtro == null || filtro.trim().isEmpty()) return true;
+        if (valoreAuto == null) return false;
+
+        if (usaContains) {
+            return valoreAuto.toLowerCase().contains(filtro.toLowerCase());
+        }
+        return valoreAuto.equalsIgnoreCase(filtro);
     }
 
     @Override

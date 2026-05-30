@@ -116,19 +116,27 @@ public class DbmsDaoMacchina extends DaoMacchina {
     public List<Macchina> research(Macchina filtriAuto) throws CarNotFoundException {
         List<Macchina> results = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SELECT_BASE);
+        StringBuilder sql = new StringBuilder();
 
-        if (filtriAuto.getId() > 0) {
-            sql.append(" AND auto_id = ?");
+        if (filtriAuto != null && filtriAuto.getId() > 0) {
+            sql.append("SELECT * FROM macchine WHERE auto_id = ?");
             parameters.add(filtriAuto.getId());
-        } else {
-            appendFilter(sql, MODELLO, filtriAuto.getModello(), parameters, true);
-            appendFilter(sql, MARCA, filtriAuto.getMarca(), parameters, true);
-            appendFilter(sql, ALIMENTAZIONE, filtriAuto.getAlimentazione(), parameters, true);
+        }
+        else {
+            sql.append(SELECT_BASE);
 
-            if (filtriAuto.getPrezzo() > 0) {
-                sql.append(" AND prezzo <= ?");
-                parameters.add(filtriAuto.getPrezzo());
+            if (filtriAuto != null) {
+
+                appendFilter(sql, MODELLO, filtriAuto.getModello(), parameters, true);
+                appendFilter(sql, MARCA, filtriAuto.getMarca(), parameters, true);
+                appendFilter(sql, ALIMENTAZIONE, filtriAuto.getAlimentazione(), parameters, true);
+                appendFilter(sql, TIPOLOGIA, filtriAuto.getTipologia(), parameters, true);
+                appendFilter(sql, TRASMISSIONE, filtriAuto.getTrasmissione(), parameters, true);
+
+                if (filtriAuto.getPrezzo() > 0) {
+                    sql.append(" AND prezzo <= ?");
+                    parameters.add(filtriAuto.getPrezzo());
+                }
             }
         }
 

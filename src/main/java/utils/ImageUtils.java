@@ -34,10 +34,7 @@ public class ImageUtils {
 
             if (stream != null) {
                 return new Image(stream);
-            } else {
-                logger.info("File non trovato: uso default.");
             }
-
         } catch (Exception e) {
             logger.warning("Errore caricamento immagine: " + e.getMessage());
         }

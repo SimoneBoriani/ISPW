@@ -175,6 +175,15 @@ public class GuiGestioneProfilo {
         new Thread(task).start();
     }
 
+    private void reload(){
+        try {
+            StageHandler.getSingletonInstance().loadPage("/view/Profilo.fxml");
+        } catch (IOException e) {
+            throw new GenericSystemException("Pagina non trovata :",e);
+        }
+    }
+
+
     private void gestisciSuccessoTask(Boolean successo, TextField txtImporto, Button btnProcedi, ProgressIndicator spinner, Label lblStato) {
         cambiaStatoCaricamentoUI(txtImporto, btnProcedi, spinner, false);
 
@@ -186,11 +195,7 @@ public class GuiGestioneProfilo {
             saldoNotifica.setMsg("Importo depositato con successo!");
             notificheController.generaNotificaSistema(saldoNotifica);
 
-            try {
-                StageHandler.getSingletonInstance().loadPage("/view/Profilo.fxml");
-            } catch (IOException e) {
-                throw new GenericSystemException("Pagina non trovata :",e);
-            }
+            reload();
 
             txtImporto.setText("");
 
@@ -255,6 +260,7 @@ public class GuiGestioneProfilo {
             String stato = task.getValue();
             if ("verified".equals(stato)) {
                 impostaMessaggioStato(lbl, "✅ Patente verificata con successo!", "green");
+                reload();
                 controller.completaVerificaPatente(bean);
 
                 new Thread(() -> {

@@ -196,29 +196,28 @@ public class GuiAdminViewController {
             String modelloAuto = "";
 
             if (autoCompleta != null && !autoCompleta.isEmpty()) {
-
                 String[] argomenti = autoCompleta.split(" ");
 
-                if (argomenti.length >= 3) {
+                if (argomenti.length >= 1 && argomenti[0].matches("\\d+")) {
                     idAuto = argomenti[0];
-                    marcaAuto = argomenti[1];
+
+                    if (argomenti.length >= 2) {
+                        marcaAuto = argomenti[1];
+                    }
 
                     StringBuilder modelloBuilder = new StringBuilder();
                     for (int i = 2; i < argomenti.length; i++) {
                         modelloBuilder.append(argomenti[i]).append(" ");
                     }
                     modelloAuto = modelloBuilder.toString().trim();
-
                 } else {
                     marcaAuto = autoCompleta;
                 }
             }
 
-
             SessionSingleton.getInstance().setTempIdNotifica(idAuto);
             SessionSingleton.getInstance().setTempMarca(marcaAuto);
             SessionSingleton.getInstance().setTempModello(modelloAuto);
-
 
             javafx.scene.Node source = (javafx.scene.Node) event.getSource();
             Stage popupStage = (Stage) source.getScene().getWindow();
@@ -229,7 +228,7 @@ public class GuiAdminViewController {
             StageHandler.getSingletonInstance().loadPage("/view/GestioneCatalogo.fxml");
 
         } catch (IOException e) {
-            log.error("Errore nell'apertura delle impostazioni");
+            log.error("Errore nell'apertura delle impostazioni", e);
         }
     }
 }
