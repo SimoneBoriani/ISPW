@@ -8,10 +8,10 @@ public class NoleggioAutoBean {
     private Macchina macchina;
     private Utente renter;
     private int giorni;
+    private String metodoPagamento;
+    private boolean pagamentoEsternoConfermato = false;
 
-    public NoleggioAutoBean() {
-        // Costruttore
-    }
+    public NoleggioAutoBean() {}
 
     public Macchina getMacchina() { return macchina; }
     public void setMacchina(Macchina macchina) { this.macchina = macchina; }
@@ -21,4 +21,10 @@ public class NoleggioAutoBean {
 
     public int getGiorni() { return giorni; }
     public void setGiorni(int giorni) { this.giorni = giorni; }
+
+    public String getMetodoPagamento() { return metodoPagamento; }
+    public void setMetodoPagamento(String metodoPagamento) { this.metodoPagamento = metodoPagamento; }
+
+    public boolean isPagamentoEsternoConfermato() { return pagamentoEsternoConfermato; }
+    public void setPagamentoEsternoConfermato(boolean pagamentoEsternoConfermato) {this.pagamentoEsternoConfermato = pagamentoEsternoConfermato;}
 }

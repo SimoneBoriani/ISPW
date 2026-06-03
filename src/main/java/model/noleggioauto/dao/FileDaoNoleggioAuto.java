@@ -24,14 +24,15 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
     @Override
     public void rentRequest(Utente utente, Macchina macchina, int giorni) {
         try {
-            Utente u = findUserById(utente.getIdUser());
+            Utente u  = findUserById(utente.getIdUser());
             Macchina m = findCarById(macchina.getId());
 
-            if (m == null || !m.getDisponibile()) throw new GenericSystemException("Auto non disponibile");
-            if (u == null || u.getSaldo() < macchina.getPrezzo()) throw new GenericSystemException("Saldo insufficiente");
+            if (m == null || !m.getDisponibile())
+                throw new GenericSystemException("Auto non disponibile");
+            if (u == null || u.getSaldo() < macchina.getPrezzo())
+                throw new GenericSystemException("Saldo insufficiente");
 
             List<NoleggioAuto> tutti = new ArrayList<>(loadAllRentals());
-
             int nextId = tutti.stream().mapToInt(NoleggioAuto::getIdNoleggio).max().orElse(0) + 1;
 
             NoleggioAuto n = new NoleggioAuto();
@@ -40,7 +41,40 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
             n.setMacchina(m);
             n.setDataInizio(LocalDate.now());
             n.setDataFine(LocalDate.now().plusDays(giorni));
+            n.setPrezzoTotalePagato(macchina.getPrezzo());
+            n.setStato(ATTIVO);
+            n.setMotivoChiusura("");
 
+            tutti.add(n);
+            saveAllRentals(tutti);
+            updateFileField(CSV_CAR,  m.getId(),       10, "false");
+            updateFileField(CSV_USER, u.getIdUser(),    6, String.valueOf(u.getSaldo() - macchina.getPrezzo()));
+
+        } catch (Exception e) {
+            throw new GenericSystemException("Errore durante la transazione di noleggio su file", e);
+        }
+    }
+
+    @Override
+    public void rentRequestEsternoConfermato(Utente utente, Macchina macchina, int giorni) {
+        try {
+            Utente u   = findUserById(utente.getIdUser());
+            Macchina m = findCarById(macchina.getId());
+
+            if (m == null || !m.getDisponibile())
+                throw new GenericSystemException("Auto non disponibile");
+            if (u == null)
+                throw new GenericSystemException("Utente non trovato");
+
+            List<NoleggioAuto> tutti = new ArrayList<>(loadAllRentals());
+            int nextId = tutti.stream().mapToInt(NoleggioAuto::getIdNoleggio).max().orElse(0) + 1;
+
+            NoleggioAuto n = new NoleggioAuto();
+            n.setIdNoleggio(nextId);
+            n.setUtente(u);
+            n.setMacchina(m);
+            n.setDataInizio(LocalDate.now());
+            n.setDataFine(LocalDate.now().plusDays(giorni));
             n.setPrezzoTotalePagato(macchina.getPrezzo());
             n.setStato(ATTIVO);
             n.setMotivoChiusura("");
@@ -48,10 +82,9 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
             tutti.add(n);
             saveAllRentals(tutti);
             updateFileField(CSV_CAR, m.getId(), 10, "false");
-            updateFileField(CSV_USER, u.getIdUser(), 6, String.valueOf(u.getSaldo() - macchina.getPrezzo()));
 
         } catch (Exception e) {
-            throw new GenericSystemException("Errore durante la transazione di noleggio su file", e);
+            throw new GenericSystemException("Errore durante il salvataggio noleggio Stripe su file", e);
         }
     }
 

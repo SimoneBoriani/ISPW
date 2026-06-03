@@ -1,10 +1,10 @@
 package service;
 
+import bean.PaymentTransactionBean;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
-import bean.PaymentTransactionBean;
 import exceptions.PaymentFailedException;
 
 import java.awt.Desktop;
@@ -23,7 +23,18 @@ public class StripeService {
         this.callbackPort = callbackPort;
     }
 
-    public PaymentTransactionBean avviaRicarica(String username, double importo) throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
+    public PaymentTransactionBean avviaRicarica(String username, double importo)
+            throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
+        return avviaCheckoutSession(username, "Ricarica saldo BoroRental", importo);
+    }
+
+    public PaymentTransactionBean avviaPagamentoNoleggio(String username, String descrizioneAuto, double importo)
+            throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
+        return avviaCheckoutSession(username, "Noleggio " + descrizioneAuto + " - BoroRental", importo);
+    }
+
+    private PaymentTransactionBean avviaCheckoutSession(String username, String productName, double importo)
+            throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
 
         if (importo <= 0) {
             throw new PaymentFailedException("L'importo deve essere maggiore di zero.");
@@ -43,10 +54,10 @@ public class StripeService {
                                     .setPriceData(
                                             SessionCreateParams.LineItem.PriceData.builder()
                                                     .setCurrency("eur")
-                                                    .setUnitAmount((long)(importo * 100))
+                                                    .setUnitAmount((long) (importo * 100))
                                                     .setProductData(
                                                             SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                    .setName("Ricarica saldo BoroRental")
+                                                                    .setName(productName)
                                                                     .build())
                                                     .build())
                                     .build())

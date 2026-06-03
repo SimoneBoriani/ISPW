@@ -10,11 +10,12 @@ import java.util.Map;
 
 public abstract class DaoNoleggioAuto {
 
-    public abstract void rentRequest(Utente utente,Macchina macchina,int giorni);
+    public abstract void rentRequest(Utente utente, Macchina macchina, int giorni);
+    public abstract void rentRequestEsternoConfermato(Utente utente, Macchina macchina, int giorni);
     public abstract List<NoleggioAuto> getUserCars(Utente utente);
-    public abstract void terminaNoleggio(int id,String motivo);
+    public abstract void terminaNoleggio(int id, String motivo);
     public abstract void sbloccaAutoScadute();
     public abstract List<NoleggioAuto> getRented();
-    public abstract Map<LocalDate,Double> getProfittiPerData();
+    public abstract Map<LocalDate, Double> getProfittiPerData();
 
 }

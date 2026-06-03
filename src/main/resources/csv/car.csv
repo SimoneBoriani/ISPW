@@ -1,5 +1,6 @@
-1,Yaris,Toyota,5,Utilitaria,Benzina,35.0,Manuale,2011,yaris.jpeg,true
-2,prova,prova,2000,,,7.0,,4,no_image.png,false
-3,911,porsche,2000,Supercar,Benzina,500.0,Manuale,2,porsche911.png,true
-4,palle,negro,2005,Suv,Benzina,50.0,Manuale,5,208.jpeg,true
-5,palle,ebree,2026,Berlina,Benzina,67.0,Manuale,2,clio.jpeg,true
+1,Yaris,Toyota,2011,Utilitaria,Benzina,35.0,Manuale,5,yaris.jpeg,false
+2,Fiat,Fiorino,2000,Station Wagon,Metano,30.0,Manuale,2,no_image.png,true
+3,911,porsche,2021,Supercar,Benzina,500.0,Manuale,2,porsche911.png,true
+4,Peugeot,208,2022,Utilitaria,Benzina,50.0,Manuale,5,208.jpeg,true
+5,Renault,Clio,2023,Utilitaria,Benzina,55.0,Manuale,5,clio.jpeg,true
+6,Kia,Picanto,2025,Utilitaria,Ibrida,55.0,Automatica,5,kiapicanto.png,true

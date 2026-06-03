@@ -29,12 +29,12 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
     public void rentRequest(Utente utente, Macchina macchina, int giorni) {
 
         String queryNoleggio = "INSERT INTO noleggi (id_utente, auto_id, data_fine, prezzo_totale, stato) VALUES (?, ?, ?, ?, 'ATTIVO')";
-        String querySaldo = "UPDATE utenti SET saldo = saldo - ? WHERE id = ?";
-        String queryNascondiAuto = "UPDATE macchine SET disponibile = false WHERE auto_id = ?";
+        String querySaldo    = "UPDATE utenti SET saldo = saldo - ? WHERE id = ?";
+        String queryNascondi = "UPDATE macchine SET disponibile = false WHERE auto_id = ?";
 
-        Connection connection = null;
+        Connection connection  = null;
         PreparedStatement stmtNoleggio = null;
-        PreparedStatement stmtSaldo = null;
+        PreparedStatement stmtSaldo    = null;
         PreparedStatement stmtNascondi = null;
 
         try {
@@ -42,8 +42,8 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
             connection.setAutoCommit(false);
 
             stmtNoleggio = connection.prepareStatement(queryNoleggio);
-            stmtSaldo = connection.prepareStatement(querySaldo);
-            stmtNascondi = connection.prepareStatement(queryNascondiAuto);
+            stmtSaldo    = connection.prepareStatement(querySaldo);
+            stmtNascondi = connection.prepareStatement(queryNascondi);
 
             stmtNoleggio.setInt(1, utente.getIdUser());
             stmtNoleggio.setInt(2, macchina.getId());
@@ -63,37 +63,67 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
         } catch (SQLException e) {
             try {
-                connection.rollback();
-                connection.setAutoCommit(true);
+                    connection.rollback();
+                    connection.setAutoCommit(true);
             } catch (SQLException ex) {
-                log.error("CRITICO: Impossibile completare il rollback e ripristinare l'autoCommit: {}",ex.getMessage());
+                log.error("CRITICO: Rollback fallito: {}", ex.getMessage());
             }
-            throw new GenericSystemException("Errore durante la transazione di noleggio:" + e.getMessage());
+            throw new GenericSystemException("Errore durante la transazione di noleggio: " + e.getMessage());
         } finally {
-            if (stmtNoleggio != null)
-                try {
-                    stmtNoleggio.close();
-                } catch (SQLException e) {
-                    log.error("Errore durante la chiusura di stmtNoleggio: {}", e.getMessage());
-                }
-            if (stmtSaldo != null)
-                try {
-                    stmtSaldo.close();
-                } catch (SQLException e) {
-                    log.error("Errore durante la chiusura di stmtSaldo: {}" , e.getMessage());
-                }
-            if (stmtNascondi != null)
-                try {
-                    stmtNascondi.close();
-                } catch (SQLException e) {
-                    log.error("Errore durante la chiusura di stmtNascondi: {}" , e.getMessage());
-                }
-            if (connection != null)
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.error("Errore durante la chiusura della connessione: {}" , e.getMessage());
-                }
+            closeQuietly(stmtNoleggio);
+            closeQuietly(stmtSaldo);
+            closeQuietly(stmtNascondi);
+        }
+    }
+
+    @Override
+    public void rentRequestEsternoConfermato(Utente utente, Macchina macchina, int giorni) {
+
+        String queryNoleggio = "INSERT INTO noleggi (id_utente, auto_id, data_fine, prezzo_totale, stato) VALUES (?, ?, ?, ?, 'ATTIVO')";
+        String queryNascondi = "UPDATE macchine SET disponibile = false WHERE auto_id = ?";
+
+        Connection connection  = null;
+        PreparedStatement stmtNoleggio = null;
+        PreparedStatement stmtNascondi = null;
+
+        try {
+            connection = ConnectionHandler.getInstance().getConnection();
+            connection.setAutoCommit(false);
+
+            stmtNoleggio = connection.prepareStatement(queryNoleggio);
+            stmtNascondi = connection.prepareStatement(queryNascondi);
+
+            stmtNoleggio.setInt(1, utente.getIdUser());
+            stmtNoleggio.setInt(2, macchina.getId());
+            stmtNoleggio.setDate(3, Date.valueOf(LocalDate.now().plusDays(giorni)));
+            stmtNoleggio.setDouble(4, macchina.getPrezzo());
+            stmtNoleggio.executeUpdate();
+
+            stmtNascondi.setInt(1, macchina.getId());
+            stmtNascondi.executeUpdate();
+
+            connection.commit();
+            connection.setAutoCommit(true);
+
+        } catch (SQLException e) {
+            try {
+
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+
+            } catch (SQLException ex) {
+                log.error("CRITICO: Rollback fallito: {}", ex.getMessage());
+            }
+            throw new GenericSystemException("Errore durante la transazione di noleggio Stripe: " + e.getMessage());
+        } finally {
+            closeQuietly(stmtNoleggio);
+            closeQuietly(stmtNascondi);
+        }
+    }
+
+    private void closeQuietly(PreparedStatement stmt) {
+        if (stmt != null) {
+            try { stmt.close(); } catch (SQLException e) { log.error("Errore chiusura statement: {}", e.getMessage()); }
         }
     }
 

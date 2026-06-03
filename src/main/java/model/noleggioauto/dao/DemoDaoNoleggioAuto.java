@@ -19,19 +19,17 @@ public class DemoDaoNoleggioAuto extends DaoNoleggioAuto {
 
     @Override
     public void rentRequest(Utente utente, Macchina macchina, int giorni) {
-        if (!macchina.getDisponibile()) {
-            throw new GenericSystemException("Auto non disponibile");
-        }
-        if (utente.getSaldo() < macchina.getPrezzo()) {
-            throw new GenericSystemException("Saldo insufficiente");
-        }
 
-        int nextId = noleggi.stream().mapToInt(NoleggioAuto::getIdNoleggio).max().orElse(0) + 1;
+        Macchina m = noleggi.stream()
+                .map(NoleggioAuto::getMacchina)
+                .filter(c -> c.getId() == macchina.getId())
+                .findFirst()
+                .orElse(macchina);
 
         NoleggioAuto n = new NoleggioAuto();
-        n.setIdNoleggio(nextId);
+        n.setIdNoleggio(noleggi.size() + 1);
         n.setUtente(utente);
-        n.setMacchina(macchina);
+        n.setMacchina(m);
         n.setDataInizio(LocalDate.now());
         n.setDataFine(LocalDate.now().plusDays(giorni));
         n.setPrezzoTotalePagato(macchina.getPrezzo());
@@ -39,9 +37,29 @@ public class DemoDaoNoleggioAuto extends DaoNoleggioAuto {
         n.setMotivoChiusura("");
 
         noleggi.add(n);
-
-        macchina.setDisponibile(false);
         utente.setSaldo(utente.getSaldo() - macchina.getPrezzo());
+    }
+
+    @Override
+    public void rentRequestEsternoConfermato(Utente utente, Macchina macchina, int giorni) {
+
+        Macchina m = noleggi.stream()
+                .map(NoleggioAuto::getMacchina)
+                .filter(c -> c.getId() == macchina.getId())
+                .findFirst()
+                .orElse(macchina);
+
+        NoleggioAuto n = new NoleggioAuto();
+        n.setIdNoleggio(noleggi.size() + 1);
+        n.setUtente(utente);
+        n.setMacchina(m);
+        n.setDataInizio(LocalDate.now());
+        n.setDataFine(LocalDate.now().plusDays(giorni));
+        n.setPrezzoTotalePagato(macchina.getPrezzo());
+        n.setStato(ATTIVO);
+        n.setMotivoChiusura("");
+
+        noleggi.add(n);
     }
 
     @Override

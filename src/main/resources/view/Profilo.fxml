@@ -7,95 +7,105 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="600.0" spacing="20.0" style="-fx-background-color: #0E1A33; -fx-padding: 30;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiGestioneProfilo">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="560.0" spacing="0.0" style="-fx-background-color: #0E1A33; -fx-padding: 40;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.guigraphicscontroller.GuiGestioneProfilo">
 
-    <VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="540.0" spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-radius: 25;">
+    <VBox alignment="TOP_CENTER" maxWidth="750.0" prefWidth="750.0" spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-radius: 20;">
         <padding>
-            <Insets bottom="30.0" left="40.0" right="40.0" top="20.0" />
+            <Insets bottom="20.0" left="30.0" right="30.0" top="15.0" />
         </padding>
 
-        <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="460.0">
+        <HBox alignment="CENTER_LEFT">
             <Label onMouseClicked="#goToHome" styleClass="link-label" text="← Torna al catalogo" textFill="#204080">
                 <font>
-                    <Font name="System Bold" size="14.0" />
+                    <Font name="System Bold" size="13.0" />
                 </font>
             </Label>
         </HBox>
 
         <Label text="IL TUO PROFILO" textFill="#204080">
             <font>
-                <Font name="System Bold" size="24.0" />
+                <Font name="System Bold" size="20.0" />
             </font>
         </Label>
 
-        <HBox prefHeight="250.0" prefWidth="460.0" spacing="40.0">
+        <HBox prefHeight="180.0" prefWidth="471.0" spacing="30.0">
 
-            <VBox prefWidth="240.0" spacing="15.0">
-                <VBox spacing="2.0">
+            <VBox prefWidth="210.0" spacing="10.0">
+
+                <VBox spacing="1.0">
                     <Label text="Username" textFill="#64748b">
-                        <font><Font size="12.0" /></font>
+                        <font><Font size="11.0" /></font>
                     </Label>
                     <Label fx:id="usernameUtenteLabel" text="guest" textFill="#204080">
-                        <font><Font name="System Bold" size="16.0" /></font>
+                        <font><Font name="System Bold" size="14.0" /></font>
                     </Label>
                 </VBox>
 
-                <VBox spacing="2.0">
+                <VBox spacing="1.0">
                     <Label text="Nome Completo" textFill="#64748b">
-                        <font><Font size="12.0" /></font>
+                        <font><Font size="11.0" /></font>
                     </Label>
                     <HBox spacing="5.0">
                         <Label fx:id="nomeUtenteLabel" text="Nome" textFill="#204080">
-                            <font><Font size="15.0" /></font>
+                            <font><Font size="14.0" /></font>
                         </Label>
                         <Label fx:id="cognomeUtenteLabel" text="Cognome" textFill="#204080">
-                            <font><Font size="15.0" /></font>
+                            <font><Font size="14.0" /></font>
                         </Label>
                     </HBox>
                 </VBox>
 
-                <VBox spacing="2.0">
+                <VBox spacing="1.0">
                     <Label text="Ruolo Account" textFill="#64748b">
-                        <font><Font size="12.0" /></font>
+                        <font><Font size="11.0" /></font>
                     </Label>
                     <Label fx:id="roleUtenteLabel" style="-fx-background-color: #f0f4ff; -fx-padding: 2 8; -fx-background-radius: 5;" text="GUEST" textFill="#204080">
+                        <font><Font name="System Bold" size="12.0" /></font>
+                    </Label>
+                </VBox>
+
+                <VBox spacing="1.0">
+                    <Label text="Verificato" textFill="#64748b">
+                        <font><Font size="11.0" /></font>
+                    </Label>
+                    <Label fx:id="lblPatente" text="Patente da verificare" textFill="#204080">
                         <font><Font name="System Bold" size="13.0" /></font>
                     </Label>
                 </VBox>
 
-                <VBox spacing="2.0">
-                    <Label text="Verificato" textFill="#64748b">
-                        <font><Font size="12.0" /></font>
-                    </Label>
-                    <Label fx:id="lblPatente" prefHeight="25.0" prefWidth="217.0" text="Patente da verificare" textFill="#204080">
-                        <font><Font name="System Bold" size="16.0" /></font>
-                    </Label>
-                </VBox>
             </VBox>
 
-            <VBox alignment="TOP_CENTER" prefWidth="220.0" spacing="20.0" style="-fx-background-color: #F8FAFC; -fx-padding: 20; -fx-background-radius: 15;">
-                <Label text="Saldo Disponibile" textFill="#64748b" />
+            <VBox alignment="TOP_CENTER" prefWidth="170.0" spacing="10.0" style="-fx-background-color: #F8FAFC; -fx-padding: 15; -fx-background-radius: 12;">
+                <Label text="Saldo Disponibile" textFill="#64748b">
+                    <font><Font size="12.0" /></font>
+                </Label>
                 <Label fx:id="saldoUtenteLabel" text="€ 0.00" textFill="#204080">
                     <font>
-                        <Font name="System Bold" size="30.0" />
+                        <Font name="System Bold" size="26.0" />
                     </font>
                 </Label>
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnSaldo" styleClass="Button" text="Ricarica Saldo" textFill="WHITE">
                     <font>
-                        <Font name="System Bold" size="12.0" />
+                        <Font name="System Bold" size="11.0" />
                     </font>
                 </Button>
             </VBox>
 
         </HBox>
 
-        <HBox alignment="CENTER" spacing="15.0">
+        <HBox alignment="CENTER" spacing="10.0">
             <VBox.margin>
-                <Insets top="10.0" />
+                <Insets top="5.0" />
             </VBox.margin>
-            <Button mnemonicParsing="false" onAction="#btnVerificaPatente" prefHeight="35.0" prefWidth="106.0" style="-fx-cursor: hand; -fx-background-color: #f1f5f9; -fx-text-fill: #204080; -fx-border-color: #cbd5e1; -fx-border-radius: 10; -fx-background-radius: 10;" text="Verifica patente" />
-            <Button mnemonicParsing="false" onAction="#btnUpdate" prefHeight="35.0" prefWidth="180.0" style="-fx-cursor: hand; -fx-background-color: #f1f5f9; -fx-text-fill: #204080; -fx-border-color: #cbd5e1; -fx-border-radius: 10; -fx-background-radius: 10;" styleClass="c" text="Modifica Dati" />
-            <Button mnemonicParsing="false" onAction="#btnPassword" prefHeight="35.0" prefWidth="180.0" style="-fx-background-color: #f1f5f9; -fx-text-fill: #204080; -fx-border-color: #cbd5e1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-cursor: hand;" text="Cambia Password" />
+            <Button mnemonicParsing="false" onAction="#btnVerificaPatente" prefHeight="32.0" prefWidth="120.0" style="-fx-cursor: hand; -fx-background-color: #f1f5f9; -fx-text-fill: #204080; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;" text="Verifica patente">
+                <font><Font size="11.0" /></font>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#btnUpdate" prefHeight="32.0" prefWidth="120.0" style="-fx-cursor: hand; -fx-background-color: #f1f5f9; -fx-text-fill: #204080; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;" text="Modifica Dati">
+                <font><Font size="11.0" /></font>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#btnPassword" prefHeight="32.0" prefWidth="120.0" style="-fx-background-color: #f1f5f9; -fx-text-fill: #204080; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand;" text="Cambia Password">
+                <font><Font size="11.0" /></font>
+            </Button>
         </HBox>
 
     </VBox>
