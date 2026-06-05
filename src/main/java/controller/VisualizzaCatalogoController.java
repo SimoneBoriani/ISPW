@@ -4,7 +4,6 @@ import bean.CatalogoBean;
 import exceptions.CarNotFoundException;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
-import utils.SessionSingleton;
 
 import java.util.List;
 
