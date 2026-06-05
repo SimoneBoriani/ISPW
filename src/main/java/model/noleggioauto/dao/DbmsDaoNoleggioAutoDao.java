@@ -6,6 +6,7 @@ import model.noleggioauto.NoleggioAuto;
 import model.utente.Utente;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import utils.ConfigLoader;
 import utils.ConnectionHandler;
 
 import java.sql.*;
@@ -47,7 +48,7 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
             stmtNoleggio.setInt(1, utente.getIdUser());
             stmtNoleggio.setInt(2, macchina.getId());
-            stmtNoleggio.setDate(3, Date.valueOf(LocalDate.now().plusDays(giorni)));
+            stmtNoleggio.setDate(3, Date.valueOf(LocalDate.now(ConfigLoader.getTimeZone()).plusDays(giorni)));
             stmtNoleggio.setDouble(4, macchina.getPrezzo());
             stmtNoleggio.executeUpdate();
 
@@ -95,7 +96,7 @@ public class DbmsDaoNoleggioAutoDao extends DaoNoleggioAuto {
 
             stmtNoleggio.setInt(1, utente.getIdUser());
             stmtNoleggio.setInt(2, macchina.getId());
-            stmtNoleggio.setDate(3, Date.valueOf(LocalDate.now().plusDays(giorni)));
+            stmtNoleggio.setDate(3, Date.valueOf(LocalDate.now(ConfigLoader.getTimeZone()).plusDays(giorni)));
             stmtNoleggio.setDouble(4, macchina.getPrezzo());
             stmtNoleggio.executeUpdate();
 

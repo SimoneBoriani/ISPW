@@ -4,6 +4,7 @@ import exceptions.GenericSystemException;
 import model.macchina.Macchina;
 import model.noleggioauto.NoleggioAuto;
 import model.utente.Utente;
+import utils.ConfigLoader;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -39,8 +40,8 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
             n.setIdNoleggio(nextId);
             n.setUtente(u);
             n.setMacchina(m);
-            n.setDataInizio(LocalDate.now());
-            n.setDataFine(LocalDate.now().plusDays(giorni));
+            n.setDataInizio(LocalDate.now(ConfigLoader.getTimeZone()));
+            n.setDataFine(LocalDate.now(ConfigLoader.getTimeZone()));
             n.setPrezzoTotalePagato(macchina.getPrezzo());
             n.setStato(ATTIVO);
             n.setMotivoChiusura("");
@@ -73,8 +74,8 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
             n.setIdNoleggio(nextId);
             n.setUtente(u);
             n.setMacchina(m);
-            n.setDataInizio(LocalDate.now());
-            n.setDataFine(LocalDate.now().plusDays(giorni));
+            n.setDataInizio(LocalDate.now(ConfigLoader.getTimeZone()));
+            n.setDataFine(LocalDate.now(ConfigLoader.getTimeZone()).plusDays(giorni));
             n.setPrezzoTotalePagato(macchina.getPrezzo());
             n.setStato(ATTIVO);
             n.setMotivoChiusura("");
@@ -99,7 +100,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
                 n.setMotivoChiusura(motivo);
 
                 if ("Chiusura Anticipata".equals(motivo)) {
-                    n.setDataFine(LocalDate.now());
+                    n.setDataFine(LocalDate.now(ConfigLoader.getTimeZone()));
                 }
 
                 try {
@@ -125,7 +126,7 @@ public class FileDaoNoleggioAuto extends DaoNoleggioAuto {
     public void sbloccaAutoScadute() {
         List<NoleggioAuto> rentals = loadAllRentals();
         boolean changed = false;
-        LocalDate oggi = LocalDate.now();
+        LocalDate oggi = LocalDate.now(ConfigLoader.getTimeZone());
 
         for (NoleggioAuto n : rentals) {
             if (ATTIVO.equals(n.getStato()) && n.getDataFine() != null && n.getDataFine().isBefore(oggi)) {
