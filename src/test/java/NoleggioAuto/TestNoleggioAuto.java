@@ -196,12 +196,21 @@ class TestNoleggioAuto {
         noleggioController.processaNoleggio(noleggio);
 
         List<NoleggioAuto> listaNoleggiPrima = DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().getRented();
-        NoleggioAuto noleggioInMemoria = listaNoleggiPrima.get(listaNoleggiPrima.size() - 1);
 
-        DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().terminaNoleggio(noleggioInMemoria.getIdNoleggio(), "Chiusura Anticipata");
+        NoleggioAuto noleggioInMemoria = listaNoleggiPrima.stream()
+                .filter(n -> n.getUtente().getIdUser() == 21 && n.getMacchina().getId() == 17)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Errore Test: Noleggio appena creato non trovato nel DB!"));
+
+        DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao()
+                .terminaNoleggio(noleggioInMemoria.getIdNoleggio(), "Chiusura Anticipata");
 
         List<NoleggioAuto> listaNoleggiDopo = DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().getRented();
-        NoleggioAuto noleggioAggiornato = listaNoleggiDopo.get(listaNoleggiDopo.size() - 1);
+
+        NoleggioAuto noleggioAggiornato = listaNoleggiDopo.stream()
+                .filter(n -> n.getIdNoleggio() == noleggioInMemoria.getIdNoleggio())
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Errore Test: Noleggio terminato non trovato nel DB!"));
 
         assertEquals("Chiusura Anticipata", noleggioAggiornato.getMotivoChiusura(), "Il motivo della chiusura deve coincidere");
         assertEquals("TERMINATO", noleggioAggiornato.getStato(), "Lo stato deve essere aggiornato a TERMINATO");
