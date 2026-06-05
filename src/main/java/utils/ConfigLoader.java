@@ -3,7 +3,6 @@ package utils;
 import exceptions.GenericSystemException;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.ZoneId;
 import java.util.Properties;
 
 public class ConfigLoader {
@@ -36,15 +35,6 @@ public class ConfigLoader {
             return Integer.parseInt(get(key));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Il valore per la chiave '" + key + "' non è un numero intero valido.", e);
-        }
-    }
-
-    public static ZoneId getTimeZone() {
-        try {
-            String zoneString = properties.getProperty("app.timezone", "Europe/Rome");
-            return ZoneId.of(zoneString);
-        } catch (Exception e) {
-            return ZoneId.systemDefault();
         }
     }
 }

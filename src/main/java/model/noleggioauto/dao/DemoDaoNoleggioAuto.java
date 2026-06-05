@@ -3,7 +3,6 @@ package model.noleggioauto.dao;
 import model.macchina.Macchina;
 import model.noleggioauto.NoleggioAuto;
 import model.utente.Utente;
-import utils.ConfigLoader;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,8 +29,8 @@ public class DemoDaoNoleggioAuto extends DaoNoleggioAuto {
         n.setIdNoleggio(noleggi.size() + 1);
         n.setUtente(utente);
         n.setMacchina(m);
-        n.setDataInizio(LocalDate.now(ConfigLoader.getTimeZone()));
-        n.setDataFine(LocalDate.now(ConfigLoader.getTimeZone()).plusDays(giorni));
+        n.setDataInizio(LocalDate.now());
+        n.setDataFine(LocalDate.now().plusDays(giorni));
         n.setPrezzoTotalePagato(macchina.getPrezzo());
         n.setStato(ATTIVO);
         n.setMotivoChiusura("");
@@ -53,8 +52,8 @@ public class DemoDaoNoleggioAuto extends DaoNoleggioAuto {
         n.setIdNoleggio(noleggi.size() + 1);
         n.setUtente(utente);
         n.setMacchina(m);
-        n.setDataInizio(LocalDate.now(ConfigLoader.getTimeZone()));
-        n.setDataFine(LocalDate.now(ConfigLoader.getTimeZone()).plusDays(giorni));
+        n.setDataInizio(LocalDate.now());
+        n.setDataFine(LocalDate.now().plusDays(giorni));
         n.setPrezzoTotalePagato(macchina.getPrezzo());
         n.setStato(ATTIVO);
         n.setMotivoChiusura("");
@@ -70,7 +69,7 @@ public class DemoDaoNoleggioAuto extends DaoNoleggioAuto {
                 n.setMotivoChiusura(motivo);
 
                 if ("Chiusura Anticipata".equals(motivo)) {
-                    n.setDataFine(LocalDate.now(ConfigLoader.getTimeZone()));
+                    n.setDataFine(LocalDate.now());
                 }
 
                 n.getMacchina().setDisponibile(true);
@@ -88,7 +87,7 @@ public class DemoDaoNoleggioAuto extends DaoNoleggioAuto {
 
     @Override
     public void sbloccaAutoScadute() {
-        LocalDate oggi = LocalDate.now(ConfigLoader.getTimeZone());
+        LocalDate oggi = LocalDate.now();
         for (NoleggioAuto n : noleggi) {
             if (ATTIVO.equals(n.getStato()) && n.getDataFine() != null && n.getDataFine().isBefore(oggi)) {
                 n.setStato(TERMINATO);
