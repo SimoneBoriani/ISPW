@@ -23,18 +23,15 @@ public class StripeService {
         this.callbackPort = callbackPort;
     }
 
-    public PaymentTransactionBean avviaRicarica(String username, double importo)
-            throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
+    public PaymentTransactionBean avviaRicarica(String username, double importo) throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
         return avviaCheckoutSession(username, "Ricarica saldo BoroRental", importo);
     }
 
-    public PaymentTransactionBean avviaPagamentoNoleggio(String username, String descrizioneAuto, double importo)
-            throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
+    public PaymentTransactionBean avviaPagamentoNoleggio(String username, String descrizioneAuto, double importo) throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
         return avviaCheckoutSession(username, "Noleggio " + descrizioneAuto + " - BoroRental", importo);
     }
 
-    private PaymentTransactionBean avviaCheckoutSession(String username, String productName, double importo)
-            throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
+    private PaymentTransactionBean avviaCheckoutSession(String username, String productName, double importo) throws IOException, StripeException, ExecutionException, InterruptedException, TimeoutException {
 
         if (importo <= 0) {
             throw new PaymentFailedException("L'importo deve essere maggiore di zero.");

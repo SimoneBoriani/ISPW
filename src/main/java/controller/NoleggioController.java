@@ -11,6 +11,7 @@ import model.utente.Utente;
 import model.duratacontrattuale.*;
 import service.StripeService;
 import utils.ConfigLoader;
+import utils.SessionSingleton;
 import view.factory.ControllerFactory;
 
 import java.io.IOException;
@@ -19,10 +20,7 @@ import java.util.concurrent.TimeoutException;
 
 public class NoleggioController {
 
-    private final VisualizzaCatalogoController controllerApplicativo =
-            ControllerFactory.getGraphicalSingletonFactory().createVisualizzaCatalogoController();
-    private final NotificheController notificheController =
-            ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
+    private final NotificheController notificheController = ControllerFactory.getGraphicalSingletonFactory().createNotificheController();
 
     public double calcolaTotale(Macchina auto, int giorni) {
         PianoNoleggio pianoScelto = determinaPiano(giorni);
@@ -30,11 +28,10 @@ public class NoleggioController {
     }
 
     public Macchina getAuto() {
-        return controllerApplicativo.getAutoSelezionataDaSessione();
+        return SessionSingleton.getInstance().getAutoSelezionata();
     }
 
-    public void clear() {
-        controllerApplicativo.pulisciSelezioneSessione();
+    public void clear(){SessionSingleton.getInstance().setAutoSelezionata(null);
     }
 
     public void processaNoleggio(NoleggioAutoBean bean) {
@@ -62,8 +59,7 @@ public class NoleggioController {
         DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().rentRequest(utente, auto, giorni);
     }
 
-    public void processaNoleggioStripe(NoleggioAutoBean bean)
-            throws StripeException, IOException, ExecutionException, InterruptedException, TimeoutException {
+    public void processaNoleggioStripe(NoleggioAutoBean bean) throws StripeException, IOException, ExecutionException, InterruptedException, TimeoutException {
 
         Macchina auto = bean.getMacchina();
         Utente utente = bean.getRenter();
@@ -97,9 +93,7 @@ public class NoleggioController {
         bean.getMacchina().setPrezzo(totale);
         bean.setPagamentoEsternoConfermato(true);
 
-        DaoFactory.getDaoSingletonFactory()
-                .createNoleggioAutoDao()
-                .rentRequestEsternoConfermato(utente, auto, giorni);
+        DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().rentRequestEsternoConfermato(utente, auto, giorni);
     }
 
     public PianoNoleggio determinaPiano(int giorni) {

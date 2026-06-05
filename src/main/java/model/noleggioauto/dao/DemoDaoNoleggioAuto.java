@@ -1,6 +1,5 @@
 package model.noleggioauto.dao;
 
-import exceptions.GenericSystemException;
 import model.macchina.Macchina;
 import model.noleggioauto.NoleggioAuto;
 import model.utente.Utente;

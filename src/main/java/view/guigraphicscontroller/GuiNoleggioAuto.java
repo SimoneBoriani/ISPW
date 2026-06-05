@@ -110,6 +110,7 @@ public class GuiNoleggioAuto {
     }
 
     private void loadInfo() {
+
         Macchina auto = noleggioController.getAuto();
 
         if (auto == null) {
@@ -351,8 +352,8 @@ public class GuiNoleggioAuto {
 
                 new Thread(() -> {
                     try {
-                        noleggioController.processaNoleggioStripe(bean);
 
+                        noleggioController.processaNoleggioStripe(bean);
                         NotificaBean notifica = new NotificaBean();
                         notifica.setUtente(utenteSnapshot);
                         notifica.setMacchina(autoSnapshot);

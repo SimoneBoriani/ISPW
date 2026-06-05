@@ -11,7 +11,9 @@ public class NoleggioAutoBean {
     private String metodoPagamento;
     private boolean pagamentoEsternoConfermato = false;
 
-    public NoleggioAutoBean() {}
+    public NoleggioAutoBean() {
+        //Costruttore
+    }
 
     public Macchina getMacchina() { return macchina; }
     public void setMacchina(Macchina macchina) { this.macchina = macchina; }

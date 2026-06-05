@@ -57,93 +57,117 @@ public class GuiAdminViewController {
 
     @FXML
     public void apriPopupNotifiche(MouseEvent event) {
-
         if (!SessionSingleton.getInstance().isUserLoggedIn()) {
             return;
         }
-
-        NotificaBean bean = new NotificaBean();
-        bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
-
-        List<Notifica> listaNotifiche = notificheController.getStoricoNotifiche(bean);
+        List<Notifica> listaNotifiche = recuperaStoricoNotifiche();
 
         VBox contenitore = new VBox(10);
         contenitore.setPadding(new Insets(15));
 
+        popolaContenitore(contenitore, listaNotifiche);
+
+        mostraStageNotifiche(contenitore);
+        controllaNotifiche();
+    }
+
+    private List<Notifica> recuperaStoricoNotifiche() {
+        NotificaBean bean = new NotificaBean();
+        bean.setUtente(SessionSingleton.getInstance().getUtenteCorrente());
+        return notificheController.getStoricoNotifiche(bean);
+    }
+
+    private void popolaContenitore(VBox contenitore, List<Notifica> listaNotifiche) {
         if (listaNotifiche == null || listaNotifiche.isEmpty()) {
-
-            Label vuoto = new Label("Nessuna notifica");
-            contenitore.getChildren().add(vuoto);
-
-        } else {
-
-            for (Notifica n : listaNotifiche) {
-
-                NotificaBean admin = new NotificaBean();
-                admin.setId(String.valueOf(n.getId()));
-
-                HBox card = new HBox(10);
-                card.setPadding(new Insets(10));
-                card.setAlignment(Pos.CENTER_LEFT);
-
-                if (!n.isLetta()) {
-                    card.setStyle("""
-                    -fx-background-color: #fff7f7;
-                    -fx-border-color: #ffcccc;
-                    -fx-border-radius: 8;
-                    -fx-background-radius: 8;
-                """);
-                    notificheController.apriNotifica(admin);
-                } else {
-                    card.setStyle("""
-                    -fx-background-color: white;
-                    -fx-border-color: lightgray;
-                    -fx-border-radius: 8;
-                    -fx-background-radius: 8;
-                """);
-                }
-
-                VBox testi = new VBox(5);
-
-                Label titolo = new Label(n.getTipo().toString());
-                titolo.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-
-                Label auto = new Label("Auto: " + n.getAuto());
-                auto.setWrapText(true);
-
-                Label testo = new Label("Segnalazione: " + n.getTesto());
-                testo.setWrapText(true);
-
-                LocalDateTime dataCreazione = n.getDataCreazione();
-                Label data = new Label(dataCreazione != null ? dataCreazione.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "");
-                data.setStyle("-fx-font-size: 11px; -fx-text-fill: #666666;");
-
-                testi.getChildren().addAll(titolo, auto, testo, data);
-
-                Region spacer = new Region();
-                HBox.setHgrow(spacer, Priority.ALWAYS);
-
-                Button btnImpostazioni = new Button("⚙ Impostazioni");
-
-                btnImpostazioni.setOnAction(e -> apriImpostazioniNotifica(e, n));
-
-                Button btnElimina = new Button("🗑 Elimina");
-                btnElimina.setOnAction(e -> {
-                    NotificaBean elimina = new NotificaBean();
-                    elimina.setId(String.valueOf(n.getId()));
-                    notificheController.eliminaNotifica(elimina);
-                    contenitore.getChildren().remove(card);
-                    controllaNotifiche();
-                });
-
-                VBox azioni = new VBox(10, btnImpostazioni, btnElimina);
-                azioni.setAlignment(Pos.CENTER_RIGHT);
-                card.getChildren().addAll(testi, spacer, azioni);
-
-                contenitore.getChildren().add(card);
-            }
+            contenitore.getChildren().add(new Label("Nessuna notifica"));
+            return;
         }
 
+        for (Notifica n : listaNotifiche) {
+            HBox card = creaCardNotifica(n, contenitore);
+            contenitore.getChildren().add(card);
+        }
+    }
+
+    private HBox creaCardNotifica(Notifica n, VBox contenitore) {
+        HBox card = new HBox(10);
+        card.setPadding(new Insets(10));
+        card.setAlignment(Pos.CENTER_LEFT);
+
+        applicaStileEConguaglioLettura(card, n);
+
+        VBox testi = creaSezioneTesto(n);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        VBox azioni = creaSezioneAzioni(n, card, contenitore);
+
+        card.getChildren().addAll(testi, spacer, azioni);
+        return card;
+    }
+
+    private void applicaStileEConguaglioLettura(HBox card, Notifica n) {
+        if (!n.isLetta()) {
+            card.setStyle("-fx-background-color: #fff7f7; -fx-border-color: #ffcccc; -fx-border-radius: 8; -fx-background-radius: 8;");
+            NotificaBean admin = new NotificaBean();
+            admin.setId(String.valueOf(n.getId()));
+            notificheController.apriNotifica(admin);
+        } else {
+            card.setStyle("-fx-background-color: white; -fx-border-color: lightgray; -fx-border-radius: 8; -fx-background-radius: 8;");
+        }
+    }
+
+    private VBox creaSezioneTesto(Notifica n) {
+        VBox testi = new VBox(5);
+
+        Label titolo = new Label(n.getTipo().toString());
+        titolo.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        Label auto = new Label();
+
+        if(n.getAuto() != null){
+        auto.setText("Auto: " + n.getAuto());
+        auto.setWrapText(true);
+        }
+
+        Label testo = new Label("Testo: " + n.getTesto());
+        testo.setWrapText(true);
+
+        LocalDateTime dataCreazione = n.getDataCreazione();
+        String stringaData = dataCreazione != null ? dataCreazione.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "";
+        Label data = new Label(stringaData);
+        data.setStyle("-fx-font-size: 11px; -fx-text-fill: #666666;");
+
+        testi.getChildren().addAll(titolo, auto, testo, data);
+        return testi;
+    }
+
+    private VBox creaSezioneAzioni(Notifica n, HBox card, VBox contenitore) {
+        VBox azioni = new VBox(10);
+        azioni.setAlignment(Pos.CENTER_RIGHT);
+
+        Button btnElimina = new Button("🗑 Elimina");
+        btnElimina.setOnAction(e -> {
+            NotificaBean elimina = new NotificaBean();
+            elimina.setId(String.valueOf(n.getId()));
+            notificheController.eliminaNotifica(elimina);
+            contenitore.getChildren().remove(card);
+            controllaNotifiche();
+        });
+
+        if ("MESSAGGIO".equalsIgnoreCase(n.getTipo().toString())) {
+            Button btnImpostazioni = new Button("⚙ Impostazioni");
+            btnImpostazioni.setOnAction(e -> apriImpostazioniNotifica(e, n));
+            azioni.getChildren().addAll(btnImpostazioni, btnElimina);
+        } else {
+            azioni.getChildren().add(btnElimina);
+        }
+
+        return azioni;
+    }
+
+    private void mostraStageNotifiche(VBox contenitore) {
         ScrollPane scrollPane = new ScrollPane(contenitore);
         scrollPane.setFitToWidth(true);
 
@@ -153,10 +177,7 @@ public class GuiAdminViewController {
         stage.setTitle("Notifiche");
         stage.setScene(scene);
         stage.setResizable(false);
-
         stage.show();
-
-        controllaNotifiche();
     }
 
     private void controllaNotifiche() {

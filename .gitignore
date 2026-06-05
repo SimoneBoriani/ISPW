@@ -63,4 +63,4 @@ Thumbs.db
 # =========================
 # Altro
 # =========================
-.kotlin
+.kotlinsrc/main/resources/secrets.properties

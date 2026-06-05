@@ -29,13 +29,4 @@ public class VisualizzaCatalogoController {
 
         return DaoFactory.getDaoSingletonFactory().createMacchinaDao().research(autoFiltro);
     }
-
-    public Macchina getAutoSelezionataDaSessione() {
-        return SessionSingleton.getInstance().getAutoSelezionata();
-    }
-
-    public void pulisciSelezioneSessione() {
-        SessionSingleton.getInstance().setAutoSelezionata(null);
-    }
-
 }
