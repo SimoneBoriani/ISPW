@@ -26,7 +26,7 @@
                         <Font name="System Bold" size="24.0" />
                     </font>
                 </Label>
-                <Label text="Gestisci i tuoi noleggi attivi e conclusi" textFill="#64748b">
+                <Label text="Gestisci i tuoi noleggi attivi" textFill="#64748b">
                     <font>
                         <Font size="14.0" />
                     </font>

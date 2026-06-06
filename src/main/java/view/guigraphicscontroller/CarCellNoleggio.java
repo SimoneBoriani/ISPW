@@ -63,7 +63,7 @@ public class CarCellNoleggio extends ListCell<NoleggioAuto> {
             lblModello.setText(macchina.getMarca() + " " + macchina.getModello());
             lblPrezzo.setText("TOTALE PAGATO: "+noleggio.getPrezzoTotalePagato() + " €");
             lblDettagli.setText(macchina.getAnno() + " • " + macchina.getAlimentazione());
-            lblNoleggio.setText(noleggio.getDataInizio() + " - " + noleggio.getDataFine());
+            lblNoleggio.setText("INIZIO: " + noleggio.getDataInizio() + " - FINE: " + noleggio.getDataFine());
 
             setGraphic(rootAnchor);
             setText(null);

@@ -59,6 +59,7 @@ public class GuiVisualizzaCatalogoController {
     @FXML
     public void initialize() {
 
+        visualizzaCatalogoController.eseguiSbloccoAsincrono();
         configuraCatalogo();
         configuraBottoni();
         controllaNotifiche();
@@ -68,7 +69,7 @@ public class GuiVisualizzaCatalogoController {
     private void apriDettaglio(Macchina auto) {
         try {
 
-            SessionSingleton.getInstance().setAutoSelezionata(auto);
+            visualizzaCatalogoController.setSessione(auto);
             StageHandler.getSingletonInstance().loadPage("/view/NoleggioView.fxml");
 
         } catch (IOException e) {
@@ -298,14 +299,12 @@ public class GuiVisualizzaCatalogoController {
         card.setMinHeight(javafx.scene.layout.Region.USE_COMPUTED_SIZE);
         card.setPadding(new Insets(15));
 
-        // Stili
         String baseStyle = "-fx-background-color: #fff7f7; -fx-border-color: #ffcccc; -fx-border-radius: 10; -fx-background-radius: 10;";
         String hoverStyle = "-fx-background-color: #ffeaea; -fx-border-color: #ffb3b3; -fx-border-radius: 10; -fx-background-radius: 10;";
         card.setStyle(baseStyle);
         card.setOnMouseEntered(e -> card.setStyle(hoverStyle));
         card.setOnMouseExited(e -> card.setStyle(baseStyle));
 
-        // Header (Titolo + Bottone Elimina)
         HBox header = new HBox();
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -322,7 +321,6 @@ public class GuiVisualizzaCatalogoController {
 
         header.getChildren().addAll(lblTitolo, spacer, btnElimina);
 
-        // Testo e Data
         Label lblTesto = new Label(n.getTesto());
         lblTesto.setWrapText(true);
         lblTesto.setMaxWidth(290);

@@ -52,7 +52,7 @@ public class StageHandler {
             this.stage.setResizable(true);
         }
 
-        this.stage.setTitle("Krusty No Dusty");
+        this.stage.setTitle("Boro Rental");
         this.stage.show();
     }
 

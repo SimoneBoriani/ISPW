@@ -5,6 +5,7 @@ import bean.NotificaBean;
 import controller.NoleggioController;
 import exceptions.DocsNotValidException;
 import exceptions.GenericSystemException;
+import exceptions.ItemNotFoundException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -68,6 +69,11 @@ public class GuiNoleggioAuto {
 
     @FXML
     public void segnala() {
+
+        if(SessionSingleton.getInstance().getUtenteCorrente()==null){
+            return;
+        }
+
 
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Segnalazione");
@@ -144,10 +150,20 @@ public class GuiNoleggioAuto {
     }
 
     @FXML
-    public void goHome(ActionEvent event) throws IOException {
-        String str = "/view/CatalogoView.fxml";
+    public void goHome(ActionEvent event){
+
         noleggioController.clear();
-        StageHandler.getSingletonInstance().loadPage(str);
+        home();
+
+    }
+
+    private void home(){
+        String str = "/view/CatalogoView.fxml";
+        try {
+            StageHandler.getSingletonInstance().loadPage(str);
+        } catch (IOException e) {
+            throw new ItemNotFoundException("Errore Caricamento Pagina");
+        }
     }
 
     @FXML
@@ -171,6 +187,7 @@ public class GuiNoleggioAuto {
     private void openWindow(NoleggioAutoBean acquistoAuto) {
 
         final String[] metodoScelto = {null};
+        noleggioController.timer();
 
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -322,6 +339,8 @@ public class GuiNoleggioAuto {
         lblPrezzo.setText(style);
     }
 
+
+
     private void gestisciConferma(String testoGiorni, NoleggioAutoBean bean, Stage stage, Label lblErrore, String metodo) {
         try {
             if (testoGiorni == null || testoGiorni.trim().isEmpty()) {
@@ -366,6 +385,7 @@ public class GuiNoleggioAuto {
                             alert.setHeaderText("Noleggio confermato!");
                             alert.setContentText("Il noleggio di " + modello1 + " " + marca1 + " è stato effettuato con successo via Stripe.");
                             alert.showAndWait();
+                            home();
                             stage.close();
                         });
 

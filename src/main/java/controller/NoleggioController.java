@@ -124,4 +124,8 @@ public class NoleggioController {
             notificheController.generaNotificaSistema(bean);
         } else throw new NullPointerException("Segnalazione non trovata");
     }
+
+    public void timer(){
+        //Timer 10 mmin
+    }
 }

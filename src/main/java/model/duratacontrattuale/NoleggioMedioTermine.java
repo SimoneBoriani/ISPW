@@ -12,7 +12,7 @@ public class NoleggioMedioTermine implements PianoNoleggio {
     @Override
     public String getDescrizione() {
 
-        return "Noleggio a medio termine\n31-364 giorni\n(Sconto 5%)";
+        return "Noleggio a medio termine\n31-364 giorni - (Sconto 5%)";
 
     }
 }

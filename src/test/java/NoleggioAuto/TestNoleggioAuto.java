@@ -206,4 +206,40 @@ class TestNoleggioAuto {
         assertEquals("Chiusura Anticipata", noleggioAggiornato.getMotivoChiusura(), "Il motivo della chiusura deve coincidere");
         assertEquals("TERMINATO", noleggioAggiornato.getStato(), "Lo stato deve essere aggiornato a TERMINATO");
     }
+    @Test
+    void test_fine_noleggio_naturale() {
+        NoleggioAutoBean noleggio = new NoleggioAutoBean();
+        Utente utente = new Utente();
+        utente.setIdUser(22);
+        utente.setSaldo(1000.0);
+        utente.setVerificato(true);
+
+        Macchina macchina = new Macchina();
+        macchina.setId(18);
+        macchina.setPrezzo(10.0);
+        macchina.setDisponibile(true);
+
+        noleggio.setMacchina(macchina);
+        noleggio.setRenter(utente);
+        noleggio.setGiorni(1);
+
+        noleggioController.processaNoleggio(noleggio);
+
+        List<NoleggioAuto> lista = DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().getRented();
+        NoleggioAuto noleggioCreato = lista.get(lista.size() - 1);
+
+        noleggioCreato.setDataFine(java.time.LocalDate.now().minusDays(1));
+
+        DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().sbloccaAutoScadute();
+
+        List<NoleggioAuto> listaDopo = DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().getRented();
+        NoleggioAuto noleggioAggiornato = listaDopo.stream()
+                .filter(n -> n.getIdNoleggio() == noleggioCreato.getIdNoleggio())
+                .findFirst()
+                .orElseThrow();
+
+        assertEquals("Chiusura Naturale", noleggioAggiornato.getMotivoChiusura(), "Il motivo deve essere Chiusura Naturale");
+        assertEquals("TERMINATO", noleggioAggiornato.getStato(), "Lo stato deve essere TERMINATO");
+        assertTrue(noleggioAggiornato.getMacchina().getDisponibile(), "L'auto dovrebbe essere tornata disponibile");
+    }
 }

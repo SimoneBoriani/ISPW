@@ -69,6 +69,10 @@ public class GuiGestioneProfilo {
 
     private void patente(){
 
+        if (SessionSingleton.getInstance().getUtenteCorrente() == null) {
+            return;
+        }
+
         boolean esito = SessionSingleton.getInstance().getUtenteCorrente().getVerificato();
 
         if(Boolean.TRUE.equals(esito)) {

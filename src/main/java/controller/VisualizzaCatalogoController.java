@@ -4,13 +4,29 @@ import bean.CatalogoBean;
 import exceptions.CarNotFoundException;
 import model.daofactory.DaoFactory;
 import model.macchina.Macchina;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import utils.SessionSingleton;
 
 import java.util.List;
 
 public class VisualizzaCatalogoController {
 
+    private final Logger log = LogManager.getLogger(VisualizzaCatalogoController.class);
+
+    public void eseguiSbloccoAsincrono() {
+        Thread sbloccoThread = new Thread(() -> {
+            try {
+                DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().sbloccaAutoScadute();
+            } catch (Exception e) {
+                log.error("Errore durante lo sblocco automatico: {} ",e.getMessage());
+            }
+        });
+        sbloccoThread.setDaemon(true);
+        sbloccoThread.start();
+    }
+
     public List<Macchina> getCars() {
-        DaoFactory.getDaoSingletonFactory().createNoleggioAutoDao().sbloccaAutoScadute();
         return DaoFactory.getDaoSingletonFactory().createMacchinaDao().getCars();
     }
 
@@ -27,5 +43,9 @@ public class VisualizzaCatalogoController {
         autoFiltro.setTipologia(filtri.getTipologia());
 
         return DaoFactory.getDaoSingletonFactory().createMacchinaDao().research(autoFiltro);
+    }
+
+    public void setSessione(Macchina macchina){
+        SessionSingleton.getInstance().setAutoSelezionata(macchina);
     }
 }

@@ -9,6 +9,6 @@ public class NoleggioBreveTermine implements PianoNoleggio {
 
     @Override
     public String getDescrizione() {
-        return "Noleggio a breve termine\n1-30 giorni\n(Tariffa base)";
+        return "Noleggio a breve termine\n1-30 giorni - (Tariffa base)";
     }
 }
